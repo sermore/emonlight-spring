@@ -1,133 +1,147 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-<title>Getting Started: Serving Web Content</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link href="../static/css/dc.css" th:href="@{css/dc.css}"
-	rel="stylesheet" media="screen" />
-<script src="../static/js/crossfilter.js" th:src="@{js/crossfilter.js}"></script>
-<script src="../static/js/d3.js" th:src="@{js/d3.js}"></script>
-<script src="../static/js/dc.js" th:src="@{js/dc.js}"></script>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="../static/css/dc.css" th:href="@{css/dc.css}"
+          rel="stylesheet" media="screen"/>
+    <script src="../static/js/crossfilter.js" th:src="@{js/crossfilter.js}"></script>
+    <script src="../static/js/d3.js" th:src="@{js/d3.js}"></script>
+    <script src="../static/js/dc.js" th:src="@{js/dc.js}"></script>
 </head>
 <body>
-	<p th:text="'Hello, ' + ${id} + '!'" />
+<p th:text="'Hello, ' + ${id} + '!'"/>
 
-	<div id="test"></div>
-	<div id="test-overview"></div>
-	<button class="btn" onclick="button1()">1</button>
+<div id="test"></div>
+<div id="test-overview"></div>
+<button class="btn" onclick="button1()">1</button>
 
-	<script th:inline="javascript">
-		/*<![CDATA[*/
-			
-		var focusChart = dc.seriesChart("#test");
-		var overviewChart = dc.seriesChart("#test-overview");
-		var url = '/data.json?id=' + /*[[${id}]]*/ 0;
-		var lastTime, ndx;
-		
-		d3.json(url, function(error, data) {
-			
-			lastTime = data[data.length - 1][0];
-			data.forEach(function(d) {
-				d[0] = new Date(d[0]);
-			});
+<script th:inline="javascript">
+    /*<![CDATA[*/
 
-			ndx = crossfilter(data); 
-			var runDimension = ndx.dimension(function(d) {
-					return [+d[2], d[0]];
-				}),
-				overviewRunDimension = ndx.dimension(function(d) {
-					return [+d[2], d[0]];
-				}),
-				runGroup = runDimension.group().reduceSum(function(d) {
-					return +d[1];
-				}),
-				overviewRunGroup = runDimension.group().reduceSum(function(d) {
-					return +d[1];
-				});
+    var focusChart = dc.seriesChart("#test");
+    var overviewChart = dc.seriesChart("#test-overview");
+    var url = '/data.json?id=' + /*[[${id}]]*/ 0;
+    var lastTime, ndx;
 
-			focusChart
-				.width(768)
-				.height(480)
-				.chart(function(c) { return dc.lineChart(c); })
-				.x(d3.time.scale().domain([ data[0][0], data[data.length - 1][0] ]))
-				.brushOn(false)
-				.clipPadding(10)
-				.elasticY(true)
-				/* .yAxisLabel("This is the Y Axis!") */
-				.dimension(runDimension)
-				.group(runGroup)
-				.mouseZoomable(true)
-				.rangeChart(overviewChart)
-				.seriesAccessor(function(d) { return "Ext: " +d.key[0]; })
-				.keyAccessor(function(d) { return d.key[1]; })
-				.valueAccessor(function(d) { return +d.value; })
-				.legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
-			
-			focusChart.elasticX = function() {
-			    return arguments.length ? this : false;
-			};
-			
-			function rangesEqual (range1, range2) {
-		        if (!range1 && !range2) {
-		            return true;
-		        } else if (!range1 || !range2) {
-		            return false;
-		        } else if (range1.length === 0 && range2.length === 0) {
-		            return true;
-		        } else if (range1[0].valueOf() === range2[0].valueOf() &&
-		            range1[1].valueOf() === range2[1].valueOf()) {
-		            return true;
-		        }
-		        return false;
-		    }
+    d3.json(url, function (error, data) {
 
-			overviewChart
-		    .width(768)
-		    .height(100)
-		    .chart(function(c,_,_,i) {
-		    var chart = dc.lineChart(c).interpolate('basis');
-		    if(i===0)
-		    	chart.on('filtered', function (chart) {
-		            if (!chart.filter()) {
-		                dc.events.trigger(function () {
-		                    overviewChart.focusChart().x().domain(overviewChart.focusChart().xOriginalDomain());
-		                    overviewChart.focusChart().redraw();
-		                });
-		            } else if (!rangesEqual(chart.filter(), overviewChart.focusChart().filter())) {
-		                dc.events.trigger(function () {
-		                    overviewChart.focusChart().focus(chart.filter());
-		                });
-		            }
-		        });
-		    return chart;
-		    })
-		    .x(d3.time.scale().domain([ data[0][0], data[data.length - 1][0] ]))
-		    .brushOn(true)
-		    .xAxisLabel("Run")
-		    .clipPadding(10)
-		    .dimension(runDimension)
-		    .group(runGroup)
-		    .seriesAccessor(function(d) {return "Expt: " + d.key[0];})
-		    .keyAccessor(function(d) {return +d.key[1];})
-		    .valueAccessor(function(d) {return +d.value;})
-		  dc.renderAll();
-		});
-		
-		function load_button() {
-		    return function load_it() {
-				var url = '/data.json?start=' + lastTime + '&id=' + /*[[${id}]]*/ 0;
-				d3.json(url, function(error, data) {
-					data.forEach(function(d) {
-						d[0] = new Date(d[0]);
-					});
-					ndx.add(data);
-					dc.redrawAll();
-		    	});
-		    };
-		}
-		
-		var button1 = load_button();
-		/*]]>*/
-	</script>
+        lastTime = data[data.length - 1][0];
+        data.forEach(function (d) {
+            d[0] = new Date(d[0]);
+        });
+
+        ndx = crossfilter(data);
+        var runDimension = ndx.dimension(function (d) {
+                return [+d[2], d[0]];
+            }),
+            overviewRunDimension = ndx.dimension(function (d) {
+                return [+d[2], d[0]];
+            }),
+            runGroup = runDimension.group().reduceSum(function (d) {
+                return +d[1];
+            }),
+            overviewRunGroup = runDimension.group().reduceSum(function (d) {
+                return +d[1];
+            });
+
+        focusChart
+            .width(768)
+            .height(480)
+            .chart(function (c) {
+                return dc.lineChart(c);
+            })
+            .x(d3.time.scale().domain([data[0][0], data[data.length - 1][0]]))
+            .brushOn(false)
+            .clipPadding(10)
+            .elasticY(true)
+            /* .yAxisLabel("This is the Y Axis!") */
+            .dimension(runDimension)
+            .group(runGroup)
+            .mouseZoomable(true)
+            .rangeChart(overviewChart)
+            .seriesAccessor(function (d) {
+                return "Ext: " + d.key[0];
+            })
+            .keyAccessor(function (d) {
+                return d.key[1];
+            })
+            .valueAccessor(function (d) {
+                return +d.value;
+            })
+            .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
+
+        focusChart.elasticX = function () {
+            return arguments.length ? this : false;
+        };
+
+        function rangesEqual(range1, range2) {
+            if (!range1 && !range2) {
+                return true;
+            } else if (!range1 || !range2) {
+                return false;
+            } else if (range1.length === 0 && range2.length === 0) {
+                return true;
+            } else if (range1[0].valueOf() === range2[0].valueOf() &&
+                range1[1].valueOf() === range2[1].valueOf()) {
+                return true;
+            }
+            return false;
+        }
+
+        overviewChart
+            .width(768)
+            .height(100)
+            .chart(function (c, _, _, i) {
+                var chart = dc.lineChart(c).interpolate('basis');
+                if (i === 0)
+                    chart.on('filtered', function (chart) {
+                        if (!chart.filter()) {
+                            dc.events.trigger(function () {
+                                overviewChart.focusChart().x().domain(overviewChart.focusChart().xOriginalDomain());
+                                overviewChart.focusChart().redraw();
+                            });
+                        } else if (!rangesEqual(chart.filter(), overviewChart.focusChart().filter())) {
+                            dc.events.trigger(function () {
+                                overviewChart.focusChart().focus(chart.filter());
+                            });
+                        }
+                    });
+                return chart;
+            })
+            .x(d3.time.scale().domain([data[0][0], data[data.length - 1][0]]))
+            .brushOn(true)
+            .xAxisLabel("Run")
+            .clipPadding(10)
+            .dimension(runDimension)
+            .group(runGroup)
+            .seriesAccessor(function (d) {
+                return "Expt: " + d.key[0];
+            })
+            .keyAccessor(function (d) {
+                return +d.key[1];
+            })
+            .valueAccessor(function (d) {
+                return +d.value;
+            })
+        dc.renderAll();
+    });
+
+    function load_button() {
+        return function load_it() {
+            var url = '/data.json?start=' + lastTime + '&id=' + /*[[${id}]]*/ 0;
+            d3.json(url, function (error, data) {
+                data.forEach(function (d) {
+                    d[0] = new Date(d[0]);
+                });
+                ndx.add(data);
+                dc.redrawAll();
+            });
+        };
+    }
+
+    var button1 = load_button();
+    /*]]>*/
+</script>
 </body>
 </html>

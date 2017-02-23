@@ -10,18 +10,18 @@ import java.util.List;
 
 public interface DataRepo {
 
-	Node findNode(long id);
+    Node findNode(long id);
 
-	Node findNodeByAuthenticationToken(String token);
+    Node findNodeByAuthenticationToken(String token);
 
-	@Transactional(readOnly = true)
-	Iterable<Number[]> getData(Iterable<Long> nodeIds, long timeStart);
+    @Transactional(readOnly = true)
+    Iterable<Number[]> getData(Iterable<Long> nodeIds, long timeStart);
 
-	@Transactional(readOnly = true)
-	List<Sample> getSamples(Long nodeId, Timestamp from);
+    @Transactional(readOnly = true)
+    List<Sample> getSamples(Long nodeId, Timestamp from);
 
-	Node saveNode(Node node);
+    Node saveNode(Node node);
 
-	List<Sample> saveSamples(Iterable<Sample> samples);
+    List<Sample> saveSamples(Iterable<Sample> samples);
 
 }

@@ -1,0 +1,21 @@
+
+jar {
+	baseName = 'emonlight-streams'
+	version = '0.0.1-SNAPSHOT'
+}
+
+dependencies {
+	compile project(':commons')
+	// https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams
+	compile(group: 'org.apache.kafka', name: 'kafka-streams', version: '0.10.1.1') {
+		exclude(module: 'slf4j-log4j12')
+		exclude(module: 'org.slf4j:log4j-over-slf4j')
+		exclude group: 'log4j'
+//		exclude( module: 'rocksdbjni')
+	}
+//	runtime files('libs/rocksdbjni-5.0.0-linux32.jar')
+
+    compile group: 'javax.validation', name: 'validation-api', version:'1.1.0.Final'
+    compile group: 'org.hibernate', name: 'hibernate-validator', version:'5.0.1.Final'    
+
+}

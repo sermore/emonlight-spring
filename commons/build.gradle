@@ -1,0 +1,19 @@
+
+jar {
+    baseName = 'emonlight-commons'
+}
+
+bootRepackage {
+	enabled = false
+}
+
+dependencies {
+
+	compile( group: 'org.apache.kafka', name: 'kafka_2.11', version: '0.10.1.1') {
+		exclude(module: 'slf4j-log4j12')
+		exclude(module: 'org.slf4j:log4j-over-slf4j')
+		exclude group: 'log4j'
+	}
+	compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '1.1.2.RELEASE'	
+
+}

@@ -1,0 +1,14 @@
+---
+logging:
+  level:
+    root: info
+    com.digi.xbee: INFO
+    net:
+      reliqs:
+        emonlight: DEBUG     
+
+kafka:
+  bootstrap.servers: betulla:9092
+  zookeeperHosts: betulla:2181
+  noOfPartitions: 1
+  noOfReplication: 1

@@ -1,0 +1,58 @@
+---
+
+settings:
+  serialPort: "/dev/ttyUSB0"
+  baudRate: 115200
+  receiveTimeout: 2000
+  nodes:
+  - &TEST
+    name: TEST
+    address: 0013A20041468937
+    sampleTime: 10000
+    mode: DHT22
+    vccFromADC: false
+    adcRange: 4095
+    adcVRef: 3.3
+    probes:
+    - &TEST_H
+      name: TEST_H
+      type: DHT22_H
+      sampleTime: 20000
+    - &TEST_T
+      name: TEST_T
+      type: DHT22_T
+    - &TEST_VCC
+      name: TEST_VCC
+      type: VCC
+      sampleTime: 0
+      adcMult: 3.42
+    - &MEAN_5M
+      name: MEAN_5M_PULSE
+      source: *TEST_T
+      type: F_MEAN_5MIN
+    - &MEAN_15M
+      name: MEAN_15M_PULSE
+      source: *TEST_T
+      type: F_MEAN_15MIN
+  servers:
+  - name: pino
+    url: http://pino/emonlight-dev/input/read.json
+    sendRate: 10000
+    maps:
+    - probe: *TEST_T
+      nodeId: 8
+      apiKey: nC1uDMkxnVJwKyKxQis5
+    - probe: *TEST_H
+      nodeId: 9
+      apiKey: ywDxpCXDi2Pc4taeyYLN
+    - probe: *TEST_VCC
+      nodeId: 13
+      apiKey: uKY33ArrQshrSeafDwqF
+  - name: acero
+    url: http://acero:3000/input/read.json
+    sendRate: 10000
+    kafkaEnabled: true
+    maps:
+    - probe: *TEST_T
+      nodeId: 5
+      apiKey: a7LiZVht-FNo3i8bUf61

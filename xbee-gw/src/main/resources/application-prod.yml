@@ -1,0 +1,159 @@
+---
+
+settings:
+  serialPort: "/dev/ttyAMA0"
+  baudRate: 9600
+  receiveTimeout: 2000
+  nodes:
+  - name: ZIG2
+    address: 0013A2004146893C
+    sampleTime: 20000
+    mode: DHT22
+    vccFromADC: true
+    adcRange: 4095
+    adcVRef: 3.3
+    probes:
+    - &ZIG2_H
+      name: ZIG2_H
+      type: DHT22_H
+    - &ZIG2_T
+      name: ZIG2_T
+      type: DHT22_T
+    - &ZIG2_VCC
+      name: ZIG2_VCC
+      type: VCC
+      sampleTime: 60000
+      adcMult: 3.42
+  - name: ZIG_PINO
+    address: 0013A20041468938
+    sampleTime: 20000
+    mode: DHT22
+    vccFromADC: true
+    adcRange: 4095
+    adcVRef: 3.25
+    probes:
+    - &ZIG_PINO_H
+      name: ZIG_PINO_H
+      type: DHT22_H
+    - &ZIG_PINO_T
+      name: ZIG_PINO_T
+      type: DHT22_T
+    - &ZIG_PINO_VCC
+      name: ZIG_PINO_VCC
+      type: VCC
+      sampleTime: 60000
+      adcMult: 3.43
+  - name: TEST_PULSE
+    address: 0013A20041468922
+    sampleTime: 10000
+    mode: PULSE
+    vccFromADC: false
+    adcRange: 4095
+    adcVRef: 3.3
+    probes:
+    - &TEST_PULSE
+      name: TEST_PULSE
+      type: PULSE
+    - &TEST_H
+      name: TEST_H
+      type: DHT22_H
+      sampleTime: 40000
+    - &TEST_T
+      name: TEST_T
+      type: DHT22_T
+    - &TEST_VCC
+      name: TEST_VCC
+      type: VCC
+      sampleTime: 60000
+      adcMult: 3.42
+    - &MEAN_5M_PULSE
+      name: MEAN_5M_PULSE
+      source: *TEST_PULSE
+      type: F_MEAN_5MIN
+    - &MEAN_15M_PULSE
+      name: MEAN_15M_PULSE
+      source: *TEST_PULSE
+      type: F_MEAN_15MIN
+  servers:
+  - name: pino
+    url: http://pino/emonlight-dev/input/read.json
+    sendRate: 10000
+    maps:
+    - probe: *ZIG2_T
+      nodeId: 10
+      apiKey: Rk6Bvfpxy5CrDDwq_YwD
+    - probe: *ZIG2_H
+      nodeId: 11
+      apiKey: 6KbSaBxtLdSCxUqwJ_KE
+    - probe: *ZIG2_VCC
+      nodeId: 14
+      apiKey: aieGrKgXN8f51CVWo5gt
+    - probe: *ZIG_PINO_T
+      nodeId: 6
+      apiKey: sFtdZxK3yXdxDHUeuzWC
+    - probe: *ZIG_PINO_H
+      nodeId: 7
+      apiKey: BddQ-TVRyf_UvfY95B_v
+    - probe: *ZIG_PINO_VCC
+      nodeId: 12
+      apiKey: bAP7SaLZr2uG5adwhX77
+    - probe: *TEST_T
+      nodeId: 8
+      apiKey: nC1uDMkxnVJwKyKxQis5
+    - probe: *TEST_H
+      nodeId: 9
+      apiKey: ywDxpCXDi2Pc4taeyYLN
+    - probe: *TEST_VCC
+      nodeId: 13
+      apiKey: uKY33ArrQshrSeafDwqF
+    - probe: *TEST_PULSE
+      nodeId: 5
+      apiKey: a7LiZVht-FNo3i8bUf61
+    - probe: *MEAN_5M_PULSE
+      nodeId: 15
+      apiKey: mvXvsisjD_V9ze9iVokf
+    - probe: *MEAN_15M_PULSE
+      nodeId: 16
+      apiKey: 2Vyk8C66xaMBsbKsTtXY
+  - name: kafka-pino
+    url: http://pinoxx/emonlight-dev/input/read.json
+    sendRate: 5000
+    kafkaEnabled: true
+    maps:
+    - probe: *ZIG2_T
+      nodeId: 10
+      apiKey: Rk6Bvfpxy5CrDDwq_YwD
+    - probe: *ZIG2_H
+      nodeId: 11
+      apiKey: 6KbSaBxtLdSCxUqwJ_KE
+    - probe: *ZIG2_VCC
+      nodeId: 14
+      apiKey: aieGrKgXN8f51CVWo5gt
+    - probe: *ZIG_PINO_T
+      nodeId: 6
+      apiKey: sFtdZxK3yXdxDHUeuzWC
+    - probe: *ZIG_PINO_H
+      nodeId: 7
+      apiKey: BddQ-TVRyf_UvfY95B_v
+    - probe: *ZIG_PINO_VCC
+      nodeId: 12
+      apiKey: bAP7SaLZr2uG5adwhX77
+    - probe: *TEST_T
+      nodeId: 8
+      apiKey: nC1uDMkxnVJwKyKxQis5
+    - probe: *TEST_H
+      nodeId: 9
+      apiKey: ywDxpCXDi2Pc4taeyYLN
+    - probe: *TEST_VCC
+      nodeId: 13
+      apiKey: uKY33ArrQshrSeafDwqF
+    - probe: *TEST_PULSE
+      nodeId: 5
+      apiKey: a7LiZVht-FNo3i8bUf61
+    - probe: *MEAN_5M_PULSE
+      nodeId: 15
+      apiKey: mvXvsisjD_V9ze9iVokf
+    - probe: *MEAN_15M_PULSE
+      nodeId: 16
+      apiKey: 2Vyk8C66xaMBsbKsTtXY
+      

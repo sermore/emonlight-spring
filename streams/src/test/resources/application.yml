@@ -1,0 +1,44 @@
+logging:
+  level:
+    root: warn
+    net:
+      reliqs:
+        emonlight: debug
+
+kafka:
+  bootstrap.servers: betulla:9092
+  zookeeperHosts: betulla:2181
+  noOfPartitions: 1
+  noOfReplication: 1
+  consumerGroup: testClient
+
+streams:
+  stateDir: /tmp/kafka-streams
+  applicationId: testStreamsApp
+
+config:
+  topics:
+#    kafka-pino_Rk6Bvfpxy5CrDDwq_YwD: ZIG2_T
+#    kafka-pino_6KbSaBxtLdSCxUqwJ_KE: ZIG2_H
+#    kafka-pino_aieGrKgXN8f51CVWo5gt: ZIG2_VCC
+#    kafka-pino_sFtdZxK3yXdxDHUeuzWC: ZIG_PINO_T
+#    kafka-pino_BddQ-TVRyf_UvfY95B_v: ZIG_PINO_H
+#    kafka-pino_bAP7SaLZr2uG5adwhX77: ZIG_PINO_VCC
+    kafka-pino_a7LiZVht-FNo3i8bUf61: TEST_PULSE
+  processors:
+    - 
+      name: 10u
+      source: source
+      interval: 10000
+      running: false
+    - 
+      name: 10
+      source: source
+      interval: 10000
+      running: true
+    - 
+      name: 1h
+      source: source #mean_10
+      interval: 3600000
+      running: true
+      

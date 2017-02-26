@@ -1,38 +1,37 @@
-
 buildscript {
-	repositories {
-       	jcenter()
-   	}
-   	dependencies {
-       	classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5+")
-   	}
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5+")
+        classpath 'com.h2database:h2:1.4.191'
+    }
 }
 
 allprojects {
-        group = 'net.reliqs.emonlight'
-        version = '0.0.1-SNAPSHOT'
-        apply plugin: 'eclipse'
-	apply plugin: 'idea'
+    group = 'net.reliqs.emonlight'
+    version = '0.0.1-SNAPSHOT'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
 }
 
 subprojects {
 
-        apply plugin: 'java'
-        apply plugin: 'org.springframework.boot'
-        
-        sourceCompatibility = 1.8
-        targetCompatibility = 1.8
-        repositories {
-        		mavenLocal()
-                jcenter()
-        }
-        
-	dependencies {
-		compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5+'
-		compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
-		
-		testCompile("org.springframework.boot:spring-boot-starter-test")		
-	}
-        
-}
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
 
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    repositories {
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5+'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
+
+        testCompile("org.springframework.boot:spring-boot-starter-test")
+    }
+
+}

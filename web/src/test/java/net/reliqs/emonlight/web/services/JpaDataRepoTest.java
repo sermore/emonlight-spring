@@ -2,54 +2,52 @@ package net.reliqs.emonlight.web.services;
 
 import net.reliqs.emonlight.web.entities.Node;
 import net.reliqs.emonlight.web.entities.Sample;
-import net.reliqs.emonlight.web.utils.DbUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.iterableWithSize;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 /**
  * Created by sergio on 19/02/17.
  */
 @RunWith(SpringRunner.class)
 @DataJpaTest
-//@Transactional(propagation = Propagation.NOT_SUPPORTED)
-@Import({JpaDataRepo.class, DbUtils.class})
+//@AutoConfigureTestDatabase(replace = NONE)
+//@SpringBootTest
+@Transactional
+@Import({JpaDataRepo.class})
+//@ActiveProfiles({"testing"})
 public class JpaDataRepoTest {
 
     @Autowired
     JpaDataRepo dataRepo;
-
-    @Autowired
-    DbUtils dbUtils;
 
     @Test
     public void test() throws Exception {
         Node n = new Node();
         n.setTimeZone("UTC");
         n.setTitle("N1");
-        n.setAuthenticationToken("XXN1");
+        n.setAuthenticationToken("YYN1");
         n = dataRepo.saveNode(n);
 
         Node n1 = dataRepo.findNode(n.getId());
         assertThat(n1, is(n));
 
-        n1 = dataRepo.findNodeByAuthenticationToken("XXN1");
+        n1 = dataRepo.findNodeByAuthenticationToken("YYN1");
         assertThat(n1, is(n));
 
         List<Sample> ls = new ArrayList<Sample>();
@@ -79,17 +77,5 @@ public class JpaDataRepoTest {
 //        assertThat(ls1.get(0).getSampleTime(), is(t1));
 
     }
-
-    @Test
-    public void testGetData() {
-        List<Node> nn = dbUtils.persistNodes();
-        Instant end = Instant.now().plus(5, ChronoUnit.HOURS);
-        Instant start = end.minus(30, ChronoUnit.DAYS);
-        dbUtils.saveSampleData(nn.get(0), start, end);
-
-        Iterable<Number[]> l = dataRepo.getData(Arrays.asList(nn.get(0).getId()), Instant.now().toEpochMilli());
-        assertThat(l, iterableWithSize(1));
-    }
-
 
 }

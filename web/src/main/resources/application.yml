@@ -4,3 +4,6 @@ logging:
     net:
       reliqs:
         emonlight: debug
+spring:
+  datasource:
+    initialize: false

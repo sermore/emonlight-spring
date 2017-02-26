@@ -6,7 +6,7 @@ logging:
         emonlight: debug
 spring:
   datasource:
-    url: jdbc:postgresql://lime2:5432/emonlight-db_dev
+    url: jdbc:postgresql://lime2:5432/emonlight-db_prod
     username: emonlight
     password: emonlight
     platform: postgresql

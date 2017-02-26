@@ -13,7 +13,9 @@ import java.time.LocalDateTime;
 public class Sample {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @SequenceGenerator(name = "sample_id_seq", sequenceName = "sample_id_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sample_id_seq")
+//    @GeneratedValue(strategy = GenerationType.AUTO)
 //    @NotNull
     private Long id;
 

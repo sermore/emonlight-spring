@@ -1,129 +1,135 @@
 package net.reliqs.emonlight.xbeegw.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import net.reliqs.emonlight.xbeegw.config.Node.OpMode;
+import net.reliqs.emonlight.xbeegw.config.annotations.ValidNodes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
-
-import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
-import net.reliqs.emonlight.xbeegw.config.Node.OpMode;
-import net.reliqs.emonlight.xbeegw.config.annotations.ValidNodes;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Component
 @ConfigurationProperties(prefix = "settings")
 public class Settings {
-	private static final Logger log = LoggerFactory.getLogger(Settings.class);
+    private static final Logger log = LoggerFactory.getLogger(Settings.class);
 
-	@Size(min = 4)
-	private String serialPort;
+    private int gatewayId;
 
-	@Min(9600)
-	@Max(115200)
-	private int baudRate = 115200;
+    @Size(min = 4)
+    private String serialPort;
 
-	@Min(500)
-	@Max(28000)
-	private int receiveTimeout = 2000;
+    @Min(9600)
+    @Max(115200)
+    private int baudRate = 115200;
 
-	@Size(min = 1)
-	@Valid
-	@ValidNodes
-	private List<Node> nodes;
+    @Min(500)
+    @Max(28000)
+    private int receiveTimeout = 2000;
 
-	@Valid
-	private List<Server> servers;
+    @Size(min = 1)
+    @Valid
+    @ValidNodes
+    private List<Node> nodes;
 
-	public String getSerialPort() {
-		return serialPort;
-	}
+    @Valid
+    private List<Server> servers;
 
-	public void setSerialPort(String serialPort) {
-		this.serialPort = serialPort;
-	}
 
-	public int getBaudRate() {
-		return baudRate;
-	}
+    public int getGatewayId() {
+        return gatewayId;
+    }
 
-	public void setBaudRate(int baudRate) {
-		this.baudRate = baudRate;
-	}
+    public void setGatewayId(int gatewayId) {
+        this.gatewayId = gatewayId;
+    }
 
-	public int getReceiveTimeout() {
-		return receiveTimeout;
-	}
+    public String getSerialPort() {
+        return serialPort;
+    }
 
-	public void setReceiveTimeout(int receiveTimeout) {
-		this.receiveTimeout = receiveTimeout;
-	}
+    public void setSerialPort(String serialPort) {
+        this.serialPort = serialPort;
+    }
 
-	public List<Node> getNodes() {
-		return nodes;
-	}
+    public int getBaudRate() {
+        return baudRate;
+    }
 
-	public void setNodes(List<Node> nodes) {
-		this.nodes = nodes;
-	}
+    public void setBaudRate(int baudRate) {
+        this.baudRate = baudRate;
+    }
 
-	public List<Server> getServers() {
-		return servers;
-	}
+    public int getReceiveTimeout() {
+        return receiveTimeout;
+    }
 
-	public void setServers(List<Server> servers) {
-		this.servers = servers;
-	}
+    public void setReceiveTimeout(int receiveTimeout) {
+        this.receiveTimeout = receiveTimeout;
+    }
 
-	@PostConstruct
-	void init() {
-		// fill probe's property connectedToOutput
-		getServers().stream().flatMap(srv -> srv.getMaps().stream()).forEach(sm -> {
-			Probe p = getNodes().stream().flatMap(nn -> nn.getProbes().stream())
-					.filter(pp -> pp.getName().equals(sm.getProbe().getName())).findFirst().get();
-			sm.setProbe(p);
-			p.setConnectedToOutput(true);
-		});
-		// fill probe's filters list
-		getNodes().forEach(n -> {
-			n.getProbes().forEach(p -> {
-				p.setNode(n);
-				Probe source = p.getSource();
-				if (source != null) {
-					Probe s = getNodes().stream().flatMap(nn -> nn.getProbes().stream())
-							.filter(pp -> pp.getName().equals(source.getName())).findFirst().get();
-					p.setSource(s);
-					s.getFilters().add(p);
-				}
-			});
-		});
-		log.debug("Settings nodes={}, servers={}", getNodes().size(), getServers().size());
-	}
+    public List<Node> getNodes() {
+        return nodes;
+    }
 
-	public int findMaxSampleTime() {
-		int sampleTime = getNodes().stream()
-				.mapToInt(n -> Math.max(n.getSampleTime(),
-						n.getMode() == OpMode.DHT22 ? 0 : n.getProbes().stream().mapToInt(p -> p.getSampleTime()).filter(s -> s > 0).min().orElse(0)))
-				.max().getAsInt();
-		return sampleTime;
-	}
+    public void setNodes(List<Node> nodes) {
+        this.nodes = nodes;
+    }
 
-	public List<String> getKafkaTopics() {
-		List<String> topics = new ArrayList<>();
-		getServers().stream().filter(s -> s.isKafkaEnabled()).forEach(s -> {
-			s.getMaps().forEach(sm -> {
-				String topic = KafkaUtils.getTopic(s.getName(), sm.getApiKey());
-				topics.add(topic);
-			});
-		});
-		return topics;
-	}
+    public List<Server> getServers() {
+        return servers;
+    }
 
+    public void setServers(List<Server> servers) {
+        this.servers = servers;
+    }
+
+    @PostConstruct
+    void init() {
+        // fill probe's property connectedToOutput
+        getServers().stream().flatMap(srv -> srv.getMaps().stream()).forEach(sm -> {
+            Probe p = getNodes().stream().flatMap(nn -> nn.getProbes().stream())
+                    .filter(pp -> pp.getName().equals(sm.getProbe().getName())).findFirst().get();
+            sm.setProbe(p);
+            p.setConnectedToOutput(true);
+        });
+        // fill probe's filters list
+        getNodes().forEach(n -> {
+            // populate probeMap for each node
+            n.getProbes().forEach(p -> {
+                // init default value for port
+                if (p.getPort() == 0) {
+                    p.setPort(n.getDefaultPort(p.getType()));
+                }
+                p.setNode(n);
+                Probe source = p.getSource();
+                if (source != null) {
+                    Probe s = getNodes().stream().flatMap(nn -> nn.getProbes().stream())
+                            .filter(pp -> pp.getName().equals(source.getName())).findFirst().get();
+                    p.setSource(s);
+                    s.getFilters().add(p);
+                }
+            });
+            n.initProbeMap();
+        });
+        log.debug("Settings nodes={}, servers={}", getNodes().size(), getServers().size());
+    }
+
+    public int findMaxSampleTime() {
+        int sampleTime = getNodes().stream()
+                .mapToInt(n -> Math.max(n.getSampleTime(),
+                        n.getMode() == OpMode.DHT22 ? 0 : n.getProbes().stream().mapToInt(p -> p.getSampleTime()).filter(s -> s > 0).min().orElse(0)))
+                .max().getAsInt();
+        return sampleTime;
+    }
+
+    public Stream<Probe> getProbes() {
+        return getNodes().stream().flatMap(n -> n.getProbes().stream());
+    }
 }

@@ -19,8 +19,6 @@ public class Server {
 	@Min(1000)
 	private int sendRate;
 	
-	private boolean kafkaEnabled;
-	
 	@Valid
 	private List<ServerMap> maps;
 
@@ -46,14 +44,6 @@ public class Server {
 
 	public void setSendRate(int sendRate) {
 		this.sendRate = sendRate;
-	}
-
-	public boolean isKafkaEnabled() {
-		return kafkaEnabled;
-	}
-
-	public void setKafkaEnabled(boolean kafkaEnabled) {
-		this.kafkaEnabled = kafkaEnabled;
 	}
 
 	public List<ServerMap> getMaps() {

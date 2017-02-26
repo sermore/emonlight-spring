@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.services;
 
+import net.reliqs.emonlight.xbeegw.config.Settings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 import net.reliqs.emonlight.xbeegw.config.Server;
-import net.reliqs.emonlight.xbeegw.send.kafka.KafkaDeliveryService;
 import net.reliqs.emonlight.xbeegw.send.rest.RestAsyncService;
 import net.reliqs.emonlight.xbeegw.send.rest.RestDeliveryService;
 
@@ -21,7 +21,7 @@ public class DeliveryServiceFactory {
 	private RestTemplateBuilder rb;
 
 	@Autowired
-	KafkaDeliveryService kafkaDeliveryService;
+	Settings settings;
 
 	@Bean
 	@Scope("prototype")
@@ -32,7 +32,7 @@ public class DeliveryServiceFactory {
 	@Bean
 	@Scope("prototype")
 	RestDeliveryService restDeliveryService() {
-		RestDeliveryService s = new RestDeliveryService(restAsyncService());
+		RestDeliveryService s = new RestDeliveryService(settings, restAsyncService());
 		return s;
 	}
 
@@ -44,11 +44,7 @@ public class DeliveryServiceFactory {
 
 	public DeliveryService getSendService(Server server) {
 		log.debug("setup delivery service for {}", server.getName());
-		if (server.isKafkaEnabled()) {
-			return kafkaDeliveryService;
-		} else {
-			return getRestDeliveryServiceFromUrl(server.getUrl());
-		}
+		return getRestDeliveryServiceFromUrl(server.getUrl());
 	}
 
 }

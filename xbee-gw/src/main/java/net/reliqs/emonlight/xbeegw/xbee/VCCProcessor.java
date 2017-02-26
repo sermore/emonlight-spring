@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.xbee.data.ProbeData;
 
 class VCCProcessor extends MessageProcessor {
 	private static final Logger log = LoggerFactory.getLogger(VCCProcessor.class);
@@ -21,8 +20,7 @@ class VCCProcessor extends MessageProcessor {
 	@Override
 	void process(DataMessage m, NodeState ns, byte selector, ByteBuffer in) {
 		Node node = ns.getNode();
-		ProbeData pd = ns.getProbeData(Type.VCC);
-		Probe p = ns.getProbe(Type.VCC);
+		Probe p = node.getProbe(Type.VCC, (byte) 0);
 		Instant time;
 		if (selector == (byte) 'V') {
 			time = m.time;
@@ -35,12 +33,13 @@ class VCCProcessor extends MessageProcessor {
 				: 0.0 + v / 1000.0;
 		log.debug("{}: Vcc = {} @{}", node, vcc, time);
 		verifyTime(node, time);
-		// TODO handle the possibility to not store the history
-		pd.add(this, new Data(time.toEpochMilli(), vcc));
+        Data data = new Data(time.toEpochMilli(), vcc);
+        publish(p, data);
 	}
 
-	@Override
-	public void trigger(NodeState ns, Probe p, Type type, boolean enable) {
-	}
+//	@Override
+//	public void triggerChanged(NodeState ns, Probe p, int oldState, int newState) {
+//		// TODO implements Voltage trigger
+//	}
 
 }

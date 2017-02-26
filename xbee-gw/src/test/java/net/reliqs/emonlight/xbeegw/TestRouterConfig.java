@@ -2,7 +2,9 @@ package net.reliqs.emonlight.xbeegw;
 
 import java.util.concurrent.Executor;
 
+import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -15,7 +17,8 @@ import net.reliqs.emonlight.xbeegw.MainApp;
 @Profile("test-router")
 // @SpringBootApplication(scanBasePackages = { "net.reliqs.emonlight.xbeegw" },
 // exclude = { MainApp.class })
-@SpringBootApplication(exclude = { MainApp.class })
+@SpringBootApplication
+@Import({KafkaUtils.class})
 @EnableAsync
 public class TestRouterConfig extends AsyncConfigurerSupport {
 

@@ -7,6 +7,8 @@ import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Settings;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +20,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.reliqs.emonlight.xbeegw.send.kafka.KafkaConfig;
-import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
-import net.reliqs.emonlight.xbeegw.send.services.DeliveryServiceFactory;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryServiceTest.MyConfig;
 import net.reliqs.emonlight.xbeegw.xbee.Data;
 
@@ -36,6 +36,9 @@ public class DeliveryServiceTest {
 	}
 
 	@Autowired
+	Settings settings;
+
+	@Autowired
 	DeliveryServiceFactory dsf;
 	
 	@Autowired
@@ -43,42 +46,24 @@ public class DeliveryServiceTest {
 
 	@Test
 	public void testRestService() throws InterruptedException {
+
+	    Probe p = settings.getProbes().findFirst().get();
+
 		DeliveryService send1 = dsf.getRestDeliveryServiceFromUrl("http://pino/emonlight-dev/input/read.json");
 		DeliveryService send2 = dsf.getRestDeliveryServiceFromUrl("http://acero/emonlight-dev/input/read.json");
 		DeliveryService send3 = kafkaDeliveryService;
 
 		assertNotSame(send1, send2);
 
-		Queue<Data> q = new ArrayDeque<>();
-		q.add(new Data(Instant.now().toEpochMilli(), 199));
+        Data d = new Data(Instant.now().toEpochMilli(), 199);
 
 		assertThat(send1.isReady(), is(false));
 		assertThat(send2.isReady(), is(false));
 		assertThat(send3.isReady(), is(false));
 
-		send1.addInit("XYZ");
-		send2.addInit("XYZ");
-		send3.addInit("XYZ");
-		send1.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send2.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send3.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send1.addComplete();
-		send2.addComplete();
-		send3.addComplete();
-
-		send1.addInit("XYZ");
-		send2.addInit("XYZ");
-		send1.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send2.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send1.addComplete();
-		send2.addComplete();
-
-		send1.addInit("XYZ");
-		send2.addInit("XYZ");
-		send1.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send2.add(15, "mvXvsisjD_V9ze9iVokf", q.iterator());
-		send1.addComplete();
-		send2.addComplete();
+		send1.receive(p, d);
+		send2.receive(p, d);
+		send3.receive(p, d);
 
 		assertThat(send1.isReady(), is(true));
 		assertThat(send2.isReady(), is(true));
@@ -96,11 +81,5 @@ public class DeliveryServiceTest {
 		assertThat(send2.isReady(), is(true));
 
 	}
-	
-	@Test
-	public void testKafka() {
-		
-	}
-	
 
 }

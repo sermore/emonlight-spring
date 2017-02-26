@@ -8,6 +8,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import net.reliqs.emonlight.xbeegw.publish.Subscriber;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +22,9 @@ import com.digi.xbee.api.utils.HexUtils;
 
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.xbee.state.GlobalState;
+import net.reliqs.emonlight.xbeegw.state.GlobalState;
+
+import javax.annotation.PreDestroy;
 
 @Component
 public class Processor {
@@ -29,12 +34,14 @@ public class Processor {
 	private final Map<Byte, MessageProcessor> procs;
 	private final XbeeGateway gateway;
 	private final GlobalState globalState;
+	private final Publisher publisher;
 
 	@Autowired
-	public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState)
+	public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState, final Publisher publisher)
 			throws XBeeException {
 		this.gateway = gateway;
 		this.globalState = globalState;
+		this.publisher = publisher;
 		queue = new LinkedBlockingQueue<>();
 		procs = new HashMap<>();
 		procs.put((byte) 'C', new ConfigurationProcessor(this));
@@ -52,6 +59,11 @@ public class Processor {
 		String addr = n.getAddress();
 		NodeState ns = globalState.getNodeState(addr);
 		ns.setDevice(gateway.addDevice(addr));
+		for(Probe p : n.getProbes()) {
+		    if (p.hasThresholds()) {
+		        procs.get((byte)'P').registerTrigger(ns, p);
+            }
+        }
 	}
 
 	void sendData(NodeState ns, byte[] data) {
@@ -73,6 +85,7 @@ public class Processor {
 		} while (true);
 	}
 
+	@PreDestroy
 	public void cleanup() {
 		gateway.cleanup();
 	}
@@ -106,4 +119,11 @@ public class Processor {
 		}
 	}
 
+    Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void registerSubscriber(Subscriber subscriber) {
+		publisher.addSubscriber(subscriber);
+	}
 }

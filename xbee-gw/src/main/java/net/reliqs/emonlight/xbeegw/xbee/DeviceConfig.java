@@ -8,16 +8,16 @@ import net.reliqs.emonlight.xbeegw.config.Node.OpMode;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 
 class DeviceConfig {
-	final public String name;
-	final public OpMode mode;
-	final public int dataSampleTime;
-	final public int dht22SampleTime;
-	final public int vccSampleTime;
-	final public boolean vccFromADC;
+	final String name;
+	final OpMode mode;
+	final int dataSampleTime;
+	final int dht22SampleTime;
+	final int vccSampleTime;
+	final boolean vccFromADC;
 
-	public DeviceConfig(ByteBuffer b) {
+	DeviceConfig(ByteBuffer b) {
 		super();
-		StringBuffer nameBuf = new StringBuffer();
+		StringBuilder nameBuf = new StringBuilder();
 		char c = (char)b.get();
 		while (c != 0) {
 			nameBuf.append(c);
@@ -32,7 +32,22 @@ class DeviceConfig {
 		vccFromADC = b.get() == 1;
 	}
 
-	public byte[] buildResponse() {
+	DeviceConfig(final NodeState ns) {
+		Node n = ns.getNode();
+		name = n.getName();
+		mode = n.getMode();
+		dataSampleTime = n.getSampleTime();
+		Probe p = n.getProbe(Type.DHT22_T);
+		if (p != null && p.getSampleTime() == 0) {
+			p = n.getProbe(Type.DHT22_H);
+		}
+		dht22SampleTime = p != null && p.getSampleTime() > 0 ? p.getSampleTime() : dataSampleTime;
+		p = n.getProbe(Type.VCC);
+		vccSampleTime = p != null && p.getSampleTime() > 0 ? p.getSampleTime() : dataSampleTime * 3;
+		vccFromADC = n.isVccFromADC();
+	}
+
+	byte[] buildResponse() {
 		ByteBuffer bb = ByteBuffer.allocate(37);
 		bb.put((byte) 'S');
 		bb.put((byte) 'C');
@@ -44,21 +59,6 @@ class DeviceConfig {
 		bb.putInt(vccSampleTime);
 		bb.put((byte) (vccFromADC ? 1 : 0));
 		return bb.array();
-	}
-
-	public DeviceConfig(final NodeState ns) {
-		Node n = ns.getNode();
-		name = n.getName();
-		mode = n.getMode();
-		dataSampleTime = n.getSampleTime();
-		Probe p = ns.getProbe(Type.DHT22_T);
-		if (p != null && p.getSampleTime() == 0) {
-			p = ns.getProbe(Type.DHT22_H);
-		}
-		dht22SampleTime = p != null && p.getSampleTime() > 0 ? p.getSampleTime() : dataSampleTime;
-		p = ns.getProbe(Type.VCC);
-		vccSampleTime = p != null && p.getSampleTime() > 0 ? p.getSampleTime() : dataSampleTime * 3;
-		vccFromADC = n.isVccFromADC();
 	}
 
 	@Override

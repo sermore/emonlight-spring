@@ -4,14 +4,12 @@ import net.reliqs.emonlight.xbeegw.xbee.Data;
 
 class KData {
 
-	final String server;
-	final String apiKey;
+	final String topic;
 	final Data data;
 
-	KData(String server, String apiKey, Data data) {
+	KData(final String topic, Data data) {
 		super();
-		this.server = server;
-		this.apiKey = apiKey;
+		this.topic = topic;
 		this.data = data;
 	}
 

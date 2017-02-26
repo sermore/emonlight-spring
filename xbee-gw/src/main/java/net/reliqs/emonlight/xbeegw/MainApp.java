@@ -6,6 +6,7 @@ import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -17,6 +18,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Profile({ "default", "prod", "dev" })
 @SpringBootApplication
 @Import(KafkaUtils.class)
+@EnableConfigurationProperties
 @EnableAsync
 public class MainApp extends AsyncConfigurerSupport {
 

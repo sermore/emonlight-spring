@@ -66,14 +66,6 @@ settings:
       type: VCC
       sampleTime: 60000
       adcMult: 3.42
-    - &MEAN_5M_PULSE
-      name: MEAN_5M_PULSE
-      source: *TEST_PULSE
-      type: F_MEAN_5MIN
-    - &MEAN_15M_PULSE
-      name: MEAN_15M_PULSE
-      source: *TEST_PULSE
-      type: F_MEAN_15MIN
   servers:
   - name: pino
     url: http://pino/emonlight-dev/input/read.json

@@ -1,10 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Queue;
-import java.util.concurrent.ExecutionException;
-
+import net.reliqs.emonlight.xbeegw.GwException;
+import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +13,10 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
-import net.reliqs.emonlight.xbeegw.GwException;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ExecutionException;
 
 @Service
 class KafkaAsyncService {
@@ -37,15 +35,14 @@ class KafkaAsyncService {
 		Map<String, Integer> counters = new HashMap<String, Integer>();
 		while (!queue.isEmpty()) {
 			KData k = queue.peek();
-			String topic = KafkaUtils.getTopic(k.server, k.apiKey);
-			ListenableFuture<SendResult<Long, Double>> res = send(topic, k.data);
+			ListenableFuture<SendResult<Long, Double>> res = send(k.topic, k.data);
 			// try {
 			SendResult<Long, Double> sendResult;
 			try {
 				sendResult = res.get();
 				RecordMetadata m = sendResult.getRecordMetadata();
-				Integer cnt = counters.getOrDefault(k.server, 0);
-				counters.put(k.server, ++cnt);
+				Integer cnt = counters.getOrDefault(k.topic, 0);
+				counters.put(k.topic, ++cnt);
 				log.trace("KAFKA OK topic={}, offset={}", m.topic(), m.offset());
 				queue.poll();
 			} catch (InterruptedException | ExecutionException e) {

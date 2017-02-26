@@ -1,35 +1,23 @@
 package net.reliqs.emonlight.xbeegw.config;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Profile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.reliqs.emonlight.xbeegw.config.Node;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Server;
-import net.reliqs.emonlight.xbeegw.config.ServerMap;
-import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.config.SettingsTest.MyConfig;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = MyConfig.class)
+@SpringBootTest(classes = Settings.class)
+@EnableConfigurationProperties
 @ActiveProfiles("test-settings")
 public class SettingsTest {
-
-	@Profile("test-settings")
-	@SpringBootApplication(scanBasePackageClasses = Settings.class)
-	static class MyConfig {
-
-	}
 
 	@Autowired
 	Settings s;

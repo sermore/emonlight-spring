@@ -1,6 +1,8 @@
 package net.reliqs.emonlight.xbeegw.config;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
@@ -15,7 +17,7 @@ import net.reliqs.emonlight.xbeegw.config.annotations.ValidNode;
 @ValidNode
 public class Node {
 
-	public enum OpMode {
+    public enum OpMode {
 		UNCONFIGURED, PULSE, PULSE_DHT22, DHT22
 	};
 
@@ -48,7 +50,10 @@ public class Node {
 	@Valid
 	private List<Probe> probes;
 
-	public String getName() {
+	private Map<ProbeKey, Probe> probeMap;
+
+
+    public String getName() {
 		return name;
 	}
 
@@ -119,6 +124,32 @@ public class Node {
 	public void setProbes(List<Probe> probes) {
 		this.probes = probes;
 	}
+
+	public Probe getProbe(Probe.Type type, byte port) {
+        return probeMap.get(new ProbeKey(type, port));
+    }
+
+    // FIXME handle multiple probes with same type
+    public Probe getProbe(Probe.Type type) {
+        return getProbe(type, getDefaultPort(type));
+    }
+
+    public byte getDefaultPort(Probe.Type type) {
+        switch(type) {
+            case PULSE: return 3;
+            case DHT22_H:
+            case DHT22_T:
+                return 10;
+        }
+        return 0;
+    }
+
+    void initProbeMap() {
+	    probeMap = new HashMap<>(probes.size());
+        for (Probe p: probes) {
+            probeMap.put(new ProbeKey(p.getType(), p.getPort()), p);
+        }
+    }
 
 	@Override
 	public int hashCode() {

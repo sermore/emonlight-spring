@@ -1,17 +1,22 @@
 package net.reliqs.emonlight.web.services;
 
-import net.reliqs.emonlight.web.entities.Node;
-import net.reliqs.emonlight.web.entities.NodeRepo;
-import net.reliqs.emonlight.web.entities.Sample;
-import net.reliqs.emonlight.web.entities.SampleRepo;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
+import net.reliqs.emonlight.web.entities.Node;
+import net.reliqs.emonlight.web.entities.NodeRepo;
+import net.reliqs.emonlight.web.entities.Sample;
+import net.reliqs.emonlight.web.entities.SampleRepo;
 
 /**
  * Created by sergio on 19/02/17.
@@ -20,6 +25,7 @@ import java.util.List;
 @Service
 @Repository
 public class JpaDataRepo implements DataRepo {
+	private static final Logger log = LoggerFactory.getLogger(JpaDataRepo.class);
 
     private NodeRepo nodeRepo;
 
@@ -53,7 +59,7 @@ public class JpaDataRepo implements DataRepo {
             sampleRepo.readSamplesByNode_IdAndSampleTimeGreaterThan(id, tstart).forEach(s -> data.add(new Number[]{i, s.getSampleTime().getTime(), s.getValue()}));
             i++;
         }
-
+        log.debug("DATA {}", data);
         return data;
     }
 

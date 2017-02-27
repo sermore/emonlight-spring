@@ -21,7 +21,7 @@
 
     var focusChart = dc.seriesChart("#test");
     var overviewChart = dc.seriesChart("#test-overview");
-    var url = '/data.json?id=' + /*[[${id}]]*/ 0;
+    var url = '/data.json?id[]=1&id[]=2&id[]=3&id[]=4';
     var lastTime, ndx;
 
     d3.json(url, function (error, data) {

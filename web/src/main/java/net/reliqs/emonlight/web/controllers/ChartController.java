@@ -1,7 +1,9 @@
 package net.reliqs.emonlight.web.controllers;
 
-import net.reliqs.emonlight.web.entities.Node;
-import net.reliqs.emonlight.web.services.DataRepo;
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,12 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import net.reliqs.emonlight.web.services.DataRepo;
 
 @Controller
 public class ChartController {
+	private static final Logger log = LoggerFactory.getLogger(ChartController.class);
 
 	private DataRepo repo;
 
@@ -25,21 +26,22 @@ public class ChartController {
 	}
 
 	@RequestMapping("/live")
-	public String live(@RequestParam(value = "id", required = true, defaultValue = "0") long id, Model model) {
-		Node n = repo.findNode(id);
-		if (n != null) {
-			model.addAttribute("id", id);
-			model.addAttribute("node", repo.findNode(id));
-		}
+	public String live(@RequestParam(value = "id[]", required = true) Long[] ids, Model model) {
+//		Node n = repo.findNode(id);
+//		if (n != null) {
+			model.addAttribute("ids", ids);
+//			model.addAttribute("node", repo.findNode(id));
+//		}
 		return "live";
 	}
 
 	@RequestMapping("/data")
 	public @ResponseBody
-	Iterable<Number[]> data(@RequestParam(value = "id", required = true, defaultValue = "0") long id,
+	Iterable<Number[]> data(@RequestParam(value = "id[]", required = true) Long[] ids,
 						@RequestParam(value = "timeStart", required = true, defaultValue = "0") long timeStart,
 						Model model) {
-		Iterable<Number[]> d = repo.getData(Arrays.asList(id), timeStart);
+		log.debug("PARAM {}", Arrays.toString(ids));
+		Iterable<Number[]> d = repo.getData(Arrays.asList(ids), timeStart);
 		return d;
 	}
 

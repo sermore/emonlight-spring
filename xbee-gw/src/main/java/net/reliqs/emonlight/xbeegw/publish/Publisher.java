@@ -2,6 +2,8 @@ package net.reliqs.emonlight.xbeegw.publish;
 
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.xbee.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -12,6 +14,7 @@ import java.util.List;
  */
 @Component
 public class Publisher {
+    private static final Logger log = LoggerFactory.getLogger(Publisher.class);
 
     private List<Subscriber> subscribers;
 
@@ -24,6 +27,7 @@ public class Publisher {
     }
 
     public void publish(Probe probe, Data data) {
+        log.trace("P {} {}", probe.getName(), data);
         for (Subscriber s: subscribers) {
             s.receive(probe, data);
         }

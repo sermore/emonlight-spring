@@ -7,6 +7,9 @@ logging:
       reliqs:
         emonlight: TRACE     
 
+processor.timeout: 1000
+dispatcher.rate: 10000
+
 settings:
   serialPort: "/dev/ttyUSB0"
   baudRate: 115200
@@ -39,14 +42,6 @@ settings:
       type: VCC
       sampleTime: 60000
       adcMult: 3.42
-    - &MEAN_5M_PULSE
-      name: MEAN_5M_PULSE
-      source: *TEST_PULSE
-      type: F_MEAN_5MIN
-    - &MEAN_15M_PULSE
-      name: MEAN_15M_PULSE
-      source: *TEST_PULSE
-      type: F_MEAN_15MIN
   servers:
   - name: pino
     url: http://pino/emonlight-dev/input/read.json
@@ -64,16 +59,9 @@ settings:
     - probe: *TEST_PULSE
       nodeId: 2
       apiKey: dcTRYGK7RB1kqxW2vE-Q
-    - probe: *MEAN_5M_PULSE
-      nodeId: 15
-      apiKey: mvXvsisjD_V9ze9iVokf
-    - probe: *MEAN_15M_PULSE
-      nodeId: 16
-      apiKey: 2Vyk8C66xaMBsbKsTtXY
   - name: acero
     url: http://acero:3000/input/read.json
     sendRate: 10000
-    kafkaEnabled: true
     maps:
     - probe: *TEST_PULSE
       nodeId: 2

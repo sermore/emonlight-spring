@@ -31,7 +31,7 @@ public class SettingsTest {
 		assertEquals(32000, n.getSampleTime());
 		assertThat(n.getVccThreshold(), is(3.1));
 		// assertNotNull(n.getState());
-		assertEquals(6, n.getProbes().size());
+		assertEquals(4, n.getProbes().size());
 		Probe p = n.getProbes().get(0);
 		assertThat(p.getNode(), sameInstance(n));
 		assertEquals("P1", p.getName());
@@ -42,13 +42,6 @@ public class SettingsTest {
 		Probe p2 = n.getProbes().get(1);
 		assertEquals("P2", p2.getName());
 		assertEquals(false, p2.isConnectedToOutput());
-		Probe f1 = n.getProbes().get(3);
-		assertSame(p2, f1.getSource());
-		assertEquals(1, p2.getFilters().stream().filter(pp -> (pp == f1)).count());
-		Probe f2 = n.getProbes().get(4);
-		assertEquals("F2", f2.getName());
-		assertSame(p2, f2.getSource());
-		assertEquals(1, p2.getFilters().stream().filter(pp -> (pp == f2)).count());
 
 		assertEquals(1, s.getServers().size());
 		Server srv = s.getServers().get(0);

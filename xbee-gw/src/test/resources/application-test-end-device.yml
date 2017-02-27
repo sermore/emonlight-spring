@@ -26,14 +26,6 @@ settings:
       type: VCC
       sampleTime: 0
       adcMult: 3.42
-    - &MEAN_5M
-      name: MEAN_5M_PULSE
-      source: *TEST_T
-      type: F_MEAN_5MIN
-    - &MEAN_15M
-      name: MEAN_15M_PULSE
-      source: *TEST_T
-      type: F_MEAN_15MIN
   servers:
   - name: pino
     url: http://pino/emonlight-dev/input/read.json
@@ -51,7 +43,6 @@ settings:
   - name: acero
     url: http://acero:3000/input/read.json
     sendRate: 10000
-    kafkaEnabled: true
     maps:
     - probe: *TEST_T
       nodeId: 5

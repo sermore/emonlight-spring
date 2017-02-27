@@ -27,14 +27,6 @@ settings:
     - &P3
       name: P3
       type: DHT22_T
-    - &F1
-      name: F1
-      type: F_MEAN_5MIN
-      source: *P2
-    - &F2
-      name: F2
-      type: F_MEAN_15MIN
-      source: *P2
     - &VCC
       name: VCC
       type: VCC

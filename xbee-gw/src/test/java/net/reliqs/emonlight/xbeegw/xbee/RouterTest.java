@@ -42,8 +42,7 @@ public class RouterTest {
 		assertThat(settings.getServers().size(), is(2));		
 		for (int i = 0; i < 40000; i++) {
 			p.process();
-			if (i % 30 == 29)
-				t.process();
+			t.process();
 		}
 	}
 

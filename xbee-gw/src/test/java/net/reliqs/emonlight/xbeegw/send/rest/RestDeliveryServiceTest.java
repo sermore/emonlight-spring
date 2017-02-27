@@ -4,8 +4,6 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.time.Instant;
-import java.util.ArrayDeque;
-import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -86,7 +84,7 @@ public class RestDeliveryServiceTest {
 		nd.addData(in);
         rest1.receive(p, in);
 
-		assertThat(rest1.pollQueue(), is(sd));
+		assertThat(rest1.pollReceiveQueue(), is(sd));
 
 	}
 

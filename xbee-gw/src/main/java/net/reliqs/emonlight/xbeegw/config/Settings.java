@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 @Component
 @ConfigurationProperties(prefix = "settings")
+@Validated
 public class Settings {
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
 
@@ -92,29 +94,20 @@ public class Settings {
 
     @PostConstruct
     void init() {
-        // fill probe's property connectedToOutput
+        // connect probes to references inside ServerMap items
         getServers().stream().flatMap(srv -> srv.getMaps().stream()).forEach(sm -> {
             Probe p = getNodes().stream().flatMap(nn -> nn.getProbes().stream())
                     .filter(pp -> pp.getName().equals(sm.getProbe().getName())).findFirst().get();
             sm.setProbe(p);
-            p.setConnectedToOutput(true);
         });
-        // fill probe's filters list
+        // fill probe's fields
         getNodes().forEach(n -> {
-            // populate probeMap for each node
             n.getProbes().forEach(p -> {
                 // init default value for port
                 if (p.getPort() == 0) {
                     p.setPort(n.getDefaultPort(p.getType()));
                 }
                 p.setNode(n);
-                Probe source = p.getSource();
-                if (source != null) {
-                    Probe s = getNodes().stream().flatMap(nn -> nn.getProbes().stream())
-                            .filter(pp -> pp.getName().equals(source.getName())).findFirst().get();
-                    p.setSource(s);
-                    s.getFilters().add(p);
-                }
             });
             n.initProbeMap();
         });

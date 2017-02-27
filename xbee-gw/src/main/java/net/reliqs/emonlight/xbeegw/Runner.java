@@ -40,10 +40,9 @@ class Runner {
 		System.out.println("\n\n\n");
 		
 		try {
-			for (int i = 0; true; i++) {
+			while(true) {
 				processor.process();
-				if (i % 10 == 9)
-					dispatcher.process();
+				dispatcher.process();
 			}
 		} catch (InterruptedException e) {
 			e.printStackTrace();

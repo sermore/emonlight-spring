@@ -3,8 +3,6 @@ package net.reliqs.emonlight.xbeegw.config;
 import net.reliqs.emonlight.xbeegw.config.annotations.ValidProbe;
 
 import javax.validation.constraints.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @ValidProbe
 public class Probe {
@@ -14,7 +12,6 @@ public class Probe {
     @NotNull
     private Type type;
     private byte port;
-    private boolean connectedToOutput;
     @Min(0)
     private int sampleTime;
     @DecimalMin("0")
@@ -31,8 +28,6 @@ public class Probe {
     @Min(0)
     private int hardThresholdTimeSec;
     private Node node;
-    private Probe source;
-    private List<Probe> filters = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -56,14 +51,6 @@ public class Probe {
 
     public void setPort(byte port) {
         this.port = port;
-    }
-
-    public boolean isConnectedToOutput() {
-        return connectedToOutput;
-    }
-
-    public void setConnectedToOutput(boolean connectedToOutput) {
-        this.connectedToOutput = connectedToOutput;
     }
 
     public int getSampleTime() {
@@ -128,26 +115,6 @@ public class Probe {
 
     public void setNode(Node node) {
         this.node = node;
-    }
-
-    public Probe getSource() {
-        return source;
-    }
-
-    public void setSource(Probe source) {
-        this.source = source;
-    }
-
-    public List<Probe> getFilters() {
-        return filters;
-    }
-
-    public void setFilters(List<Probe> filters) {
-        this.filters = filters;
-    }
-
-    public boolean isFilter() {
-        return getType().ordinal() > Type.VCC.ordinal();
     }
 
     public boolean hasThresholds() {

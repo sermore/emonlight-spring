@@ -1,10 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
 import java.util.ArrayDeque;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Queue;
-import java.util.stream.Collectors;
 
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Server;
@@ -53,10 +50,15 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
 
 	@Override
 	public boolean isReady() {
-		return (inFlight != null || !queue.isEmpty()) && (running == null || running.isDone());
+		return (inFlight != null || !queue.isEmpty() || !receiveQueue.isEmpty()) && (running == null || running.isDone());
 	}
 
-	ServerDataJSON pollQueue() {
+	@Override
+	public boolean isEmpty() {
+		return queue.isEmpty();
+	}
+
+	ServerDataJSON pollReceiveQueue() {
 	    Queue<RData> inQueue = new ArrayDeque<>(receiveQueue);
 	    receiveQueue.clear();
 	    for(Server s : settings.getServers()) {
@@ -79,7 +81,7 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
 	public void post() {
 		if (isReady() && running == null) {
 			if (inFlight == null)
-				inFlight = pollQueue();
+				inFlight = pollReceiveQueue();
 			if (inFlight != null) {
 				retryCount++;
 //				log.debug("PRE POST #{} : {} [{}]", retryCount, url, inFlight);
@@ -88,11 +90,6 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
 				running.addCallback(this);
 			}
 		}
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return queue.isEmpty();
 	}
 
 //	@Async

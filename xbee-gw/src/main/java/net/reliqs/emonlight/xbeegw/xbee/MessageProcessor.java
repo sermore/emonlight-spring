@@ -14,7 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class MessageProcessor implements TriggerHandler {
+abstract class MessageProcessor implements TriggerHandler {
 //	private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
 
     private final Processor processor;
@@ -38,29 +38,29 @@ public abstract class MessageProcessor implements TriggerHandler {
         throw new UnsupportedOperationException("trigger handler not implemented");
     }
 
-    protected void sendOK(NodeState ns) {
+    void sendOK(NodeState ns) {
         byte[] b = ByteUtils.stringToByteArray("OK");
         processor.sendData(ns, b);
     }
 
-    protected void sendDeviceConfiguration(NodeState ns, DeviceConfig storedCfg) {
+    void sendDeviceConfiguration(NodeState ns, DeviceConfig storedCfg) {
         processor.sendData(ns, storedCfg.buildResponse());
     }
 
-    protected Instant calculateTimeFromDataMessage(NodeState ns, int t) {
+    Instant calculateTimeFromDataMessage(NodeState ns, int t) {
         long dt = Integer.toUnsignedLong(ns.dataTimeMSec - t);
         Instant time = ns.dataTime.minus(dt, ChronoUnit.MILLIS);
         return time;
     }
 
-    protected void verifyTime(Node node, Instant time) {
+    void verifyTime(Node node, Instant time) {
         Instant now = Instant.now().plus(1, ChronoUnit.SECONDS);
         assert now.isAfter(time) : "received message with timestamp ahead of now";
         assert now.minus(node.getSampleTime() * 2, ChronoUnit.MILLIS).isBefore(time) : String
                 .format("received message timestamp %s is too old compared to now %s", time, now);
     }
 
-    protected void sendBuzzerAlarmLevel(NodeState ns, int level) {
+    void sendBuzzerAlarmLevel(NodeState ns, int level) {
         ByteBuffer b = ByteBuffer.allocate(3);
         b.put((byte) 'S');
         b.put((byte) 'B');
@@ -76,7 +76,7 @@ public abstract class MessageProcessor implements TriggerHandler {
         processor.getPublisher().publish(probe, data);
     }
 
-    public void registerTrigger(NodeState ns, Probe p) {
+    void registerTrigger(NodeState ns, Probe p) {
         TriggerLevel tl = new TriggerLevel(p, ns, TriggerLevel.powerTriggers(p));
         tl.addHandler(this);
         triggers.put(p, tl);

@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
 import net.reliqs.emonlight.xbeegw.GwException;
+import net.reliqs.emonlight.xbeegw.send.TopicData;
 import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
@@ -31,10 +32,10 @@ class KafkaAsyncService {
 	}
 
 	@Async
-	ListenableFuture<Map<String, Integer>> post(Queue<KData> queue) {
+	ListenableFuture<Map<String, Integer>> post(Queue<TopicData> queue) {
 		Map<String, Integer> counters = new HashMap<String, Integer>();
 		while (!queue.isEmpty()) {
-			KData k = queue.peek();
+			TopicData k = queue.peek();
 			ListenableFuture<SendResult<Long, Double>> res = send(k.topic, k.data);
 			// try {
 			SendResult<Long, Double> sendResult;

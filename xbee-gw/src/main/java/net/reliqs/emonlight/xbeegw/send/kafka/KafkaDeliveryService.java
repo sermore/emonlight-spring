@@ -3,11 +3,13 @@ package net.reliqs.emonlight.xbeegw.send.kafka;
 import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.send.TopicData;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -22,13 +24,14 @@ import java.util.stream.Collectors;
 public class KafkaDeliveryService implements DeliveryService, ListenableFutureCallback<Map<String, Integer>> {
     private static final Logger log = LoggerFactory.getLogger(KafkaDeliveryService.class);
 
-    private Queue<KData> queue;
-    private Queue<KData> inFlight;
+    private Queue<TopicData> queue;
+    private Queue<TopicData> inFlight;
     private boolean running;
     private String serverName;
     private int cnt;
     private KafkaAsyncService service;
     private KafkaUtils ku;
+    @Value("${gatewayId:0}")
     private int gatewayId;
 
     @Autowired
@@ -38,7 +41,6 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
         this.ku = ku;
         this.queue = new ArrayDeque<>();
         this.inFlight = new ArrayDeque<>();
-        this.gatewayId = settings.getGatewayId();
         init(settings);
     }
 
@@ -49,23 +51,20 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
     }
 
     private List<String> getKafkaTopics(final Settings settings) {
-        List<String> topics = settings.getProbes().map(p -> getTopic(p)).collect(Collectors.toList());
+        List<String> topics = settings.getProbes().map(p -> TopicData.getTopic(gatewayId, p)).collect(Collectors.toList());
         return topics;
-    }
-
-    private String getTopic(Probe p) {
-        return gatewayId + "_" + p.getName();
     }
 
     @Override
     public void receive(Probe p, Data d) {
-        queue.add(new KData(getTopic(p), d));
+        queue.add(new TopicData(TopicData.getTopic(gatewayId, p), d));
     }
 
     @Override
     public void post() {
         // !!No thread-safe
         if (!running) {
+            running = true;
             if (inFlight.isEmpty()) {
                 inFlight.addAll(queue);
                 queue.clear();
@@ -73,6 +72,11 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
             ListenableFuture<Map<String, Integer>> res = service.post(inFlight);
             res.addCallback(this);
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return queue.isEmpty() && inFlight.isEmpty();
     }
 
     @Override
@@ -92,11 +96,6 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
     public void onFailure(Throwable ex) {
         running = false;
         log.warn("KAFKA FAIL q={}, inFlight={}: {}", queue.size(), inFlight.size(), ex.getMessage());
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return queue.isEmpty() && inFlight.isEmpty();
     }
 
 }

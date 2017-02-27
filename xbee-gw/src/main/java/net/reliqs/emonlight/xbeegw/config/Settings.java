@@ -22,8 +22,6 @@ import java.util.stream.Stream;
 public class Settings {
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
 
-    private int gatewayId;
-
     @Size(min = 4)
     private String serialPort;
 
@@ -43,14 +41,6 @@ public class Settings {
     @Valid
     private List<Server> servers;
 
-
-    public int getGatewayId() {
-        return gatewayId;
-    }
-
-    public void setGatewayId(int gatewayId) {
-        this.gatewayId = gatewayId;
-    }
 
     public String getSerialPort() {
         return serialPort;

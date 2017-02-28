@@ -1,10 +1,9 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
 import com.digi.xbee.api.utils.ByteUtils;
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.monitoring.AverageCalc;
-import net.reliqs.emonlight.xbeegw.monitoring.SimpleTrigger;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerHandler;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerLevel;
 

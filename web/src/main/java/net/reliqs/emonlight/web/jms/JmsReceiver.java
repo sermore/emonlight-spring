@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.web.jms;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class JmsReceiver {
 
-//    @JmsListener(destination = "mailbox")
-//    public void receiveMessage(Data data) {
-//        System.out.println("Received <" + data + ">");
-//    }
+    @JmsListener(destination = "0_TEST_PULSE")
+    public void receiveMessage(Data data) {
+        System.out.println("Received <" + data + ">");
+    }
 }

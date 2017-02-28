@@ -1,15 +1,13 @@
 package net.reliqs.emonlight.xbeegw.send.activemq;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.send.TopicData;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;

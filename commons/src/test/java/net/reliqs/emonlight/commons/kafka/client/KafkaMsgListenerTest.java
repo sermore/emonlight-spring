@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes={KafkaConfig.class})
-public class MsgListenerTest {
+public class KafkaMsgListenerTest {
 	
 	@Autowired
 	KafkaListenerContainerBuilder builder;
@@ -25,7 +25,7 @@ public class MsgListenerTest {
 				.getContainer("mean_10_kafka-pino_a7LiZVht-FNo3i8bUf61", 0, -50, false);
 		assertNotSame(c1, c2);
 		assertThat(c1, is(notNullValue()));
-		MsgListener m = new MsgListener();
+		KafkaMsgListener m = new KafkaMsgListener();
 		c1.setupMessageListener(m);
 		c1.start();
 		Thread.sleep(20000);

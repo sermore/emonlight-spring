@@ -7,3 +7,6 @@ logging:
 spring:
   datasource:
     initialize: false
+  jms.isPubSubDomain: true
+  activemq:
+    broker-url: tcp://lime2:61616

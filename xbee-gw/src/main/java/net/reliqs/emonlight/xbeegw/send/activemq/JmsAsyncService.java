@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.activemq;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.send.TopicData;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

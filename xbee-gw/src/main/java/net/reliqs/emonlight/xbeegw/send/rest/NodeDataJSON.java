@@ -1,11 +1,12 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
+import net.reliqs.emonlight.commons.xbee.Data;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 
 class NodeDataJSON {
 

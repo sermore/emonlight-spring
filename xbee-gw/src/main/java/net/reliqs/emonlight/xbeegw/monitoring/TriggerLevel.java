@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
 
 import java.util.ArrayList;

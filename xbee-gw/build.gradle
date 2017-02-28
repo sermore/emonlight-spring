@@ -33,7 +33,10 @@ bootRun {
 }
 
 dependencies {
-//	compile project(':commons')
+	compile(project(':commons')) {
+		exclude group: 'org.apache.kafka'
+        exclude module: 'spring-kafka'
+	}
 	compile("org.springframework:spring-web")
 	compile("org.springframework.boot:spring-boot-starter-activemq")
 	

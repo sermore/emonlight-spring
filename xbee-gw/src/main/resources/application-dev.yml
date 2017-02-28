@@ -1,5 +1,6 @@
 ---
-    
+gatewayId: 1
+
 settings:
   serialPort: "/dev/ttyUSB0"
   baudRate: 115200

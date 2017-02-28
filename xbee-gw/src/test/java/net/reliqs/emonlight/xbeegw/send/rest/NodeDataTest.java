@@ -3,10 +3,9 @@ package net.reliqs.emonlight.xbeegw.send.rest;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import org.junit.Test;
 
-import net.reliqs.emonlight.xbeegw.send.rest.NodeDataJSON;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 
 public class NodeDataTest {
 

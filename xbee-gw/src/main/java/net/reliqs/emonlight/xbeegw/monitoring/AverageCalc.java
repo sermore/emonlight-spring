@@ -1,8 +1,7 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.publish.Subscriber;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
+
+import net.reliqs.emonlight.commons.xbee.Data;
 
 /**
  * Created by sergio on 25/02/17.

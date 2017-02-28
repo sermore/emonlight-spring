@@ -13,6 +13,7 @@
     <orderEntry type="module" module-name="xbee-gw_main" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter:1.5.1.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-logging:1.5.1.RELEASE" level="project" />
+    <orderEntry type="module" module-name="commons_main" />
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:4.3.6.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-activemq:1.5.1.RELEASE" level="project" />
     <orderEntry type="library" name="Gradle: org.rxtx:rxtx:2.1.7" level="project" />

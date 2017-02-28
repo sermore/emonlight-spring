@@ -26,14 +26,14 @@ ext['thymeleaf-layout-dialect.version'] = '2.1.2'
 
 gradle.taskGraph.whenReady {taskGraph ->
     if (taskGraph.hasTask(development)) {
-        bootRun.systemProperty('spring.profiles.active', 'development')
+        bootRun.systemProperty('spring.profiles.active', 'dev')
         flyway {
             url = 'jdbc:postgresql://lime2:5432/emonlight-db_dev'
             user = 'emonlight'
             password = 'emonlight'
         }
     } else if (taskGraph.hasTask(production)) {
-        bootRun.systemProperty('spring.profiles.active', 'production')
+        bootRun.systemProperty('spring.profiles.active', 'prod')
         flyway {
             url = 'jdbc:postgresql://lime2:5432/emonlight-db_prod'
             user = 'emonlight'

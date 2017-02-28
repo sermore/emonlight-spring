@@ -1,9 +1,9 @@
 package net.reliqs.emonlight.xbeegw.send.services;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryServiceTest.MyConfig;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

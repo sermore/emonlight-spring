@@ -3,6 +3,7 @@ package net.reliqs.emonlight.xbeegw.send.rest;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Server;
 import net.reliqs.emonlight.xbeegw.config.ServerMap;
@@ -14,7 +15,6 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 
 public class RestDeliveryService implements DeliveryService, ListenableFutureCallback<Boolean> {
 	private static final Logger log = LoggerFactory.getLogger(RestDeliveryService.class);

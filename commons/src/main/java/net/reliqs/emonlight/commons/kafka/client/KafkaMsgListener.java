@@ -8,8 +8,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.listener.BatchMessageListener;
 
-public class MsgListener implements BatchMessageListener<Long, Double> {
-	private static final Logger log = LoggerFactory.getLogger(MsgListener.class);
+public class KafkaMsgListener implements BatchMessageListener<Long, Double> {
+	private static final Logger log = LoggerFactory.getLogger(KafkaMsgListener.class);
 
 	@Override
 	public void onMessage(List<ConsumerRecord<Long, Double>> data) {

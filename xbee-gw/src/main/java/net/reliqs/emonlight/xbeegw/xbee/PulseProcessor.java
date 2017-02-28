@@ -4,6 +4,7 @@ import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

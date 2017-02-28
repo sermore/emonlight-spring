@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.ServerMap;
 import net.reliqs.emonlight.xbeegw.config.Settings;
@@ -24,7 +25,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import net.reliqs.emonlight.xbeegw.send.rest.RestDeliveryServiceTest.MyConfig;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 
 @ActiveProfiles("test-router")
 @RunWith(SpringRunner.class)

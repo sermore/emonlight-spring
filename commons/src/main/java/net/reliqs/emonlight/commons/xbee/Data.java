@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.xbee;
+package net.reliqs.emonlight.commons.xbee;
 
 public class Data {
 

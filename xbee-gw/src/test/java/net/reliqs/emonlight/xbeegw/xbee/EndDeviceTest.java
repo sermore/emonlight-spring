@@ -3,7 +3,7 @@ package net.reliqs.emonlight.xbeegw.xbee;
 import com.digi.xbee.api.exceptions.XBeeException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
+//import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
 import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.send.Dispatcher;
 import net.reliqs.emonlight.xbeegw.xbee.EndDeviceTest.MyConfig;
@@ -22,7 +22,7 @@ import java.io.IOException;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyConfig.class)
-@Import({KafkaUtils.class})
+//@Import({KafkaUtils.class})
 @ActiveProfiles("test-end-device")
 @EnableAsync
 public class EndDeviceTest {

@@ -3,7 +3,6 @@ package net.reliqs.emonlight.xbeegw.send.activemq;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.send.TopicData;
-import net.reliqs.emonlight.xbeegw.send.kafka.KafkaDeliveryService;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.slf4j.Logger;

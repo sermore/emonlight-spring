@@ -1,13 +1,11 @@
 package net.reliqs.emonlight.xbeegw;
 
-import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,7 +15,7 @@ import java.util.concurrent.Executor;
 
 @Profile({ "default", "prod", "dev" })
 @SpringBootApplication
-@Import(KafkaUtils.class)
+//@Import(KafkaUtils.class)
 @EnableConfigurationProperties
 @EnableAsync
 public class MainApp extends AsyncConfigurerSupport {

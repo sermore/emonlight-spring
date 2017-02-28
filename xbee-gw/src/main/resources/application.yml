@@ -17,3 +17,5 @@ spring:
   jms.isPubSubDomain: true
   activemq:
     broker-url: tcp://lime2:61616
+#    pool:
+#      enabled: true

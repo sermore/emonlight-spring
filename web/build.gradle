@@ -60,6 +60,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-data-jpa")
     compile("org.springframework:spring-jdbc")
     compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
+    compile("org.springframework.boot:spring-boot-starter-activemq")
     compile("org.springframework.boot:spring-boot-devtools")
 
     testCompile("com.h2database:h2")

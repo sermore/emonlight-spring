@@ -6,18 +6,18 @@ logging:
         emonlight: debug
 spring:
   datasource:
-#    url: jdbc:postgresql://lime2:5432/emonlight-db_dev
-#    username: emonlight
-#    password: emonlight
-#    platform: postgresql
+    url: jdbc:postgresql://lime2:5432/emonlight-db_dev
+    username: emonlight
+    password: emonlight
+    platform: postgresql
 #    driver-class-name: org.postgresql.Driver
 #    url: jdbc:h2:h2db
 #    username: sa
     initialize: false
-    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+#    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
 
 #spring.datasource.url=jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
 #spring.datasource.driverClassName=org.h2.Driver

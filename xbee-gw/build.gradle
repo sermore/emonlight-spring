@@ -1,4 +1,17 @@
 
+sourceSets {
+	main {
+		java {
+			exclude '**/Kafka*.java'
+		}
+	}
+    test {
+        java {
+            exclude '**/Kafka*.java'
+        }
+    }
+}
+
 tasks.withType(JavaCompile) {
 	options.encoding = 'UTF-8'
 }
@@ -20,7 +33,7 @@ bootRun {
 }
 
 dependencies {
-	compile project(':commons')
+//	compile project(':commons')
 	compile("org.springframework:spring-web")
 	compile("org.springframework.boot:spring-boot-starter-activemq")
 	

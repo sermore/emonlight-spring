@@ -15,7 +15,6 @@ import java.util.Arrays;
  */
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "net.reliqs.emonlight.web.entities")
-@EnableJms
 //@ActiveProfiles({ "dev", "prod" })
 public class App {
 

@@ -7,15 +7,9 @@ logging:
       reliqs:
         emonlight: DEBUG     
 
-#kafka:
-#  bootstrap.servers: betulla:9092
-#  zookeeperHosts: betulla:2181
-#  noOfPartitions: 1
-#  noOfReplication: 1
-
 spring:
   jms.isPubSubDomain: true
 #  activemq:
-#    broker-url: tcp://lime2:61616
+#    broker-url:
 #    pool:
 #      enabled: true

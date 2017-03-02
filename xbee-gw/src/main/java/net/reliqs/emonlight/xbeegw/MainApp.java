@@ -2,6 +2,7 @@ package net.reliqs.emonlight.xbeegw;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -17,6 +18,7 @@ import java.util.concurrent.Executor;
 @SpringBootApplication
 //@Import(KafkaUtils.class)
 @EnableConfigurationProperties
+//@EnableAutoConfiguration
 @EnableAsync
 public class MainApp extends AsyncConfigurerSupport {
 

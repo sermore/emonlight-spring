@@ -1,7 +1,7 @@
 ---
 logging:
   level:
-    root: info
+    root: INFO
     com.digi.xbee: INFO
     net:
       reliqs:
@@ -14,8 +14,10 @@ logging:
 #  noOfReplication: 1
 
 spring:
-  jms.isPubSubDomain: true
-#  activemq:
-#    broker-url: tcp://lime2:61616
+  activemq:
+    broker-url: tcp://lime2:61616
+  jms:
+    pub-sub-domain: true
+
 #    pool:
 #      enabled: true

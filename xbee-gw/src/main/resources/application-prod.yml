@@ -1,4 +1,11 @@
 ---
+gatewayId: 0
+
+spring:
+  jms:
+    template:
+      default-destination: 0.data
+
 
 settings:
   serialPort: "/dev/ttyAMA0"

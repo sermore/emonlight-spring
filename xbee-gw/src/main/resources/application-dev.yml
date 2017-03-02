@@ -1,6 +1,12 @@
 ---
 gatewayId: 1
 
+spring:
+  jms:
+    template:
+      default-destination: 1.data
+
+
 settings:
   serialPort: "/dev/ttyUSB0"
   baudRate: 115200

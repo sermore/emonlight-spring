@@ -2,7 +2,7 @@ package net.reliqs.emonlight.xbeegw.send.activemq;
 
 import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.send.TopicData;
+import net.reliqs.emonlight.xbeegw.send.StoreData;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,9 +24,7 @@ import java.util.stream.Collectors;
 public class ActiveMQService implements DeliveryService, ListenableFutureCallback<Map<String, Integer>> {
     private static final Logger log = LoggerFactory.getLogger(ActiveMQService.class);
 
-    private Queue<TopicData> queue, inFlight;
-    @Value("${gatewayId:0}")
-    private long gatewayId;
+    private Queue<StoreData> queue, inFlight;
     private boolean running;
     private JmsAsyncService service;
 
@@ -62,7 +60,7 @@ public class ActiveMQService implements DeliveryService, ListenableFutureCallbac
 
     @Override
     public void receive(Probe p, Data d) {
-        queue.add(new TopicData(TopicData.getTopic(gatewayId, p), d));
+        queue.add(new StoreData(p, d));
     }
 
     @Override

@@ -2,7 +2,8 @@ package net.reliqs.emonlight.xbeegw.send;
 
 import net.reliqs.emonlight.xbeegw.config.Server;
 import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.send.activemq.ActiveMQService;
+import net.reliqs.emonlight.xbeegw.send.jms.JmsService;
+import net.reliqs.emonlight.xbeegw.send.influxdb.InfluxdbService;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryServiceFactory;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
@@ -29,18 +30,34 @@ public class Dispatcher {
     private long rate;
 
     @Autowired
-    public Dispatcher(final Settings settings, Processor processor, GlobalState globalState, DeliveryServiceFactory rsFactory, ActiveMQService jmsService) {
+    public Dispatcher(final Settings settings, Processor processor, GlobalState globalState, DeliveryServiceFactory rsFactory, JmsService jmsService, InfluxdbService influxdbService) {
         this.globalState = globalState;
         clients = new HashMap<>();
         // add REST services
-        settings.getServers().forEach(s -> {
-            DeliveryService service = rsFactory.getSendService(s);
-            processor.registerSubscriber(service);
-            clients.put(s, service);
-        });
+        if (rsFactory != null) {
+            settings.getServers().forEach(s -> {
+                DeliveryService service = rsFactory.getSendService(s);
+                processor.registerSubscriber(service);
+                clients.put(s, service);
+            });
+        } else {
+            log.info("exclude REST");
+        }
         // add JMS
-        processor.registerSubscriber(jmsService);
-        clients.put(null, jmsService);
+        if (jmsService != null) {
+            processor.registerSubscriber(jmsService);
+            clients.put(null, jmsService);
+        } else {
+            log.info("exclude JMS");
+        }
+        // add influxdb
+        if (influxdbService != null) {
+            processor.registerSubscriber(influxdbService);
+            clients.put(null, influxdbService);
+        } else {
+            log.info("exclude influxDB");
+        }
+
         nextExecution = Instant.now().plus(rate, ChronoUnit.MILLIS);
     }
 

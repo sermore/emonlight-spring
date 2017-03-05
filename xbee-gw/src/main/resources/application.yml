@@ -21,3 +21,7 @@ spring:
 
 #    pool:
 #      enabled: true
+
+influxdb:
+  url: http://lime2:8086
+  database: emonlight_test

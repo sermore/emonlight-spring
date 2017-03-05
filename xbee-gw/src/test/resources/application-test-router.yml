@@ -10,6 +10,8 @@ logging:
 processor.timeout: 1000
 dispatcher.rate: 10000
 
+jms.enabled: false
+
 settings:
   serialPort: "/dev/ttyUSB0"
   baudRate: 115200

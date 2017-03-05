@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="Gradle: org.springframework.boot:spring-boot-starter-activemq:1.5.2.RELEASE">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-activemq/1.5.2.RELEASE/4601b259c78a9a96b06adba06489b7cd0388992b/spring-boot-starter-activemq-1.5.2.RELEASE.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-activemq/1.5.2.RELEASE/f08368873a14289e70581016e9b25815dc89f11b/spring-boot-starter-activemq-1.5.2.RELEASE-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

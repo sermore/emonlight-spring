@@ -13,3 +13,6 @@ spring:
 #    broker-url:
 #    pool:
 #      enabled: true
+
+influxdb:
+  enabled: false

@@ -52,6 +52,8 @@ dependencies {
 //    compile group: 'javax.el', name: 'javax.el-api', version:'3.0.1-b04'
 //    compile group: 'org.glassfish', name: 'javax.el', version:'3.0.1-b08'
 
+	compile group: 'org.influxdb', name: 'influxdb-java', version: '2.5+'
+
 	testCompile("org.apache.activemq:activemq-broker")
 
 }

@@ -1,11 +1,16 @@
 ---
-gatewayId: 0
 
 spring:
   jms:
     template:
       default-destination: 0.data
 
+jms:
+  enabled: false
+
+influxdb:
+  url: http://lime2:8086
+  database: emonlight
 
 settings:
   serialPort: "/dev/ttyAMA0"

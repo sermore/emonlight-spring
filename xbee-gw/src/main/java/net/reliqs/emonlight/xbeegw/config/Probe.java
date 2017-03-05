@@ -152,7 +152,7 @@ public class Probe {
     }
 
     public enum Type {
-        PULSE, SAMPLE, DHT22_T, DHT22_H, VCC
+        PULSE, DHT22_T, DHT22_H, VCC
     }
 
 }

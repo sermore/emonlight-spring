@@ -1,11 +1,13 @@
 ---
-gatewayId: 1
 
 spring:
   jms:
     template:
       default-destination: 1.data
 
+influxdb:
+  url: http://lime2:8086
+  database: emonlight_dev
 
 settings:
   serialPort: "/dev/ttyUSB0"

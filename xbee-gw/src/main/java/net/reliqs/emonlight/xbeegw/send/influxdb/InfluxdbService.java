@@ -41,8 +41,8 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
 
     @Override
     public void receive(Probe p, Data d) {
-        Point point = Point.measurement(p.getType().name()).tag("node", p.getNode().getName())
-                .tag("address", p.getNode().getAddress()).tag("probe", p.getName()).addField("value", d.v).time(d.t, TimeUnit.MILLISECONDS).build();
+        Point point = Point.measurement("zigbee").tag("node", p.getNode().getName())
+                .tag("address", p.getNode().getAddress()).tag("probe", p.getName()).addField(p.getType().name(), d.v).time(d.t, TimeUnit.MILLISECONDS).build();
         queue.point(point);
     }
 

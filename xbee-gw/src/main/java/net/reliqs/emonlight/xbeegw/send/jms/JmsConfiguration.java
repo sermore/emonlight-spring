@@ -1,9 +1,12 @@
 package net.reliqs.emonlight.xbeegw.send.jms;
 
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
@@ -20,6 +23,13 @@ import javax.jms.ConnectionFactory;
 //@ConditionalOnProperty(name = "jms.enabled", matchIfMissing = true, havingValue = "")
 @EnableJms
 public class JmsConfiguration {
+
+    private Publisher publisher;
+
+    @Autowired
+    public JmsConfiguration(Publisher publisher) {
+        this.publisher = publisher;
+    }
 
     @Bean
     ConnectionFactory connectionFactory(@Value("${spring.activemq.broker-url:vm://localhost?broker.persistent=false}") String brokerUrl) {
@@ -40,8 +50,11 @@ public class JmsConfiguration {
     }
 
     @Bean
+    @Order(10)
     JmsService jmsService(JmsAsyncService jmsAsyncService) {
-        return new JmsService(jmsAsyncService);
+        JmsService s = new JmsService(jmsAsyncService);
+        publisher.addSubscriber(s);
+        return s;
     }
 
 }

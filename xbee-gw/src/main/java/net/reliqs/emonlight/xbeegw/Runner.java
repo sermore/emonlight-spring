@@ -21,7 +21,7 @@ class Runner {
 	@Autowired
 	Dispatcher dispatcher;
 
-	Runner() {		
+	Runner() {
 	}
 	
 	void run(ApplicationContext ctx) {

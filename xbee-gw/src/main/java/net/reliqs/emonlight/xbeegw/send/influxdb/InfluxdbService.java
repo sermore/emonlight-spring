@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by sergio on 05/03/17.
  */
-@Component
 public class InfluxdbService implements DeliveryService, ListenableFutureCallback<Integer> {
     private static final Logger log = LoggerFactory.getLogger(InfluxdbService.class);
 
@@ -29,7 +28,7 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     private String dbName;
 
     @Autowired
-    public InfluxdbService(InfluxdbAsyncService service, @Value("${influxdb.database}") String dbName) {
+    public InfluxdbService(InfluxdbAsyncService service, String dbName) {
         this.service = service;
         this.dbName = dbName;
         queue = createBatchPoints();

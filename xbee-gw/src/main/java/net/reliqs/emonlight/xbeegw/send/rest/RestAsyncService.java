@@ -2,7 +2,6 @@ package net.reliqs.emonlight.xbeegw.send.rest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -16,7 +15,6 @@ public class RestAsyncService {
 
 	private RestTemplate restTemplate;
 
-	@Autowired
 	public RestAsyncService(RestTemplateBuilder rb) {
 		super();
 		this.restTemplate = rb.build();

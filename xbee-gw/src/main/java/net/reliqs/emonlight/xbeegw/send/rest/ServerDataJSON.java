@@ -1,5 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,7 +46,6 @@ public class ServerDataJSON {
 	@Override
 	public String toString() {
 		return String.format("SD [nodes=%d, d=%d]", nodes.size(),
-				nodes.stream().flatMap(n -> n.getD().stream()).collect(Collectors.summingInt(d -> d.length)));
+				nodes.stream().mapToInt(n -> n.getD().size()).sum());
 	}
-
 }

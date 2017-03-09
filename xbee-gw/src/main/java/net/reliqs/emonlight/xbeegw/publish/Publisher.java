@@ -2,6 +2,7 @@ package net.reliqs.emonlight.xbeegw.publish;
 
 import net.reliqs.emonlight.commons.xbee.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,13 +17,14 @@ import java.util.List;
 public class Publisher {
     private static final Logger log = LoggerFactory.getLogger(Publisher.class);
 
-    private List<Subscriber> subscribers;
+    private List<DeliveryService> subscribers;
 
     public Publisher() {
         this.subscribers = new ArrayList<>();
     }
 
-    public void addSubscriber(Subscriber s) {
+    public void addSubscriber(DeliveryService s) {
+        log.debug("register: {}", s);
         subscribers.add(s);
     }
 
@@ -31,5 +33,9 @@ public class Publisher {
         for (Subscriber s: subscribers) {
             s.receive(probe, data);
         }
+    }
+
+    public List<DeliveryService> getServices() {
+        return subscribers;
     }
 }

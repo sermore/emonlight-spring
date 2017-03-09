@@ -125,7 +125,4 @@ public class Processor {
         return publisher;
     }
 
-    public void registerSubscriber(Subscriber subscriber) {
-        publisher.addSubscriber(subscriber);
-    }
 }

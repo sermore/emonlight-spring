@@ -21,7 +21,6 @@ import java.util.Map;
 /**
  * Created by sergio on 05/03/17.
  */
-@Component
 public class InfluxdbAsyncService {
     private static final Logger log = LoggerFactory.getLogger(InfluxdbAsyncService.class);
 
@@ -29,7 +28,7 @@ public class InfluxdbAsyncService {
     private final String dbName;
     private InfluxDB influxdb;
 
-    public InfluxdbAsyncService(@Value("${influxdb.url}") String influxdbUrl, @Value("${influxdb.database}") String dbName) {
+    public InfluxdbAsyncService(String influxdbUrl, String dbName) {
         this.influxdbUrl = influxdbUrl;
         this.dbName = dbName;
         influxdb = InfluxDBFactory.connect(this.influxdbUrl);

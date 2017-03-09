@@ -15,7 +15,7 @@ import javax.annotation.PostConstruct;
 
 @Configuration
 public class RestConfiguration {
-	private static final Logger log = LoggerFactory.getLogger(RestConfiguration.class);
+    private static final Logger log = LoggerFactory.getLogger(RestConfiguration.class);
 
     private Settings settings;
     private RestTemplateBuilder rb;
@@ -28,25 +28,23 @@ public class RestConfiguration {
         this.settings = settings;
     }
 
-	@Bean
+    @Bean
     @Scope("prototype")
-	RestAsyncService restAsyncService() {
-		return new RestAsyncService(rb);
-	}
+    RestAsyncService restAsyncService() {
+        return new RestAsyncService(rb);
+    }
 
-	@Bean
-    @Scope("prototype")
-	RestDeliveryService restDeliveryService(Server server) {
-		RestDeliveryService s = new RestDeliveryService(server, restAsyncService());
-		log.debug("register: {} => {}", server, s);
-		publisher.addSubscriber(s);
-		return s;
-	}
+    RestDeliveryService restDeliveryService(Server server) {
+        RestDeliveryService s = new RestDeliveryService(server, restAsyncService());
+        log.debug("register: {} => {}", server, s);
+        publisher.addSubscriber(s);
+        return s;
+    }
 
-	@PostConstruct
-	void init() {
-        for(Server s : settings.getServers()) {
-            restDeliveryService(s);
+    @PostConstruct
+    void init() {
+        for (Server s : settings.getServers()) {
+            RestDeliveryService svc = restDeliveryService(s);
         }
     }
 

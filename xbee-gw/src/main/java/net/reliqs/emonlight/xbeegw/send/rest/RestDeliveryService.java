@@ -9,9 +9,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayDeque;
+import java.util.HashSet;
 import java.util.Queue;
+import java.util.Set;
 
 public class RestDeliveryService implements DeliveryService, ListenableFutureCallback<Boolean> {
     private static final Logger log = LoggerFactory.getLogger(RestDeliveryService.class);
@@ -22,17 +25,30 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
     private ServerDataJSON inFlight;
     private ListenableFuture<Boolean> running;
     private int retryCount;
-    private Server server;
-    private RestAsyncService service;
+    private final Server server;
+    private final Set<Probe> probes;
+    private final RestAsyncService service;
 
-    public RestDeliveryService(Server settings, RestAsyncService service) {
-        this.server = settings;
+    public RestDeliveryService(Server server, RestAsyncService service) {
+        this.server = server;
         this.service = service;
+        probes = new HashSet<>();
+        this.server.getMaps().forEach(sm -> probes.add(sm.getProbe()));
+    }
+
+    RestTemplate getRestTemplate() {
+        return service.getRestTemplate();
+    }
+
+    public Server getServer() {
+        return server;
     }
 
     @Override
     public void receive(Probe p, Data d) {
-        receiveQueue.add(new RData(p, d));
+        if (probes.contains(p)) {
+            receiveQueue.add(new RData(p, d));
+        }
     }
 
     @Override
@@ -40,14 +56,9 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
         return (inFlight != null || !queue.isEmpty() || !receiveQueue.isEmpty()) && (running == null || running.isDone());
     }
 
-    @Override
-    public boolean isEmpty() {
-        return queue.isEmpty();
-    }
-
     ServerDataJSON pollReceiveQueue() {
         Queue<RData> inQueue = new ArrayDeque<>(receiveQueue);
-//	    receiveQueue.clear();
+	    receiveQueue.clear();
         ServerDataJSON sd = new ServerDataJSON();
         for (ServerMap sm : server.getMaps()) {
             NodeDataJSON nd = new NodeDataJSON(sm.getNodeId(), sm.getApiKey());
@@ -79,17 +90,6 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
             }
         }
     }
-
-//	@Async
-//	ListenableFuture<Boolean> post(String url, ServerDataJSON sd) {
-//		String res;
-//		boolean ok;
-//		log.debug("REST {} -> {}",sd, url);
-//		res = restTemplate.postForObject(url, sd, String.class);
-//		log.debug("REST {} <- {}", res, url);
-//		ok = "OK".equals(res);
-//		return new AsyncResult<>(ok);
-//	}
 
     @Override
     public void onSuccess(Boolean result) {

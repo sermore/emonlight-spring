@@ -20,6 +20,10 @@ public class RestAsyncService {
 		this.restTemplate = rb.build();
 	}
 
+	RestTemplate getRestTemplate() {
+		return restTemplate;
+	}
+
 	@Async
 	public ListenableFuture<Boolean> post(String url, ServerDataJSON sd) {
 		String res;
@@ -36,5 +40,4 @@ public class RestAsyncService {
 //		}
 		return new AsyncResult<>(true);
 	}
-
 }

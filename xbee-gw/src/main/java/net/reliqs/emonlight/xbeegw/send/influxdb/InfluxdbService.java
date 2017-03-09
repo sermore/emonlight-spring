@@ -64,11 +64,6 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     }
 
     @Override
-    public boolean isEmpty() {
-        return queue.getPoints().isEmpty() && inFlight == null;
-    }
-
-    @Override
     public void onFailure(Throwable ex) {
         running = false;
         log.warn("Influxdb FAIL q={}, inFlight={}: {}", queue.getPoints().size(), inFlight.getPoints().size(), ex.getMessage());

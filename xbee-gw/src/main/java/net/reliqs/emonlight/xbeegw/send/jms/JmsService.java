@@ -51,11 +51,6 @@ public class JmsService implements DeliveryService, ListenableFutureCallback<Map
     }
 
     @Override
-    public boolean isEmpty() {
-        return queue.isEmpty() && inFlight.isEmpty();
-    }
-
-    @Override
     public void receive(Probe p, Data d) {
         queue.add(new StoreData(p, d));
     }

@@ -8,6 +8,17 @@ import org.slf4j.LoggerFactory;
 import net.reliqs.emonlight.xbeegw.GwException;
 import net.reliqs.emonlight.xbeegw.config.Node;
 
+/**
+ * Verify the configuration received by the xbee.
+ * 
+ * If the received configuration doesn't match, a new configuration data is sent back to the xbee.
+ * In case the configuration is matching, an acknowledge message is sent back.
+ *  
+ * This message is sent by the xbee on every startup, and the xbee waits for the response before enterning the main loop.  
+ * 
+ * @author sergio
+ *
+ */
 class ConfigurationProcessor extends MessageProcessor {
 	private static final Logger log = LoggerFactory.getLogger(ConfigurationProcessor.class);
 

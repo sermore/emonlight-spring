@@ -3,7 +3,7 @@ package net.reliqs.emonlight.xbeegw.send.rest;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.junit.Test;
 
 

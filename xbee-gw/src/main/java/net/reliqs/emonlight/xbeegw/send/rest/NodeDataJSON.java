@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
-import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 
 import java.util.ArrayList;
 import java.util.Arrays;

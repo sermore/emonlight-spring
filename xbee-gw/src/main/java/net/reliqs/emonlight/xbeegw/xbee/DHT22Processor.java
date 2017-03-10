@@ -3,7 +3,7 @@ package net.reliqs.emonlight.xbeegw.xbee;
 import java.nio.ByteBuffer;
 import java.time.Instant;
 
-import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

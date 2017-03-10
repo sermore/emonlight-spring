@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send;
 
-import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 
 public class StoreData {

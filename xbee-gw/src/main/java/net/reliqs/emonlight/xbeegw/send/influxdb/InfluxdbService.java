@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
-import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.influxdb.InfluxDB;
@@ -9,8 +9,6 @@ import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -27,7 +25,6 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     private InfluxdbAsyncService service;
     private String dbName;
 
-    @Autowired
     public InfluxdbService(InfluxdbAsyncService service, String dbName) {
         this.service = service;
         this.dbName = dbName;

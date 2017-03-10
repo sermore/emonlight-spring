@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
 
-import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 
 /**
  * Created by sergio on 25/02/17.

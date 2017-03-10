@@ -14,13 +14,10 @@ logging:
 #  noOfReplication: 1
 
 spring:
-  activemq:
-    broker-url: tcp://lime2:61616
+#  activemq:
+#    broker-url: tcp://lime2:61616
   jms:
     pub-sub-domain: true
-
-#    pool:
-#      enabled: true
 
 influxdb:
   url: http://lime2:8086

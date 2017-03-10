@@ -1,6 +1,8 @@
 ---
 
 spring:
+  activemq:
+    broker-url: tcp://lime2:61616
   jms:
     template:
       default-destination: 0.data

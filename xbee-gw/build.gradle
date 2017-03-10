@@ -41,9 +41,11 @@ dependencies {
 	compile("org.springframework.boot:spring-boot-starter-activemq")
 	
     compile group: 'org.rxtx', name: 'rxtx', version:'2.1.7'
-    compile(group: 'com.digi.xbee', name: 'xbjlib', version:'1.1.1') {
+	compile(group: 'com.digi.xbee', name: 'xbee-java-library', version: '1.2.0') {
 		exclude(module: 'rxtx-native')
-		exclude(module: 'slf4j-jdk14')
+		exclude(group: 'org.slf4j')
+		exclude(module: 'android-sdk')
+		exclude(module: 'android-sdk-addon')
     }
 	
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.8.5'

@@ -1,29 +1,31 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.models.XBeeMessage;
-import com.digi.xbee.api.utils.HexUtils;
-import net.reliqs.emonlight.xbeegw.config.Node;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import net.reliqs.emonlight.xbeegw.publish.Subscriber;
-import net.reliqs.emonlight.xbeegw.state.GlobalState;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+
+import javax.annotation.PreDestroy;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PreDestroy;
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
+import com.digi.xbee.api.exceptions.XBeeException;
+import com.digi.xbee.api.models.XBeeMessage;
+import com.digi.xbee.api.utils.HexUtils;
+
+import net.reliqs.emonlight.commons.xbee.Data;
+import net.reliqs.emonlight.xbeegw.config.Node;
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
 @Component
 public class Processor {
@@ -121,8 +123,8 @@ public class Processor {
         }
     }
 
-    Publisher getPublisher() {
-        return publisher;
+    void publish(Probe probe, Data data) {
+        publisher.publish(probe, data);
     }
 
 }

@@ -72,7 +72,7 @@ abstract class MessageProcessor implements TriggerHandler {
         if (t != null) {
             t.process(data);
         }
-        processor.getPublisher().publish(probe, data);
+        processor.publish(probe, data);
     }
 
     void registerTrigger(NodeState ns, Probe p) {

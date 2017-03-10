@@ -36,7 +36,7 @@ public class EndDeviceTest {
 
     @Test
     public void testEndDevice()
-            throws XBeeException, JsonParseException, JsonMappingException, IOException, InterruptedException {
+            throws InterruptedException {
         for (int i = 0; i < 40000; i++) {
             p.process();
             t.process();

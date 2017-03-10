@@ -13,6 +13,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -39,7 +41,7 @@ public class Settings {
     private List<Node> nodes;
 
     @Valid
-    private List<Server> servers;
+    private List<Server> servers = new ArrayList<>();
 
 
     public String getSerialPort() {

@@ -1,9 +1,11 @@
 package net.reliqs.emonlight.xbeegw.send.jms;
 
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import javax.jms.ConnectionFactory;
+
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -14,13 +16,13 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
-import javax.jms.ConnectionFactory;
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
 
 /**
  * Created by sergio on 02/03/17.
  */
 @Configuration
-//@ConditionalOnProperty(name = "jms.enabled", matchIfMissing = true, havingValue = "")
+@ConditionalOnProperty(name = "jms.enabled", matchIfMissing = true, havingValue = "")
 @EnableJms
 public class JmsConfiguration {
 

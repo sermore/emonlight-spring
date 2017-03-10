@@ -1,4 +1,8 @@
 ---
+jms:
+  enabled: false
+influxdb:
+  enabled: false
 
 settings:
   serialPort: "/dev/ttyUSB0"

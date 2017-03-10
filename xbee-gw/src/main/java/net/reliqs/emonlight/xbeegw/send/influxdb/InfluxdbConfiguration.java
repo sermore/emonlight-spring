@@ -3,6 +3,7 @@ package net.reliqs.emonlight.xbeegw.send.influxdb;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -11,6 +12,7 @@ import org.springframework.core.annotation.Order;
  * Created by sergio on 08/03/17.
  */
 @Configuration
+@ConditionalOnProperty(name = "influxdb.enabled", matchIfMissing = true, havingValue = "")
 public class InfluxdbConfiguration {
 
     private Publisher publisher;

@@ -15,8 +15,8 @@ influxdb:
   database: emonlight
 
 settings:
-  serialPort: "/dev/ttyAMA0"
-  baudRate: 9600
+  serialPort: "/dev/ttyUSB0"
+  baudRate: 115200
   receiveTimeout: 2000
   nodes:
   - name: ZIG2
@@ -57,26 +57,26 @@ settings:
       type: VCC
       sampleTime: 60000
       adcMult: 3.43
-  - name: TEST_PULSE
+  - name: MAIN
     address: 0013A20041468922
     sampleTime: 10000
-    mode: PULSE
+    mode: PULSE_DHT22
     vccFromADC: false
     adcRange: 4095
     adcVRef: 3.3
     probes:
-    - &TEST_PULSE
-      name: TEST_PULSE
+    - &MAIN_POWER
+      name: MAIN_POWER
       type: PULSE
-    - &TEST_H
-      name: TEST_H
+    - &MAIN_H
+      name: MAIN_H
       type: DHT22_H
       sampleTime: 40000
-    - &TEST_T
-      name: TEST_T
+    - &MAIN_T
+      name: MAIN_T
       type: DHT22_T
-    - &TEST_VCC
-      name: TEST_VCC
+    - &MAIN_VCC
+      name: MAIN_VCC
       type: VCC
       sampleTime: 60000
       adcMult: 3.42
@@ -103,15 +103,15 @@ settings:
     - probe: *ZIG_PINO_VCC
       nodeId: 12
       apiKey: bAP7SaLZr2uG5adwhX77
-    - probe: *TEST_T
+    - probe: *MAIN_T
       nodeId: 8
       apiKey: nC1uDMkxnVJwKyKxQis5
-    - probe: *TEST_H
+    - probe: *MAIN_H
       nodeId: 9
       apiKey: ywDxpCXDi2Pc4taeyYLN
-    - probe: *TEST_VCC
+    - probe: *MAIN_VCC
       nodeId: 13
       apiKey: uKY33ArrQshrSeafDwqF
-    - probe: *TEST_PULSE
+    - probe: *MAIN_POWER
       nodeId: 5
       apiKey: a7LiZVht-FNo3i8bUf61

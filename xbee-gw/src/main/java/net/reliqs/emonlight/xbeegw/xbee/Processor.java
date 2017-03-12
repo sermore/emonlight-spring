@@ -2,6 +2,8 @@ package net.reliqs.emonlight.xbeegw.xbee;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -28,6 +30,14 @@ import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
+/**
+ * Processor for the xbee events.
+ *
+ * Handle a queue containing the messages received from remote xbee devices.
+ * The processing of every message could produce a response message to be sent to the xbee, or produce a data output
+ * to be published.
+ *
+ */
 @Component
 public class Processor {
     private static final Logger log = LoggerFactory.getLogger(Processor.class);
@@ -39,6 +49,8 @@ public class Processor {
     private final Publisher publisher;
     @Value("${processor.timeout:1000}")
     private long timeout;
+    @Value("${processor.maxProcessTime:5000}")
+    private long maxProcessTime;
 
     @Autowired
     public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState, final Publisher publisher)
@@ -57,9 +69,11 @@ public class Processor {
         procs.put((byte) 'W', procs.get((byte) 'V'));
         gateway.setProcessor(this);
         settings.getNodes().forEach(n -> register(gateway, n));
+        log.debug("processor configuration complete");
     }
 
     private void register(XbeeGateway gateway, Node n) {
+        log.debug("setup node {}", n);
         String addr = n.getAddress();
         NodeState ns = globalState.getNodeState(addr);
         ns.setDevice(gateway.addDevice(addr));
@@ -75,19 +89,19 @@ public class Processor {
         gateway.sendDataAsync(ns.getDevice(), data);
     }
 
-    void queue(XBeeMessage msg) {
-        queue.offer(new DataMessage(msg));
+    void queue(final XBeeMessage msg) {
+        queue.offer(new DataMessage(globalState, msg));
     }
 
     public void process() throws InterruptedException {
+        Instant processTime = Instant.now().plus(maxProcessTime, ChronoUnit.MILLIS);
         do {
-            //FIXME if a message is already received inside the timeout, the loop is never leaved and the dispatcher is never called
             DataMessage m = queue.poll(timeout, TimeUnit.MILLISECONDS);
             if (m != null) {
                 processDataMessage(m);
             } else
                 return;
-        } while (true);
+        } while (Instant.now().isBefore(processTime));
     }
 
     @PreDestroy
@@ -96,7 +110,7 @@ public class Processor {
     }
 
     private void processDataMessage(DataMessage m) {
-        NodeState ns = globalState.getNodeState(m.msg.getDevice().get64BitAddress().toString());
+        NodeState ns = m.getNodeState();
         if (ns != null) {
             ByteBuffer in = ByteBuffer.wrap(m.msg.getData());
             processContent(m, ns, in);
@@ -127,5 +141,4 @@ public class Processor {
     void publish(Probe probe, Type type, Data data) {
         publisher.publish(probe, type, data);
     }
-
 }

@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.xbeegw.publish;
 
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,10 +28,10 @@ public class Publisher {
         subscribers.add(s);
     }
 
-    public void publish(Probe probe, Data data) {
-        log.trace("P {} {}", probe.getName(), data);
+    public void publish(Probe probe, Type type, Data data) {
+        log.trace("P {} {} {}", probe.getName(), type, data);
         for (Subscriber s: subscribers) {
-            s.receive(probe, data);
+            s.receive(probe, type, data);
         }
     }
 

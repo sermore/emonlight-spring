@@ -68,6 +68,10 @@ settings:
     - &MAIN_POWER
       name: MAIN_POWER
       type: PULSE
+      softThreshold: 3300
+      softThresholdTimeSec: 10800
+      hardThreshold: 4000
+      hardThresholdTimeSec: 240
     - &MAIN_H
       name: MAIN_H
       type: DHT22_H
@@ -80,38 +84,38 @@ settings:
       type: VCC
       sampleTime: 60000
       adcMult: 3.42
-  servers:
-  - name: pino
-    url: http://pino/emonlight-dev/input/read.json
-    sendRate: 10000
-    maps:
-    - probe: *ZIG2_T
-      nodeId: 10
-      apiKey: Rk6Bvfpxy5CrDDwq_YwD
-    - probe: *ZIG2_H
-      nodeId: 11
-      apiKey: 6KbSaBxtLdSCxUqwJ_KE
-    - probe: *ZIG2_VCC
-      nodeId: 14
-      apiKey: aieGrKgXN8f51CVWo5gt
-    - probe: *ZIG_PINO_T
-      nodeId: 6
-      apiKey: sFtdZxK3yXdxDHUeuzWC
-    - probe: *ZIG_PINO_H
-      nodeId: 7
-      apiKey: BddQ-TVRyf_UvfY95B_v
-    - probe: *ZIG_PINO_VCC
-      nodeId: 12
-      apiKey: bAP7SaLZr2uG5adwhX77
-    - probe: *MAIN_T
-      nodeId: 8
-      apiKey: nC1uDMkxnVJwKyKxQis5
-    - probe: *MAIN_H
-      nodeId: 9
-      apiKey: ywDxpCXDi2Pc4taeyYLN
-    - probe: *MAIN_VCC
-      nodeId: 13
-      apiKey: uKY33ArrQshrSeafDwqF
-    - probe: *MAIN_POWER
-      nodeId: 5
-      apiKey: a7LiZVht-FNo3i8bUf61
+#  servers:
+#  - name: pino
+#    url: http://pino/emonlight-dev/input/read.json
+#    sendRate: 10000
+#    maps:
+#    - probe: *ZIG2_T
+#      nodeId: 10
+#      apiKey: Rk6Bvfpxy5CrDDwq_YwD
+#    - probe: *ZIG2_H
+#      nodeId: 11
+#      apiKey: 6KbSaBxtLdSCxUqwJ_KE
+#    - probe: *ZIG2_VCC
+#      nodeId: 14
+#      apiKey: aieGrKgXN8f51CVWo5gt
+#    - probe: *ZIG_PINO_T
+#      nodeId: 6
+#      apiKey: sFtdZxK3yXdxDHUeuzWC
+#    - probe: *ZIG_PINO_H
+#      nodeId: 7
+#      apiKey: BddQ-TVRyf_UvfY95B_v
+#    - probe: *ZIG_PINO_VCC
+#      nodeId: 12
+#      apiKey: bAP7SaLZr2uG5adwhX77
+#    - probe: *MAIN_T
+#      nodeId: 8
+#      apiKey: nC1uDMkxnVJwKyKxQis5
+#    - probe: *MAIN_H
+#      nodeId: 9
+#      apiKey: ywDxpCXDi2Pc4taeyYLN
+#    - probe: *MAIN_VCC
+#      nodeId: 13
+#      apiKey: uKY33ArrQshrSeafDwqF
+#    - probe: *MAIN_POWER
+#      nodeId: 5
+#      apiKey: a7LiZVht-FNo3i8bUf61

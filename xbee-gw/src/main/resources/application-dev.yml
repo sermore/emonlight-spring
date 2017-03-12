@@ -1,4 +1,11 @@
 ---
+logging:
+  level:
+    root: INFO
+    com.digi.xbee: INFO
+    net:
+      reliqs:
+        emonlight: TRACE
 
 spring:
   activemq:
@@ -43,27 +50,27 @@ settings:
       type: VCC
       sampleTime: 60000
       adcMult: 3.42
-  servers:
-  - name: pino
-    url: http://pino/emonlight-dev/input/read.json
-    sendRate: 10000
-    maps:
-    - probe: *TEST_T
-      nodeId: 8
-      apiKey: nC1uDMkxnVJwKyKxQis5
-    - probe: *TEST_H
-      nodeId: 9
-      apiKey: ywDxpCXDi2Pc4taeyYLN
-    - probe: *TEST_VCC
-      nodeId: 13
-      apiKey: uKY33ArrQshrSeafDwqF
-    - probe: *TEST_PULSE
-      nodeId: 2
-      apiKey: dcTRYGK7RB1kqxW2vE-Q
-  - name: acero
-    url: http://acero:3000/input/read.json
-    sendRate: 10000
-    maps:
-    - probe: *TEST_PULSE
-      nodeId: 2
-      apiKey: dcTRYGK7RB1kqxW2vE-Q
+#  servers:
+#  - name: pino
+#    url: http://pino/emonlight-dev/input/read.json
+#    sendRate: 10000
+#    maps:
+#    - probe: *TEST_T
+#      nodeId: 8
+#      apiKey: nC1uDMkxnVJwKyKxQis5
+#    - probe: *TEST_H
+#      nodeId: 9
+#      apiKey: ywDxpCXDi2Pc4taeyYLN
+#    - probe: *TEST_VCC
+#      nodeId: 13
+#      apiKey: uKY33ArrQshrSeafDwqF
+#    - probe: *TEST_PULSE
+#      nodeId: 2
+#      apiKey: dcTRYGK7RB1kqxW2vE-Q
+#  - name: acero
+#    url: http://acero:3000/input/read.json
+#    sendRate: 10000
+#    maps:
+#    - probe: *TEST_PULSE
+#      nodeId: 2
+#      apiKey: dcTRYGK7RB1kqxW2vE-Q

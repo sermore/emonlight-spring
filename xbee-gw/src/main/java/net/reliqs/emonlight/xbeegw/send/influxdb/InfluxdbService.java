@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
@@ -8,7 +9,6 @@ import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -36,9 +36,9 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     }
 
     @Override
-    public void receive(Probe p, Data d) {
+    public void receive(Probe p, Type type, Data d) {
         Point point = Point.measurement("zigbee").tag("node", p.getNode().getName())
-                .tag("address", p.getNode().getAddress()).tag("probe", p.getName()).addField(p.getType().name(), d.v).time(d.t, TimeUnit.MILLISECONDS).build();
+                .tag("address", p.getNode().getAddress()).tag("probe", p.getName()).addField(type.name(), d.v).time(d.t, TimeUnit.MILLISECONDS).build();
         queue.point(point);
     }
 

@@ -35,8 +35,8 @@ class DHT22Processor extends MessageProcessor {
 			verifyTime(node, time);
             Data dataH = new Data(time.toEpochMilli(), hv);
             Data dataT = new Data(time.toEpochMilli(), tv);
-			publish(node.getProbe(Type.DHT22_H, d.port), dataH);
-            publish(node.getProbe(Type.DHT22_T, d.port), dataT);
+			publish(node.getProbe(Type.DHT22_H, d.port), Type.DHT22_H, dataH);
+            publish(node.getProbe(Type.DHT22_T, d.port), Type.DHT22_T, dataT);
 		} else {
 			log.warn("{}: error reading DHT22 data", node);
 		}

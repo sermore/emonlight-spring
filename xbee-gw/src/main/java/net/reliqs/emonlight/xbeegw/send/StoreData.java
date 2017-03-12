@@ -1,23 +1,44 @@
 package net.reliqs.emonlight.xbeegw.send;
 
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 
 public class StoreData {
 
-	private String probe;
-	private long t;
-	private double v;
+    private String node;
+    private String probe;
+    private String type;
+    private long t;
+    private double v;
 
     public StoreData() {
     }
 
-    public StoreData(final Probe probe, final Data data) {
-		super();
-		this.probe = probe.getName();
-		this.t = data.t;
-		this.v = data.v;
-	}
+    public StoreData(final Probe probe, final Type type, final Data data) {
+        super();
+        this.probe = probe.getName();
+        this.node = probe.getNode().getName();
+        this.type = probe.getType().name();
+        this.t = data.t;
+        this.v = data.v;
+    }
+
+    public String getNode() {
+        return node;
+    }
+
+    public void setNode(String node) {
+        this.node = node;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public String getProbe() {
         return probe;

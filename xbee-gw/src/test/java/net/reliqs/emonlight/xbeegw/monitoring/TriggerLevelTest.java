@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
@@ -37,7 +38,7 @@ public class TriggerLevelTest {
         TriggerLevel t = new TriggerLevel(p, null, TriggerLevel.powerTriggers(p));
         t.addHandler(new TriggerHandler() {
             @Override
-            public void triggerChanged(NodeState nodeState, Probe probe, int oldValue, int newValue) {
+            public void triggerChanged(NodeState nodeState, Probe probe, Type type, int oldValue, int newValue) {
                 level = newValue;
                 levelChangeCnt++;
             }

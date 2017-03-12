@@ -3,9 +3,12 @@ package net.reliqs.emonlight.xbeegw.xbee;
 import com.digi.xbee.api.utils.ByteUtils;
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerHandler;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerLevel;
 import net.reliqs.emonlight.xbeegw.publish.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -33,8 +36,8 @@ abstract class MessageProcessor implements TriggerHandler {
      * enable define the new state of the alarm level that needs to be set.
      */
     @Override
-    public void triggerChanged(NodeState ns, Probe p, int oldState, int newState) {
-        throw new UnsupportedOperationException("trigger handler not implemented");
+    public void triggerChanged(NodeState ns, Probe p, Type type, int oldState, int newState) {
+        publish(p, type, new Data(Instant.now().toEpochMilli(), newState));
     }
 
     void sendOK(NodeState ns) {
@@ -67,12 +70,15 @@ abstract class MessageProcessor implements TriggerHandler {
         processor.sendData(ns, b.array());
     }
 
-    void publish(Probe probe, Data data) {
-        TriggerLevel t = triggers.get(probe);
-        if (t != null) {
-            t.process(data);
+    void publish(Probe probe, Type type, Data data) {
+        if (type == probe.getType()) {
+            TriggerLevel t = triggers.get(probe);
+            if (t != null) {
+//                log.trace("{}: process trigger {}", probe.getNode(), type);
+                t.process(data);
+            }
         }
-        processor.publish(probe, data);
+        processor.publish(probe, type, data);
     }
 
     void registerTrigger(NodeState ns, Probe p) {

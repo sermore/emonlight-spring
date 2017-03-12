@@ -42,7 +42,7 @@ class PulseProcessor extends MessageProcessor {
         verifyTime(node, time);
         Data data = new Data(time.toEpochMilli(), pow);
         if (!ns.skipLastTime) {
-            publish(probe, data);
+            publish(probe, Type.PULSE, data);
         }
         ns.lastTimeMSec = t;
         ns.lastTime = time;
@@ -50,8 +50,9 @@ class PulseProcessor extends MessageProcessor {
     }
 
     @Override
-    public void triggerChanged(NodeState ns, Probe p, int oldState, int newState) {
+    public void triggerChanged(NodeState ns, Probe p, Type type, int oldState, int newState) {
         log.warn("{}: {} Buzzer level {} => {}", p.getNode(), p.getName(), oldState, newState);
+        super.triggerChanged(ns, p, Type.THRESOLD_ALARM, oldState, newState);
         sendBuzzerAlarmLevel(ns, newState);
     }
 

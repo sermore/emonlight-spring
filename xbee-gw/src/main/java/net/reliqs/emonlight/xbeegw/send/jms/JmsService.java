@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.jms;
 
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
@@ -51,8 +52,8 @@ public class JmsService implements DeliveryService, ListenableFutureCallback<Map
     }
 
     @Override
-    public void receive(Probe p, Data d) {
-        queue.add(new StoreData(p, d));
+    public void receive(Probe p, Type t, Data d) {
+        queue.add(new StoreData(p, t, d));
     }
 
     @Override

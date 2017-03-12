@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Server;
@@ -45,9 +46,9 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
     }
 
     @Override
-    public void receive(Probe p, Data d) {
+    public void receive(Probe p, Type t, Data d) {
         if (probes.contains(p)) {
-            receiveQueue.add(new RData(p, d));
+            receiveQueue.add(new RData(p, t, d));
         }
     }
 

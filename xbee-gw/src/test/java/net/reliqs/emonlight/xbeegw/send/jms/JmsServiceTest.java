@@ -55,7 +55,7 @@ public class JmsServiceTest {
     @Test
     public void test() throws InterruptedException {
         Probe probe = settings.getProbes().findFirst().get();
-        StoreData s = new StoreData(probe, new Data(1, 12.5));
+        StoreData s = new StoreData(probe, probe.getType(), new Data(1, 12.5));
         jmsTemplate.convertAndSend("test", s);
         Thread.sleep(1000);
         assertThat(receiver.received, is(true));

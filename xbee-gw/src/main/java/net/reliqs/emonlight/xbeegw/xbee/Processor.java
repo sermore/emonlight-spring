@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -123,8 +124,8 @@ public class Processor {
         }
     }
 
-    void publish(Probe probe, Data data) {
-        publisher.publish(probe, data);
+    void publish(Probe probe, Type type, Data data) {
+        publisher.publish(probe, type, data);
     }
 
 }

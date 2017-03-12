@@ -35,7 +35,7 @@ class VCCProcessor extends MessageProcessor {
 		log.debug("{}: Vcc = {} @{}", node, vcc, time);
 		verifyTime(node, time);
         Data data = new Data(time.toEpochMilli(), vcc);
-        publish(p, data);
+        publish(p, Type.VCC, data);
 	}
 
 //	@Override

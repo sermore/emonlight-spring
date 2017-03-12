@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 
@@ -8,10 +9,12 @@ import net.reliqs.emonlight.xbeegw.config.Probe;
  */
 public class RData {
     final Probe probe;
+    final Type type;
     final Data data;
 
-    public RData(Probe probe, Data data) {
+    public RData(Probe probe, Type type, Data data) {
         this.probe = probe;
+        this.type = type;
         this.data = data;
     }
 }

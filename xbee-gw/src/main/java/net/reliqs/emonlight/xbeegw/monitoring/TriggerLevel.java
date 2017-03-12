@@ -64,7 +64,7 @@ public class TriggerLevel {
 
     private void triggerChanged(int oldTriggerState, int newTriggerState) {
         for (TriggerHandler h: handlers) {
-            h.triggerChanged(nodeState, probe, oldTriggerState, newTriggerState);
+            h.triggerChanged(nodeState, probe, Probe.Type.THRESOLD_ALARM, oldTriggerState, newTriggerState);
         }
     }
 

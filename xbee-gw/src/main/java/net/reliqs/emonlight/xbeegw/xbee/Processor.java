@@ -31,11 +31,13 @@ import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
 /**
- * Processor for the xbee events.
+ * Processor of the xbee events.
  *
- * Handle a queue containing the messages received from remote xbee devices.
- * The processing of every message could produce a response message to be sent to the xbee, or produce a data output
- * to be published.
+ * Handle a queue containing the messages received from remote xbee devices. The
+ * processing of every message could produce a response message to be sent to
+ * the xbee, or/and produce a data output to be published. The details of the
+ * message processing is handled by specific MessageProcessor instances,
+ * selected using the first byte of the received message.
  *
  */
 @Component
@@ -47,14 +49,14 @@ public class Processor {
     private final XbeeGateway gateway;
     private final GlobalState globalState;
     private final Publisher publisher;
-    @Value("${processor.timeout:1000}")
-    private long timeout;
-    @Value("${processor.maxProcessTime:5000}")
+//    @Value("${processor.timeout:1000}")
+//    private long timeout;
+    @Value("${processor.maxProcessTime:1000}")
     private long maxProcessTime;
 
     @Autowired
-    public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState, final Publisher publisher, final TriggerManager triggerManager)
-            throws XBeeException {
+    public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState,
+            final Publisher publisher, final TriggerManager triggerManager) throws XBeeException {
         this.gateway = gateway;
         this.globalState = globalState;
         this.publisher = publisher;
@@ -68,7 +70,7 @@ public class Processor {
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
         gateway.setProcessor(this);
-        settings.getNodes().forEach(n -> register(triggerManager, gateway, n));        
+        settings.getNodes().forEach(n -> register(triggerManager, gateway, n));
         log.debug("processor configuration complete");
     }
 
@@ -79,10 +81,10 @@ public class Processor {
         ns.setDevice(gateway.addDevice(addr));
         n.getProbes().forEach(p -> {
             if (p.hasThresholds()) {
-            	PulseProcessor pp = (PulseProcessor) procs.get((byte) 'P');
+                PulseProcessor pp = (PulseProcessor) procs.get((byte) 'P');
                 triggerManager.registerTrigger(ns, p, pp);
             }
-        });        
+        });
     }
 
     void sendData(NodeState ns, byte[] data) {
@@ -97,7 +99,7 @@ public class Processor {
     public void process() throws InterruptedException {
         Instant processTime = Instant.now().plus(maxProcessTime, ChronoUnit.MILLIS);
         do {
-            DataMessage m = queue.poll(timeout, TimeUnit.MILLISECONDS);
+            DataMessage m = queue.poll(maxProcessTime / 4, TimeUnit.MILLISECONDS);
             if (m != null) {
                 processDataMessage(m);
             } else

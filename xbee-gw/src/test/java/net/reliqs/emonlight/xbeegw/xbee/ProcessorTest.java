@@ -49,7 +49,7 @@ public class ProcessorTest {
 
     }
 
-    @Value("${processor.maxProcessTime:5000}")
+    @Value("${processor.maxProcessTime:1000}")
     private long maxProcessTime;
     @Autowired
     private Processor processor;
@@ -68,7 +68,7 @@ public class ProcessorTest {
                 for (int i = 0; i < 10; i++) {
                     processor.queue(new DataMessage("", null));
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(maxProcessTime / 5);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -77,11 +77,12 @@ public class ProcessorTest {
             }
         };
         t.start();
+        Thread.sleep(maxProcessTime / 2);
         Instant start = Instant.now();
         processor.process();
         Instant end = Instant.now();
-        assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS))
-                && end.isBefore(start.plus(maxProcessTime + 1000, ChronoUnit.MILLIS)), is(true));
+        assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS)), is(true));
+        assertThat(end.isBefore(start.plus((long) (maxProcessTime * 1.2), ChronoUnit.MILLIS)), is(true));
     }
 
     @Test
@@ -109,6 +110,16 @@ public class ProcessorTest {
         assertThat(testSubscriber.data, is(Arrays.asList(new Data(msg.getTime().toEpochMilli(), 4.043116483516483))));
         assertThat(testSubscriber.types, is(Arrays.asList(Type.VCC)));
         assertThat(testSubscriber.probes, is(Arrays.asList(pv)));
+    }
+    
+    @Test
+    public void testIncompleteMessage() throws InterruptedException {
+        TestSubscriber testSubscriber = new TestSubscriber();
+        publisher.addSubscriber(testSubscriber);        
+        DataMessage msg = new DataMessage("0013A20041468937", HexUtils.hexStringToByteArray("4A0A0378007F"));
+        processor.queue(msg);
+        processor.process();
+        assertThat(testSubscriber.data.isEmpty(), is(true));
     }
 
 }

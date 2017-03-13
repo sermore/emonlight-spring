@@ -24,7 +24,7 @@ class DHT22Processor extends MessageProcessor {
 		if (d.check()) {
 			Instant time;
 			if (selector == (byte) 'J') {
-				time = m.time;
+				time = m.getTime();
 			} else {
 				int tt = in.getInt();
 				time = calculateTimeFromDataMessage(ns, tt);

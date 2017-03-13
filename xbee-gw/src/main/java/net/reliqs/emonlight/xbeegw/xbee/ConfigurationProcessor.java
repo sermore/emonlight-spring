@@ -30,7 +30,7 @@ class ConfigurationProcessor extends MessageProcessor {
 	public void process(DataMessage m, NodeState ns, byte selector, ByteBuffer in) {
 		Node node = ns.getNode();
 		log.debug("{}: process Configuration", node);
-		if (!ns.acceptConfigurationMessage(m.time))
+		if (!ns.acceptConfigurationMessage(m.getTime()))
 			throw new GwException(String.format("too much device configurations for %s, give up.", this));
 		DeviceConfig deviceCfg = new DeviceConfig(in);
 		DeviceConfig storedCfg = new DeviceConfig(ns);

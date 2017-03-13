@@ -12,8 +12,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PreDestroy;
 
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,13 +19,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.models.XBeeMessage;
 import com.digi.xbee.api.utils.HexUtils;
 
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
@@ -91,8 +90,8 @@ public class Processor {
         gateway.sendDataAsync(ns.getDevice(), data);
     }
 
-    void queue(final XBeeMessage msg) {
-        queue.offer(new DataMessage(globalState, msg));
+    void queue(final DataMessage msg) {
+        queue.offer(msg);
     }
 
     public void process() throws InterruptedException {
@@ -112,12 +111,12 @@ public class Processor {
     }
 
     private void processDataMessage(DataMessage m) {
-        NodeState ns = m.getNodeState();
+        NodeState ns = globalState.getNodeState(m.getDeviceAddress());
         if (ns != null) {
-            ByteBuffer in = ByteBuffer.wrap(m.msg.getData());
+            ByteBuffer in = ByteBuffer.wrap(m.getData());
             processContent(m, ns, in);
         } else {
-            log.warn("message {} discarded", m.msg);
+            log.warn("message {} discarded", m);
         }
     }
 

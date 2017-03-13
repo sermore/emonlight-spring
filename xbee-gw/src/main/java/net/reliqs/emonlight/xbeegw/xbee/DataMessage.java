@@ -3,23 +3,32 @@ package net.reliqs.emonlight.xbeegw.xbee;
 import java.time.Instant;
 
 import com.digi.xbee.api.models.XBeeMessage;
-import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
 class DataMessage {
-	final XBeeMessage msg;
-	final Instant time;
-	final GlobalState globalState;
+	final private XBeeMessage msg;
+	final private Instant time;
 
-	DataMessage(GlobalState globalState, XBeeMessage msg) {
+	DataMessage(XBeeMessage msg) {
 		super();
-        this.globalState = globalState;
         this.msg = msg;
 		this.time = Instant.now();
 	}
-
-	NodeState getNodeState() {
-		return msg != null ? globalState.getNodeState(msg.getDevice().get64BitAddress().toString()) : null;
+	
+	String getDeviceAddress() {
+        return msg != null ? msg.getDevice().get64BitAddress().toString() : null;
+	}
+	
+	byte[] getData() {
+	    return msg.getData();
 	}
 
+    Instant getTime() {
+        return time;
+    }
+
+    @Override
+    public String toString() {
+        return "DataMessage [msg=" + msg + ", time=" + time + "]";
+    }
 
 }

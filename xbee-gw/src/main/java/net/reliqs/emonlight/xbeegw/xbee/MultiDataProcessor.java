@@ -20,17 +20,17 @@ class MultiDataProcessor extends MessageProcessor {
 		Node node = ns.getNode();
 		int timeMSec = in.getInt();
 		long dt = Integer.toUnsignedLong(timeMSec - ns.lastTimeMSec);
-		long dtFromTime = Duration.between(ns.lastTime, m.time).toMillis();
+		long dtFromTime = Duration.between(ns.lastTime, m.getTime()).toMillis();
 		long d = dt - dtFromTime;
 		if (Math.abs(d) > 5000) {
 			ns.skipLastTime = true;
 			// } else {
 			// node.lastTime = m.time.plus(d, ChronoUnit.MILLIS);
 		}
-		ns.dataTime = m.time;
+		ns.dataTime = m.getTime();
 		ns.dataTimeMSec = timeMSec;
 		ns.delta = d;
-		log.debug("{}: Data T={}, DT={}, D={}, @{} skipNext={}", node, timeMSec, dt, d, m.time, ns.skipLastTime);
+		log.debug("{}: Data T={}, DT={}, D={}, @{} skipNext={}", node, timeMSec, dt, d, m.getTime(), ns.skipLastTime);
 	}
 
 }

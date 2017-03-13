@@ -95,7 +95,7 @@ class XbeeGateway implements IDataReceiveListener, IIOSampleReceiveListener {
 
 	@Override
 	public void dataReceived(XBeeMessage msg) {
-		processor.queue(msg);
+		processor.queue(new DataMessage(msg));
 	}
 
 }

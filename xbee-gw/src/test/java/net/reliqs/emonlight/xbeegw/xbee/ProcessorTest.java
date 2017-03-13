@@ -32,46 +32,46 @@ import static org.junit.Assert.assertThat;
 @ActiveProfiles("test-router")
 public class ProcessorTest {
 
-	@Configuration
-	static class MyConfig {
+    @Configuration
+    static class MyConfig {
 
-		@Bean
-		@Primary
-		XbeeGateway xbeeGateway() {
-			return Mockito.mock(XbeeGateway.class);
-		}
+        @Bean
+        @Primary
+        XbeeGateway xbeeGateway() {
+            return Mockito.mock(XbeeGateway.class);
+        }
 
-	}
+    }
 
-	@Autowired
-	Processor processor;
+    @Autowired
+    Processor processor;
 
-	@Value("${processor.maxProcessTime:5000}")
-	private long maxProcessTime;
+    @Value("${processor.maxProcessTime:5000}")
+    private long maxProcessTime;
 
-	@Test
-	public void testMaxProcessTime() throws Exception {
+    @Test
+    public void testMaxProcessTime() throws Exception {
 
-		Thread t = new Thread() {
-			@Override
-			public void run() {
-				for (int i = 0; i < 10; i++) {
-					processor.queue(null);
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-				}
+        Thread t = new Thread() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 10; i++) {
+                    processor.queue(new DataMessage(null));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
 
-			}
-		};
-		t.start();
-		Instant start = Instant.now();
-		processor.process();
-		Instant end = Instant.now();
-		assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS))
-				&& end.isBefore(start.plus(maxProcessTime + 1000, ChronoUnit.MILLIS)), is(true));
-	}
+            }
+        };
+        t.start();
+        Instant start = Instant.now();
+        processor.process();
+        Instant end = Instant.now();
+        assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS))
+                && end.isBefore(start.plus(maxProcessTime + 1000, ChronoUnit.MILLIS)), is(true));
+    }
 
 }

@@ -24,7 +24,7 @@ class VCCProcessor extends MessageProcessor {
 		Probe p = node.getProbe(Type.VCC, (byte) 0);
 		Instant time;
 		if (selector == (byte) 'V') {
-			time = m.time;
+			time = m.getTime();
 		} else {
 			int t = in.getInt();
 			time = calculateTimeFromDataMessage(ns, t);

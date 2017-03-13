@@ -31,7 +31,7 @@ public class InfluxdbConfiguration {
     @Order(10)
     InfluxdbService influxdbService(InfluxdbAsyncService service, @Value("${influxdb.database}") String dbName) {
         InfluxdbService s = new InfluxdbService(service, dbName);
-        publisher.addSubscriber(s);
+        publisher.addService(s);
         return s;
     }
 }

@@ -1,26 +1,34 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 import com.digi.xbee.api.models.XBeeMessage;
 
 class DataMessage {
-	final private XBeeMessage msg;
-	final private Instant time;
+    final private Instant time;
+    final private String address;
+    final private byte[] data;
 
-	DataMessage(XBeeMessage msg) {
-		super();
-        this.msg = msg;
-		this.time = Instant.now();
-	}
-	
-	String getDeviceAddress() {
-        return msg != null ? msg.getDevice().get64BitAddress().toString() : null;
-	}
-	
-	byte[] getData() {
-	    return msg.getData();
-	}
+    DataMessage(XBeeMessage msg) {
+        this.data = msg.getData();
+        this.address = msg.getDevice().get64BitAddress().toString();
+        this.time = Instant.now();
+    }
+
+    DataMessage(String address, byte[] data) {
+        this.data = data;
+        this.address = address;
+        this.time = Instant.now();
+    }
+
+    String getDeviceAddress() {
+        return address;
+    }
+
+    byte[] getData() {
+        return data;
+    }
 
     Instant getTime() {
         return time;
@@ -28,7 +36,7 @@ class DataMessage {
 
     @Override
     public String toString() {
-        return "DataMessage [msg=" + msg + ", time=" + time + "]";
+        return "DataMessage [time=" + time + ", address=" + address + ", data=" + Arrays.toString(data) + "]";
     }
 
 }

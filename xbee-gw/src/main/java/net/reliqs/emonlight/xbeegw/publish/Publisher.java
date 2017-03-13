@@ -17,14 +17,21 @@ import java.util.List;
 public class Publisher {
     private static final Logger log = LoggerFactory.getLogger(Publisher.class);
 
-    private List<DeliveryService> subscribers;
+    private List<DeliveryService> services;
+    private List<Subscriber> subscribers;
 
     public Publisher() {
         this.subscribers = new ArrayList<>();
+        this.services = new ArrayList<>();
     }
 
-    public void addSubscriber(DeliveryService s) {
-        log.debug("register: {}", s);
+    public void addService(DeliveryService s) {
+        log.debug("register service: {}", s);
+        services.add(s);
+    }
+
+    public void addSubscriber(Subscriber s) {
+        log.debug("register subscriber: {}", s);
         subscribers.add(s);
     }
 
@@ -33,9 +40,12 @@ public class Publisher {
         for (Subscriber s: subscribers) {
             s.receive(probe, type, data);
         }
+        for (Subscriber s: services) {
+            s.receive(probe, type, data);
+        }
     }
 
     public List<DeliveryService> getServices() {
-        return subscribers;
+        return services;
     }
 }

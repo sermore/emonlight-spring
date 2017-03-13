@@ -37,7 +37,7 @@ public class RestConfiguration {
     RestDeliveryService restDeliveryService(Server server) {
         RestDeliveryService s = new RestDeliveryService(server, restAsyncService());
         log.debug("register: {} => {}", server, s);
-        publisher.addSubscriber(s);
+        publisher.addService(s);
         return s;
     }
 

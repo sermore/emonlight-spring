@@ -1,7 +1,10 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
 import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 import org.junit.Test;
@@ -17,8 +20,11 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.digi.xbee.api.utils.HexUtils;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -43,12 +49,16 @@ public class ProcessorTest {
 
     }
 
-    @Autowired
-    Processor processor;
-
     @Value("${processor.maxProcessTime:5000}")
     private long maxProcessTime;
-
+    @Autowired
+    private Processor processor;
+    @Autowired
+    Publisher publisher;
+    @Autowired
+    private Settings settings;
+    
+    
     @Test
     public void testMaxProcessTime() throws Exception {
 
@@ -56,7 +66,7 @@ public class ProcessorTest {
             @Override
             public void run() {
                 for (int i = 0; i < 10; i++) {
-                    processor.queue(new DataMessage(null));
+                    processor.queue(new DataMessage("", null));
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
@@ -72,6 +82,33 @@ public class ProcessorTest {
         Instant end = Instant.now();
         assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS))
                 && end.isBefore(start.plus(maxProcessTime + 1000, ChronoUnit.MILLIS)), is(true));
+    }
+
+    @Test
+    public void testDHT22MessageProcessing() throws InterruptedException {
+        TestSubscriber testSubscriber = new TestSubscriber();
+        publisher.addSubscriber(testSubscriber);        
+        DataMessage msg = new DataMessage("0013A20041468937", HexUtils.hexStringToByteArray("4A0A0378007FFA"));
+        Probe ph = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.DHT22_H).findFirst().get();
+        Probe pt = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.DHT22_T).findFirst().get();
+        processor.queue(msg);
+        processor.process();
+        assertThat(testSubscriber.data, is(Arrays.asList(new Data(msg.getTime().toEpochMilli(), 88.8), new Data(msg.getTime().toEpochMilli(), 12.7))));
+        assertThat(testSubscriber.types, is(Arrays.asList(Type.DHT22_H, Type.DHT22_T)));
+        assertThat(testSubscriber.probes, is(Arrays.asList(ph, pt)));
+    }
+
+    @Test
+    public void testVccMessageProcessing() throws InterruptedException {
+        TestSubscriber testSubscriber = new TestSubscriber();
+        publisher.addSubscriber(testSubscriber);        
+        DataMessage msg = new DataMessage("0013A20041468937", HexUtils.hexStringToByteArray("5605BB"));
+        Probe pv = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.VCC).findFirst().get();
+        processor.queue(msg);
+        processor.process();
+        assertThat(testSubscriber.data, is(Arrays.asList(new Data(msg.getTime().toEpochMilli(), 4.043116483516483))));
+        assertThat(testSubscriber.types, is(Arrays.asList(Type.VCC)));
+        assertThat(testSubscriber.probes, is(Arrays.asList(pv)));
     }
 
 }

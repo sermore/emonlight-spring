@@ -55,7 +55,7 @@ public class JmsConfiguration {
     @Order(10)
     JmsService jmsService(JmsAsyncService jmsAsyncService) {
         JmsService s = new JmsService(jmsAsyncService);
-        publisher.addSubscriber(s);
+        publisher.addService(s);
         return s;
     }
 

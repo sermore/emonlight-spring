@@ -21,7 +21,7 @@ settings:
   nodes:
   - name: ZIG2
     address: 0013A2004146893C
-    sampleTime: 20000
+    sampleTime: 40000
     mode: DHT22
     vccFromADC: true
     adcRange: 4095
@@ -40,7 +40,7 @@ settings:
       adcMult: 3.42
   - name: ZIG_PINO
     address: 0013A20041468938
-    sampleTime: 20000
+    sampleTime: 40000
     mode: DHT22
     vccFromADC: true
     adcRange: 4095
@@ -59,7 +59,7 @@ settings:
       adcMult: 3.43
   - name: MAIN
     address: 0013A20041468922
-    sampleTime: 10000
+    sampleTime: 3000
     mode: PULSE_DHT22
     vccFromADC: false
     adcRange: 4095

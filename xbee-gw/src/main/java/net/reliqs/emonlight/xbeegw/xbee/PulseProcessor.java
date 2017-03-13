@@ -11,8 +11,9 @@ import org.slf4j.LoggerFactory;
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.monitoring.TriggerHandler;
 
-class PulseProcessor extends MessageProcessor {
+class PulseProcessor extends MessageProcessor implements TriggerHandler {
     private static final Logger log = LoggerFactory.getLogger(PulseProcessor.class);
 
     PulseProcessor(Processor processor) {
@@ -52,7 +53,6 @@ class PulseProcessor extends MessageProcessor {
     @Override
     public void triggerChanged(NodeState ns, Probe p, Type type, int oldState, int newState) {
         log.warn("{}: {} Buzzer level {} => {}", p.getNode(), p.getName(), oldState, newState);
-        super.triggerChanged(ns, p, Type.THRESOLD_ALARM, oldState, newState);
         sendBuzzerAlarmLevel(ns, newState);
     }
 

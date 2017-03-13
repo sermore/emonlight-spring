@@ -8,5 +8,10 @@ import net.reliqs.emonlight.xbeegw.xbee.NodeState;
  * Created by sergio on 26/02/17.
  */
 public interface TriggerHandler {
+	
+    /**
+     * Trigger called when a threshold is trespassed. The parameters type and
+     * enable define the new state of the alarm level that needs to be set.
+     */
     void triggerChanged(NodeState nodeState, Probe probe, Type type, int oldValue, int newValue);
 }

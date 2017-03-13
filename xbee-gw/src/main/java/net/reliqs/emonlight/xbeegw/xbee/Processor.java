@@ -27,6 +27,7 @@ import com.digi.xbee.api.utils.HexUtils;
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
@@ -53,7 +54,7 @@ public class Processor {
     private long maxProcessTime;
 
     @Autowired
-    public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState, final Publisher publisher)
+    public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState, final Publisher publisher, final TriggerManager triggerManager)
             throws XBeeException {
         this.gateway = gateway;
         this.globalState = globalState;
@@ -68,20 +69,21 @@ public class Processor {
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
         gateway.setProcessor(this);
-        settings.getNodes().forEach(n -> register(gateway, n));
+        settings.getNodes().forEach(n -> register(triggerManager, gateway, n));        
         log.debug("processor configuration complete");
     }
 
-    private void register(XbeeGateway gateway, Node n) {
+    private void register(TriggerManager triggerManager, XbeeGateway gateway, Node n) {
         log.debug("setup node {}", n);
         String addr = n.getAddress();
         NodeState ns = globalState.getNodeState(addr);
         ns.setDevice(gateway.addDevice(addr));
-        for (Probe p : n.getProbes()) {
+        n.getProbes().forEach(p -> {
             if (p.hasThresholds()) {
-                procs.get((byte) 'P').registerTrigger(ns, p);
+            	PulseProcessor pp = (PulseProcessor) procs.get((byte) 'P');
+                triggerManager.registerTrigger(ns, p, pp);
             }
-        }
+        });        
     }
 
     void sendData(NodeState ns, byte[] data) {

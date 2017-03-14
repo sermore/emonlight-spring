@@ -38,39 +38,39 @@ public class TriggerLevelTest {
         TriggerLevel t = new TriggerLevel(p, null, TriggerLevel.powerTriggers(p));
         t.addHandler(new TriggerHandler() {
             @Override
-            public void triggerChanged(NodeState nodeState, Probe probe, Type type, int oldValue, int newValue) {
+            public void triggerChanged(Probe probe, Type type, int oldValue, int newValue) {
                 level = newValue;
                 levelChangeCnt++;
             }
         });
 
-        t.process(new Data(0, 0));
+        t.process(p, new Data(0, 0));
         assertThat(level, is(0));
-        t.process(new Data(1000, 4000));
+        t.process(p, new Data(1000, 4000));
         assertThat(level, is(4));
         assertThat(levelChangeCnt, is(1));
-        t.process(new Data(2000, 3999));
+        t.process(p, new Data(2000, 3999));
         assertThat(level, is(1));
         assertThat(levelChangeCnt, is(2));
-        t.process(new Data(3000, 3200));
+        t.process(p, new Data(3000, 3200));
         assertThat(level, is(0));
         assertThat(levelChangeCnt, is(3));
-        t.process(new Data(3_500_000, 3300));
+        t.process(p, new Data(3_500_000, 3300));
         assertThat(level, is(1));
         assertThat(levelChangeCnt, is(4));
-        t.process(new Data(3_600_000, 3300));
+        t.process(p, new Data(3_600_000, 3300));
         assertThat(level, is(2));
         assertThat(levelChangeCnt, is(5));
-        t.process(new Data(3_601_000, 3200));
+        t.process(p, new Data(3_601_000, 3200));
         assertThat(level, is(0));
         assertThat(levelChangeCnt, is(6));
-        t.process(new Data(7_190_000, 3300));
+        t.process(p, new Data(7_190_000, 3300));
         assertThat(level, is(2));
         assertThat(levelChangeCnt, is(7));
-        t.process(new Data(7_200_000, 3300));
+        t.process(p, new Data(7_200_000, 3300));
         assertThat(level, is(3));
         assertThat(levelChangeCnt, is(8));
-        t.process(new Data(7_200_100, 4000));
+        t.process(p, new Data(7_200_100, 4000));
         assertThat(level, is(4));
         assertThat(levelChangeCnt, is(9));
     }

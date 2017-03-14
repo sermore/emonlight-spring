@@ -10,9 +10,11 @@ import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 abstract class MessageProcessor {
-//	private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
+	private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
 
     private final Processor processor;
 
@@ -40,9 +42,12 @@ abstract class MessageProcessor {
 
     void verifyTime(Node node, Instant time) {
         Instant now = Instant.now().plus(1, ChronoUnit.SECONDS);
-        assert now.isAfter(time) : "received message with timestamp ahead of now";
-        assert now.minus(node.getSampleTime() * 2, ChronoUnit.MILLIS).isBefore(time) : String
-                .format("received message timestamp %s is too old compared to now %s", time, now);
+        if (now.isBefore(time)) {
+            log.warn("{}: {} received message with timestamp ahead of now", node, time);
+        }
+        if (now.minus(node.getSampleTime() * 2, ChronoUnit.MILLIS).isBefore(time)) {
+            log.warn("{}: {} > {} received message timestamp %s is too old compared to now %s", node, time, now);
+        }
     }
 
     void sendBuzzerAlarmLevel(NodeState ns, int level) {

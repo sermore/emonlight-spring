@@ -16,10 +16,10 @@ class DataMessage {
         this.time = Instant.now();
     }
 
-    DataMessage(String address, byte[] data) {
+    DataMessage(Instant time, String address, byte[] data) {
         this.data = data;
         this.address = address;
-        this.time = Instant.now();
+        this.time = time;
     }
 
     String getDeviceAddress() {

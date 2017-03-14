@@ -26,6 +26,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -57,6 +58,8 @@ public class ProcessorTest {
     Publisher publisher;
     @Autowired
     private Settings settings;
+    @Autowired
+    GlobalState globalState;
     
     
     @Test
@@ -66,7 +69,7 @@ public class ProcessorTest {
             @Override
             public void run() {
                 for (int i = 0; i < 10; i++) {
-                    processor.queue(new DataMessage("", null));
+                    processor.queue(new DataMessage(Instant.now(), "", null));
                     try {
                         Thread.sleep(maxProcessTime / 5);
                     } catch (InterruptedException e) {
@@ -89,7 +92,7 @@ public class ProcessorTest {
     public void testDHT22MessageProcessing() throws InterruptedException {
         TestSubscriber testSubscriber = new TestSubscriber();
         publisher.addSubscriber(testSubscriber);        
-        DataMessage msg = new DataMessage("0013A20041468937", HexUtils.hexStringToByteArray("4A0A0378007FFA"));
+        DataMessage msg = new DataMessage(Instant.now(), "0013A20041468937", HexUtils.hexStringToByteArray("4A0A0378007FFA"));
         Probe ph = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.DHT22_H).findFirst().get();
         Probe pt = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.DHT22_T).findFirst().get();
         processor.queue(msg);
@@ -103,7 +106,7 @@ public class ProcessorTest {
     public void testVccMessageProcessing() throws InterruptedException {
         TestSubscriber testSubscriber = new TestSubscriber();
         publisher.addSubscriber(testSubscriber);        
-        DataMessage msg = new DataMessage("0013A20041468937", HexUtils.hexStringToByteArray("5605BB"));
+        DataMessage msg = new DataMessage(Instant.now(),"0013A20041468937", HexUtils.hexStringToByteArray("5605BB"));
         Probe pv = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.VCC).findFirst().get();
         processor.queue(msg);
         processor.process();
@@ -111,12 +114,59 @@ public class ProcessorTest {
         assertThat(testSubscriber.types, is(Arrays.asList(Type.VCC)));
         assertThat(testSubscriber.probes, is(Arrays.asList(pv)));
     }
-    
+
+    /**
+     * Data received from 0013A20041468922 >> 44 0A 0A 71 38 50 03 0A 0A 5A 9D.
+     * Data T=168456504, DT=55461, D=5031, @2017-03-14T10:05:41.584Z skipNext=true
+     * N [MAIN, 0013A20041468922]: Pulse(3) Pow=0.0, T=168450717, DT=5787 @2017-03-14T10:05:35.797Z, skipped=true
+     *
+     *  Data received from 0013A20041468922 >> 44 0A 0A E6 6E 48 0A 00 DC 00 C9 A5 0A 0A E6 6D.
+     *  Data T=168486510, DT=35793, D=23, @2017-03-14T10:06:11.567Z skipNext=false
+     *  DHT22 P=10, T=20.1, H=22.0 @2017-03-14T10:06:11.566Z
+     *
+     * Data received from 0013A20041468922 >> 44 0A 0B 0D 78 57 0A 0A E6 7B 0C DF.
+     * Data T=168496504, DT=45787, D=24, @2017-03-14T10:06:21.560Z skipNext=false
+     * Vcc = 3.295 @2017-03-14T10:06:11.579Z
+     *
+     * Data received from 0013A20041468922 >> 44 0A 0B 34 88 50 03 0A 0B 1D 2F.
+     * Data T=168506504, DT=55787, D=40, @2017-03-14T10:06:31.544Z skipNext=false
+     * Pulse(3) Pow=72.27464364585424, T=168500527, DT=49810 @2017-03-14T10:06:25.605Z, skipped=false
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void testPulseMessageProcessing() throws InterruptedException {
+        TestSubscriber testSubscriber = new TestSubscriber();
+        publisher.addSubscriber(testSubscriber);
+        DataMessage msg0 = new DataMessage(Instant.parse("2017-03-14T10:05:41.584Z"), "0013A20041468937", HexUtils.hexStringToByteArray("440A0A713850030A0A5A9D"));
+        DataMessage msg1 = new DataMessage(Instant.parse("2017-03-14T10:06:11.567Z"), "0013A20041468937", HexUtils.hexStringToByteArray("440A0AE66E480A00DC00C9A50A0AE66D"));
+        DataMessage msg2 = new DataMessage(Instant.parse("2017-03-14T10:06:21.560Z"), "0013A20041468937", HexUtils.hexStringToByteArray("440A0B0D78570A0AE67B0CDF"));
+        DataMessage msg3 = new DataMessage(Instant.parse("2017-03-14T10:06:31.544Z"), "0013A20041468937", HexUtils.hexStringToByteArray("440A0B348850030A0B1D2F"));
+        Probe pv = settings.getProbes().filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.PULSE).findFirst().get();
+        NodeState ns = globalState.getNodeState(pv.getNode().getAddress());
+        ns.lastTimeMSec =  168456504 - 55461;
+        ns.lastTime =  msg0.getTime().minus(55461 - 5031, ChronoUnit.MILLIS);
+        processor.queue(msg0);
+        processor.queue(msg1);
+        processor.queue(msg2);
+        processor.queue(msg3);
+        processor.process();
+        assertThat(testSubscriber.data, hasSize(4));
+        assertThat(testSubscriber.data, is(Arrays.asList(
+                new Data(msg1.getTime().toEpochMilli(), 22.0),
+                new Data(msg1.getTime().toEpochMilli(), 20.1),
+                new Data(msg2.getTime().toEpochMilli(), 3.295),
+                new Data(msg3.getTime().toEpochMilli(), 72.27464364585424))
+        ));
+        assertThat(testSubscriber.types, is(Arrays.asList(Type.PULSE)));
+        assertThat(testSubscriber.probes, is(Arrays.asList(pv)));
+    }
+
     @Test
     public void testIncompleteMessage() throws InterruptedException {
         TestSubscriber testSubscriber = new TestSubscriber();
         publisher.addSubscriber(testSubscriber);        
-        DataMessage msg = new DataMessage("0013A20041468937", HexUtils.hexStringToByteArray("4A0A0378007F"));
+        DataMessage msg = new DataMessage(Instant.now(),"0013A20041468937", HexUtils.hexStringToByteArray("4A0A0378007F"));
         processor.queue(msg);
         processor.process();
         assertThat(testSubscriber.data.isEmpty(), is(true));

@@ -8,6 +8,10 @@ buildscript {
     }
 }
 
+plugins {
+    id 'org.hidetake.ssh' version '2.8.0'
+}
+
 allprojects {
     group = 'net.reliqs.emonlight'
     version = '0.0.1-SNAPSHOT'

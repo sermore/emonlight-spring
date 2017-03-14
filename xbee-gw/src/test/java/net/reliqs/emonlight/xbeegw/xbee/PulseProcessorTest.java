@@ -12,7 +12,7 @@ public class PulseProcessorTest {
 
 	@Test
 	public void testCalcPower() {
-		PulseProcessor pp = new PulseProcessor(null);
+		PulseProcessor pp = new PulseProcessor(null, null);
 		assertThat(pp.calcPower(1000, 1000), is(3600.0));
 	}
 

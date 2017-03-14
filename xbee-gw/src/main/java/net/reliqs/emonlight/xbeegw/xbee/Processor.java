@@ -70,11 +70,11 @@ public class Processor {
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
         gateway.setProcessor(this);
-        settings.getNodes().forEach(n -> register(triggerManager, gateway, n));
+        settings.getNodes().forEach(n -> registerNode(triggerManager, n));
         log.debug("processor configuration complete");
     }
 
-    private void register(TriggerManager triggerManager, XbeeGateway gateway, Node n) {
+    private void registerNode(TriggerManager triggerManager, Node n) {
         log.debug("setup node {}", n);
         String addr = n.getAddress();
         NodeState ns = globalState.getNodeState(addr);

@@ -65,7 +65,7 @@ public class Processor {
         procs.put((byte) 'C', new ConfigurationProcessor(this));
         procs.put((byte) 'J', new DHT22Processor(this));
         procs.put((byte) 'V', new VCCProcessor(this));
-        procs.put((byte) 'P', new PulseProcessor(this));
+        procs.put((byte) 'P', new PulseProcessor(this, globalState));
         procs.put((byte) 'D', new MultiDataProcessor(this));
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
@@ -82,7 +82,7 @@ public class Processor {
         n.getProbes().forEach(p -> {
             if (p.hasThresholds()) {
                 PulseProcessor pp = (PulseProcessor) procs.get((byte) 'P');
-                triggerManager.registerTrigger(ns, p, pp);
+                triggerManager.createTriggerLevel(ns, p, pp);
             }
         });
     }

@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.xbeegw.state.GlobalState;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,9 +17,11 @@ import net.reliqs.emonlight.xbeegw.monitoring.TriggerHandler;
 
 class PulseProcessor extends MessageProcessor implements TriggerHandler {
     private static final Logger log = LoggerFactory.getLogger(PulseProcessor.class);
+    private GlobalState globalState;
 
-    PulseProcessor(Processor processor) {
+    PulseProcessor(Processor processor, GlobalState globalState) {
         super(processor);
+        this.globalState = globalState;
     }
 
     @Override
@@ -51,9 +55,9 @@ class PulseProcessor extends MessageProcessor implements TriggerHandler {
     }
 
     @Override
-    public void triggerChanged(NodeState ns, Probe p, Type type, int oldState, int newState) {
+    public void triggerChanged(Probe p, Type type, int oldState, int newState) {
         log.warn("{}: {} Buzzer level {} => {}", p.getNode(), p.getName(), oldState, newState);
-        sendBuzzerAlarmLevel(ns, newState);
+        sendBuzzerAlarmLevel(globalState.getNodeState(p.getNode().getAddress()), newState);
     }
 
     double calcPower(int pulsesPerKilowattHour, long dt) {

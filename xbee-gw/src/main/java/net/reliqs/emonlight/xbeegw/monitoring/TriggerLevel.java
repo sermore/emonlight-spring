@@ -1,16 +1,14 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by sergio on 26/02/17.
  */
-public class TriggerLevel {
+public class TriggerLevel extends Trigger {
 
     static public SimpleTrigger[] powerTriggers(final Probe p) {
         return new SimpleTrigger[]{
@@ -22,23 +20,29 @@ public class TriggerLevel {
     }
 
     private final Probe probe;
-    private final NodeState nodeState;
+//    private final NodeState nodeState;
     private final SimpleTrigger[] triggers;
     private int triggerState;
-    private List<TriggerHandler> handlers;
+//    private List<TriggerHandler> handlers;
 
     public TriggerLevel(final Probe p, final NodeState ns, final SimpleTrigger[] triggers) {
         probe = p;
-        nodeState = ns;
+//        nodeState = ns;
         this.triggers = triggers;
-        this.handlers = new ArrayList<>();
+//        this.handlers = new ArrayList<>();
     }
 
-    public void addHandler(TriggerHandler h) {
-        handlers.add(h);
-    }
+//    public void addHandler(TriggerHandler h) {
+//        handlers.add(h);
+//    }
 
-    public int process(Data d) {
+    @Override
+    boolean isApplicable(Probe probe, Type type, Data data) {
+        return super.isApplicable(probe, type, data) && probe == this.probe;
+    }
+    
+    @Override
+    void process(Probe pulse, Data d) {
         boolean[] triggerValues = new boolean[triggers.length];
         int maxLevel = 0;
         for (int i = 0; i < triggers.length; i++) {
@@ -56,17 +60,16 @@ public class TriggerLevel {
             newTriggerState = maxLevel + 1;
         }
         if (newTriggerState != triggerState) {
-            triggerChanged(triggerState, newTriggerState);
+            triggerChanged(probe, Type.THRESOLD_ALARM, triggerState, newTriggerState);
         }
         triggerState = newTriggerState;
-        return triggerState;
     }
 
-    private void triggerChanged(int oldTriggerState, int newTriggerState) {
-        for (TriggerHandler h: handlers) {
-            h.triggerChanged(nodeState, probe, Probe.Type.THRESOLD_ALARM, oldTriggerState, newTriggerState);
-        }
-    }
+//    private void triggerChanged(int oldTriggerState, int newTriggerState) {
+//        for (TriggerHandler h: handlers) {
+//            h.triggerChanged(nodeState, probe, Probe.Type.THRESOLD_ALARM, oldTriggerState, newTriggerState);
+//        }
+//    }
 
 //    boolean lowerTriggerIsActive = triggerState.contains(Probe.Type.M_SOFT_THRESHOLD_1);
 //    Probe.Type newTriggerState = triggerState.peek();

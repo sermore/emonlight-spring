@@ -2,33 +2,65 @@ package net.reliqs.emonlight.xbeegw.monitoring;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.DelayQueue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
 
+@Component
 public class TriggerDataAbsent extends Trigger {
-
-    private Map<Probe, Long> lastMessages;
-    private Map<Probe, Integer> levels;
+    private static final Logger log = LoggerFactory.getLogger(TriggerDataAbsent.class);
     
+    private DelayQueue<DelayProbe> expires;
+    private Map<Probe, DelayProbe> map;
+
+    public TriggerDataAbsent(final Settings settings, Publisher publisher) {
+        expires = new DelayQueue<>();
+        map = new HashMap<>();
+        settings.getProbes().forEach(p -> {
+            DelayProbe dp = new DelayProbe(p);
+            expires.add(dp);
+            map.put(p, dp);
+            log.debug("{}: registered to Trigger data absent, expiration {}", p, dp.getMaxTimeBetweenMessages());
+        });
+        publisher.addSubscriber(this);
+    }
     
-    public TriggerDataAbsent() {
-        lastMessages = new HashMap<>();
-        levels = new HashMap<>();
-    }
-
-    long getMaxTimeBetweenMessages(Probe probe) {
-        return probe.getRealSampleTime() * 5;
-    }
-
-
     @Override
     void process(Probe probe, Data data) {
-        long lm = lastMessages.getOrDefault(probe, 0L);
-        int level = levels.getOrDefault(probe, 0);
-        if (lm > 0L && data.t - lm > getMaxTimeBetweenMessages(probe)) {
-            
+        DelayProbe p = map.get(probe);
+        // If the trigger was raised, then switch it off as a message is arrived
+        if (p.getLevel() > 0) {
+            triggerChanged(probe, Type.DATA_MISSING_ALARM, p.getLevel(), 0);
+            expires.remove(p);
+            p.reset();
+            expires.add(p);
         }
+    }
+
+    @Scheduled(fixedRate = 1000)
+    void checkTriggers() {
+        DelayProbe p;
+        do {
+            p = expires.poll();
+            if (p != null) {
+                int newLevel = p.getLevel() +1;
+                log.debug("{}: Trigger Data Missing expired, new level {}", p.getProbe(), newLevel);
+                triggerChanged(p.getProbe(), Type.DATA_MISSING_ALARM, p.getLevel(), newLevel);                
+                expires.remove(p);
+                p.setLevel(newLevel);
+                p.reset();
+                expires.add(p);
+            }
+        } while(p != null);
     }
 
 }

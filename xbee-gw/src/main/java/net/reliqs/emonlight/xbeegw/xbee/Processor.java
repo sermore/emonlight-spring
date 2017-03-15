@@ -71,6 +71,7 @@ public class Processor {
         procs.put((byte) 'W', procs.get((byte) 'V'));
         gateway.setProcessor(this);
         settings.getNodes().forEach(n -> registerNode(triggerManager, n));
+//        triggerManager.registerTriggerDataAbsent(handler);
         log.debug("processor configuration complete");
     }
 

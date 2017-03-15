@@ -1,8 +1,6 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
 import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
@@ -10,7 +8,6 @@ import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import net.reliqs.emonlight.xbeegw.publish.Subscriber;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
 
 @Component
@@ -18,10 +15,13 @@ public class TriggerManager implements TriggerHandler {
 
 //    private Map<Probe, TriggerLevel> triggers;
 	private Publisher publisher;
+    private TriggerDataAbsent triggerDataAbsent;
 
-	TriggerManager(Publisher publisher) {
+	TriggerManager(Publisher publisher, TriggerDataAbsent triggerDataAbsent) {
 		this.publisher = publisher;
 //		this.triggers = new HashMap<>();
+        this.triggerDataAbsent = triggerDataAbsent;
+        triggerDataAbsent.addHandler(this);
 	}
 
     public void createTriggerLevel(NodeState ns, Probe p, TriggerHandler handler) {
@@ -32,11 +32,8 @@ public class TriggerManager implements TriggerHandler {
 //        triggers.put(p, tl);
     }
     
-    public void createTriggerDataAbsent(TriggerHandler handler) {
-        TriggerDataAbsent t = new TriggerDataAbsent();
-        t.addHandler(handler);
-        t.addHandler(this);
-        publisher.addSubscriber(t);
+    public void registerTriggerDataAbsent(TriggerHandler handler) {
+        triggerDataAbsent.addHandler(handler);
     }
     
 //	@Override

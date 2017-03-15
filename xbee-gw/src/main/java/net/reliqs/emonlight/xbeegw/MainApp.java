@@ -1,8 +1,9 @@
 package net.reliqs.emonlight.xbeegw;
 
+import java.util.concurrent.Executor;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationContext;
@@ -10,9 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-
-import java.util.concurrent.Executor;
 
 @Profile({ "default", "prod", "dev" })
 @SpringBootApplication
@@ -20,6 +20,7 @@ import java.util.concurrent.Executor;
 @EnableConfigurationProperties
 //@EnableAutoConfiguration
 @EnableAsync
+@EnableScheduling
 public class MainApp extends AsyncConfigurerSupport {
 
 	public static void main(String[] args) {

@@ -11,7 +11,7 @@ settings:
   nodes:
   - name: N1
     address: X1
-    sampleTime: 32000
+    sampleTime: 500
     mode: PULSE_DHT22
     vccThreshold: 3.1
     adcRange: 4095

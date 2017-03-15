@@ -1,11 +1,11 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
+import net.reliqs.emonlight.xbeegw.config.Probe;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
-
-import net.reliqs.emonlight.xbeegw.config.Probe;
 
 class DelayProbe implements Delayed {
 
@@ -13,24 +13,24 @@ class DelayProbe implements Delayed {
     private Instant expireTime;
     private int level;
 
-    public DelayProbe(Probe probe) {
+    DelayProbe(Probe probe) {
         this.probe = probe;
         reset();
     }
-    
-    public Probe getProbe() {
+
+    Probe getProbe() {
         return probe;
     }
 
-    public int getLevel() {
+    int getLevel() {
         return level;
     }
 
-    public void setLevel(int level) {
+    void setLevel(int level) {
         this.level = level;
     }
 
-    public void reset() {
+    void reset() {
         this.expireTime = Instant.now().plus(getMaxTimeBetweenMessages(), ChronoUnit.MILLIS);
     }
 

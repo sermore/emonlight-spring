@@ -1,12 +1,12 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Subscriber;
+
+import java.util.ArrayList;
+import java.util.List;
 
 abstract class Trigger implements Subscriber {
 
@@ -29,7 +29,7 @@ abstract class Trigger implements Subscriber {
         }
     }
 
-    protected void triggerChanged(Probe probe, Type type, int oldTriggerState, int newTriggerState) {
+    void triggerChanged(Probe probe, Type type, int oldTriggerState, int newTriggerState) {
         for (TriggerHandler h: handlers) {
             h.triggerChanged(probe, type, oldTriggerState, newTriggerState);
         }

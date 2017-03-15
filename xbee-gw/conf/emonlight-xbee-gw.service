@@ -1,0 +1,11 @@
+[Unit]
+Description=Emonlight Xbee Gateway
+After=syslog.target
+
+[Service]
+User=emonlight
+ExecStart=/var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar -Djava.library.path=/usr/lib/jni --spring-config-name=/etc/emonlight-xbee-gw.yml
+SuccessExitStatus=143
+
+[Install]
+WantedBy=multi-user.target

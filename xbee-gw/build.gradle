@@ -18,12 +18,12 @@ sourceSets {
     }
 }
 
-tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
-}
-
 jar {
     baseName = 'emonlight-xbee-gw'
+}
+
+springBoot {
+	executable = true
 }
 
 test {
@@ -36,6 +36,46 @@ test {
 bootRun {
 	systemProperty("java.library.path", "/usr/lib/jni")
 	systemProperty 'spring.profiles.active', 'dev'
+}
+
+remotes {
+    deployHost {
+        host = deploy_host
+        user = deploy_user
+        sudoPassword = deploy_sudo_password
+        identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+    }
+}
+
+task deploy(dependsOn: 'build') {
+    doLast {
+        ssh.run {
+            session(remotes.deployHost) {
+                // test if service is already installed
+                if (!execute('id emonlight-xbee-gw', ignoreError: true)) {
+                    put from: file('conf/install.sh'), into: '/tmp'
+                    executeSudo('bash /tmp/install.sh', pty: true)
+                }
+                // deploy executable file
+                put from: jar.archivePath.absolutePath, into: '/tmp'
+                execute 'chmod a+x /tmp/' + jar.archiveName
+                executeSudo 'mv -f /tmp/' + jar.archiveName + ' /var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar', pty: true
+                executeSudo 'systemctl restart emonlight-xbee-gw', pty: true
+            }
+        }
+    }
+}
+
+task undeploy {
+    doLast {
+        ssh.run {
+            // test if service is already installed
+            session(remotes.lime2) {
+                put from: file('conf/uninstall.sh'), into: '/tmp'
+                executeSudo("bash /tmp/uninstall.sh", pty: true)
+            }
+        }
+    }
 }
 
 dependencies {
@@ -52,8 +92,6 @@ dependencies {
 	compile(group: 'com.digi.xbee', name: 'xbee-java-library', version: '1.2.0') {
 		exclude(module: 'rxtx-native')
 		exclude(group: 'org.slf4j')
-//		exclude(module: 'android-sdk')
-//		exclude(module: 'android-sdk-addon')
     }
 	
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.8.5'

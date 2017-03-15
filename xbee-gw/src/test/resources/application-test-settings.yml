@@ -36,7 +36,7 @@ settings:
       type: VCC
   - name: N2
     address: X2
-    sampleTime: 34
+    sampleTime: 300
     mode: DHT22
     probes:
     - name: P4

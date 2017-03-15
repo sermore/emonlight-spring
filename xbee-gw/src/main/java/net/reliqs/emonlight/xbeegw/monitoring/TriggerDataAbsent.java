@@ -3,6 +3,7 @@ package net.reliqs.emonlight.xbeegw.monitoring;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +30,16 @@ public class TriggerDataAbsent extends Trigger {
             DelayProbe dp = new DelayProbe(p);
             expires.add(dp);
             map.put(p, dp);
-            log.debug("{}: registered to Trigger data absent, expiration {}", p, dp.getMaxTimeBetweenMessages());
+            log.debug("{}: registered to Trigger data absent, expiration {} {}", p, dp.getMaxTimeBetweenMessages(), dp.getDelay(TimeUnit.MILLISECONDS));
         });
         publisher.addSubscriber(this);
+    }
+    
+    void reset(DelayProbe p, int newLevel) {
+        expires.remove(p);
+        p.setLevel(newLevel);
+        p.reset();
+        expires.add(p);
     }
     
     @Override
@@ -39,26 +47,22 @@ public class TriggerDataAbsent extends Trigger {
         DelayProbe p = map.get(probe);
         // If the trigger was raised, then switch it off as a message is arrived
         if (p.getLevel() > 0) {
+            reset(p, 0);
             triggerChanged(probe, Type.DATA_MISSING_ALARM, p.getLevel(), 0);
-            expires.remove(p);
-            p.reset();
-            expires.add(p);
         }
     }
 
     @Scheduled(fixedRate = 1000)
     void checkTriggers() {
         DelayProbe p;
+//        expires.stream().forEach(dp -> log.debug("{} {}", dp.getProbe().getName(), dp.getDelay(TimeUnit.MILLISECONDS)));
         do {
             p = expires.poll();
             if (p != null) {
                 int newLevel = p.getLevel() +1;
                 log.debug("{}: Trigger Data Missing expired, new level {}", p.getProbe(), newLevel);
-                triggerChanged(p.getProbe(), Type.DATA_MISSING_ALARM, p.getLevel(), newLevel);                
-                expires.remove(p);
-                p.setLevel(newLevel);
-                p.reset();
-                expires.add(p);
+                reset(p, newLevel);
+                triggerChanged(p.getProbe(), Type.DATA_MISSING_ALARM, p.getLevel(), newLevel);
             }
         } while(p != null);
     }

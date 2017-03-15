@@ -36,7 +36,9 @@ class DelayProbe implements Delayed {
 
     @Override
     public int compareTo(Delayed d) {
-        return 0;
+        long otherDelay = d.getDelay(TimeUnit.MILLISECONDS);
+        long myDelay = getDelay(TimeUnit.MILLISECONDS);
+        return Long.compare(myDelay, otherDelay);
     }
 
     @Override

@@ -1,12 +1,11 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import java.nio.ByteBuffer;
-
+import net.reliqs.emonlight.xbeegw.GwException;
+import net.reliqs.emonlight.xbeegw.config.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.reliqs.emonlight.xbeegw.GwException;
-import net.reliqs.emonlight.xbeegw.config.Node;
+import java.nio.ByteBuffer;
 
 /**
  * Verify the configuration received by the xbee.

@@ -1,14 +1,13 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import java.time.Instant;
-
-import org.springframework.stereotype.Component;
-
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
+import org.springframework.stereotype.Component;
+
+import java.time.Instant;
 
 @Component
 public class TriggerManager implements TriggerHandler {

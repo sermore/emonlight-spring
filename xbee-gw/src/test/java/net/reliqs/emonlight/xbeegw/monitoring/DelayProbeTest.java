@@ -1,14 +1,13 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.nullValue;
-import static org.junit.Assert.*;
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import org.junit.Test;
 
 import java.util.concurrent.DelayQueue;
 
-import org.junit.Test;
-
-import net.reliqs.emonlight.xbeegw.config.Probe;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertThat;
 
 public class DelayProbeTest {
 

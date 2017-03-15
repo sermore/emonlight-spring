@@ -1,11 +1,11 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
+import net.reliqs.emonlight.xbeegw.config.Probe;
+
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
-
-import net.reliqs.emonlight.xbeegw.config.Probe;
 
 class DelayProbe implements Delayed {
 

@@ -1,7 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.jms;
 
-import javax.jms.ConnectionFactory;
-
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +15,7 @@ import org.springframework.jms.support.converter.MappingJackson2MessageConverter
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import javax.jms.ConnectionFactory;
 
 /**
  * Created by sergio on 02/03/17.

@@ -1,11 +1,12 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
-import java.util.Arrays;
-
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import net.reliqs.emonlight.xbeegw.state.GlobalState;
+import net.reliqs.emonlight.xbeegw.xbee.Processor;
+import net.reliqs.emonlight.xbeegw.xbee.ProcessorTestConfig;
+import net.reliqs.emonlight.xbeegw.xbee.TestSubscriber;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +17,11 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import net.reliqs.emonlight.xbeegw.state.GlobalState;
-import net.reliqs.emonlight.xbeegw.xbee.Processor;
-import net.reliqs.emonlight.xbeegw.xbee.ProcessorTestConfig;
-import net.reliqs.emonlight.xbeegw.xbee.TestSubscriber;
+import java.util.Arrays;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { Settings.class, Processor.class, GlobalState.class, Publisher.class,

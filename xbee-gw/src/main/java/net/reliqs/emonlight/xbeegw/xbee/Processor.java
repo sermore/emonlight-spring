@@ -1,5 +1,22 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
+import com.digi.xbee.api.exceptions.XBeeException;
+import com.digi.xbee.api.utils.HexUtils;
+import net.reliqs.emonlight.xbeegw.config.Node;
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
+import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import net.reliqs.emonlight.xbeegw.state.GlobalState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PreDestroy;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -10,35 +27,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import javax.annotation.PreDestroy;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-
-import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.utils.HexUtils;
-
-import net.reliqs.emonlight.xbeegw.config.Node;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
-import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import net.reliqs.emonlight.xbeegw.state.GlobalState;
-
 /**
  * Processor of the xbee events.
- *
+ * <p>
  * Handle a queue containing the messages received from remote xbee devices. The
  * processing of every message could produce a response message to be sent to
  * the xbee, or/and produce a data output to be published. The details of the
  * message processing is handled by specific MessageProcessor instances,
  * selected using the first byte of the received message.
- *
  */
 @Component
 public class Processor {
@@ -49,14 +45,14 @@ public class Processor {
     private final XbeeGateway gateway;
     private final GlobalState globalState;
     private final Publisher publisher;
-//    @Value("${processor.timeout:1000}")
+    //    @Value("${processor.timeout:1000}")
 //    private long timeout;
     @Value("${processor.maxProcessTime:1000}")
     private long maxProcessTime;
 
     @Autowired
     public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState,
-            final Publisher publisher, final TriggerManager triggerManager) throws XBeeException {
+                     final Publisher publisher, final TriggerManager triggerManager) throws XBeeException {
         this.gateway = gateway;
         this.globalState = globalState;
         this.publisher = publisher;

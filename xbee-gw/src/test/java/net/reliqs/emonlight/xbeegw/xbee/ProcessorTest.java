@@ -1,24 +1,6 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertThat;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
-
 import com.digi.xbee.api.utils.HexUtils;
-
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
@@ -28,6 +10,22 @@ import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasSize;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by sergio on 12/03/17.

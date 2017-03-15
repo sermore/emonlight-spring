@@ -31,7 +31,7 @@ class DelayProbe implements Delayed {
     }
 
     public void reset() {
-        this.expireTime = Instant.now().plus(getMaxTimeBetweenMessages(), ChronoUnit.MILLIS);
+        this.expireTime = Instant.now().plus(probe.getTimeout(), ChronoUnit.MILLIS);
     }
 
     @Override
@@ -46,8 +46,4 @@ class DelayProbe implements Delayed {
         return unit.convert(expireTime.toEpochMilli() - Instant.now().toEpochMilli() , TimeUnit.MILLISECONDS);
     }
 
-    long getMaxTimeBetweenMessages() {
-        return probe.getRealSampleTime() * 5;
-    }
-    
 }

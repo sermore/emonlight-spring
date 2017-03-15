@@ -49,9 +49,9 @@ public class TriggerDataAbsentTest {
         assertThat(t.data.get(1).v, is(1.0));
         t.clear();
         Thread.sleep(3000);
-        assertThat(t.data, hasSize(6));
+        assertThat(t.data, hasSize(5));
         assertThat(t.types.stream().allMatch(tt -> tt == Type.DATA_MISSING_ALARM), is(true));
-        assertThat(t.data.stream().filter(d -> d.v == 1).count(), is(4L));
+        assertThat(t.data.stream().filter(d -> d.v == 1).count(), is(3L));
         assertThat(t.data.stream().filter(d -> d.v == 2).count(), is(2L));
     }
 

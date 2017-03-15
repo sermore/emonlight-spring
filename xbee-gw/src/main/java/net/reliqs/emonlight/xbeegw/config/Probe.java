@@ -121,8 +121,13 @@ public class Probe {
         return getSoftThreshold() > 0 || getHardThreshold() > 0;
     }
 
-    public int getRealSampleTime() {
-        return sampleTime > 0 ? sampleTime : getNode().getSampleTime();
+    public int getTimeout() {
+        if (type == Type.PULSE) {
+            return 1800_000;
+        } else {
+            int t = sampleTime > 0 ? sampleTime : getNode().getSampleTime();
+            return t * 5;
+        }
     }
     
     @Override

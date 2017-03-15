@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.DelayQueue;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class TriggerDataAbsent extends Trigger {
@@ -29,7 +28,7 @@ public class TriggerDataAbsent extends Trigger {
             DelayProbe dp = new DelayProbe(p);
             expires.add(dp);
             map.put(p, dp);
-            log.debug("{}: registered to Trigger data absent, expiration {} {}", p, dp.getMaxTimeBetweenMessages(), dp.getDelay(TimeUnit.MILLISECONDS));
+            log.debug("{}: registered to Trigger data absent, timeout {}", p, p.getTimeout());
         });
         publisher.addSubscriber(this);
     }
@@ -45,8 +44,8 @@ public class TriggerDataAbsent extends Trigger {
     void process(Probe probe, Data data) {
         DelayProbe p = map.get(probe);
         // If the trigger was raised, then switch it off as a message is arrived
+        reset(p, 0);
         if (p.getLevel() > 0) {
-            reset(p, 0);
             triggerChanged(probe, Type.DATA_MISSING_ALARM, p.getLevel(), 0);
         }
     }

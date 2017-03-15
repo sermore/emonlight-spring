@@ -79,6 +79,7 @@ settings:
     - &MAIN_T
       name: MAIN_T
       type: DHT22_T
+      sampleTime: 40000
     - &MAIN_VCC
       name: MAIN_VCC
       type: VCC

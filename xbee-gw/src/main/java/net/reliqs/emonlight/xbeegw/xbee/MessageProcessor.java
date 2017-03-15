@@ -1,17 +1,16 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import com.digi.xbee.api.utils.ByteUtils;
-
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 abstract class MessageProcessor {
 	private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
@@ -45,8 +44,8 @@ abstract class MessageProcessor {
         if (now.isBefore(time)) {
             log.warn("{}: {} received message with timestamp ahead of now", node, time);
         }
-        if (now.minus(node.getSampleTime() * 2, ChronoUnit.MILLIS).isBefore(time)) {
-            log.warn("{}: {} > {} received message timestamp %s is too old compared to now %s", node, time, now);
+        if (now.minus(node.getSampleTime() * 2, ChronoUnit.MILLIS).isAfter(time)) {
+            log.warn("{}: message time {} too old compared to now {}", node, time, now);
         }
     }
 

@@ -32,14 +32,14 @@ public class TriggerDataAbsent extends Trigger {
         });
         publisher.addSubscriber(this);
     }
-    
+
     void reset(DelayProbe p, int newLevel) {
 //        expires.remove(p);
         p.setLevel(newLevel);
         p.reset();
 //        expires.add(p);
     }
-    
+
     @Override
     void process(Probe probe, Data data) {
         DelayProbe p = map.get(probe);

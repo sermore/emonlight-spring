@@ -1,9 +1,6 @@
 package net.reliqs.emonlight.xbeegw;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
-
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,29 +12,31 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 @ActiveProfiles("jms")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ComponentScan(basePackages = { "net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
-		"net.reliqs.emonlight.xbeegw.publish" })
+@ComponentScan(basePackages = {"net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
+        "net.reliqs.emonlight.xbeegw.publish"})
 @EnableAutoConfiguration
 @EnableConfigurationProperties
 public class SpringEnabledConfTest {
 
-	@Autowired
-	ApplicationContext ctx;
+    @Autowired
+    ApplicationContext ctx;
 
-	@Autowired
-	Publisher publisher;
+    @Autowired
+    Publisher publisher;
 
-	@Test
-	public void test() {
-		assertThat(ctx.containsBean("jmsConfiguration"), is(true));
-		assertThat(ctx.containsBean("jmsService"), is(true));
-		assertThat(ctx.containsBean("influxdbService"), is(false));
-		assertThat(publisher.getServices(), hasSize(1));
-	}
+    @Test
+    public void test() {
+        assertThat(ctx.containsBean("jmsConfiguration"), is(true));
+        assertThat(ctx.containsBean("jmsService"), is(true));
+        assertThat(ctx.containsBean("influxdbService"), is(false));
+        assertThat(publisher.getServices(), hasSize(1));
+    }
 
 }

@@ -2,16 +2,16 @@ package net.reliqs.emonlight.xbeegw.publish;
 
 public class Data {
 
-	public final long t;
-	public final double v;
+    public final long t;
+    public final double v;
 
-	public Data(long t, double v) {
-		super();
-		this.t = t;
-		this.v = v;
-	}
+    public Data(long t, double v) {
+        super();
+        this.t = t;
+        this.v = v;
+    }
 
-	@Override
+    @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
@@ -39,8 +39,8 @@ public class Data {
     }
 
     @Override
-	public String toString() {
-		return String.format("D [t=%s, v=%s]", t, v);
-	}
-	
+    public String toString() {
+        return String.format("D [t=%s, v=%s]", t, v);
+    }
+
 }

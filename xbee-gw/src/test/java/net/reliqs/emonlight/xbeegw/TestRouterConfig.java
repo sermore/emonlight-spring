@@ -18,14 +18,14 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class TestRouterConfig extends AsyncConfigurerSupport {
 
-	@Override
-	public Executor getAsyncExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 //		executor.setCorePoolSize(1);
-		executor.setMaxPoolSize(4);
-		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("Dispatch-");
-		executor.initialize();
-		return executor;
-	}
+        executor.setMaxPoolSize(4);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("Dispatch-");
+        executor.initialize();
+        return executor;
+    }
 }

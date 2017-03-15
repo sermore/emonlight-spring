@@ -1,8 +1,8 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
+import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;

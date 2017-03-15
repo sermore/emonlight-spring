@@ -1,11 +1,6 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 import com.digi.xbee.api.utils.ByteUtils;
-
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
@@ -13,8 +8,12 @@ import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 abstract class MessageProcessor {
-	private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
 
     private final Processor processor;
 

@@ -124,7 +124,7 @@ public class Probe {
     public int getRealSampleTime() {
         return sampleTime > 0 ? sampleTime : getNode().getSampleTime();
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

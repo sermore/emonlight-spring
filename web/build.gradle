@@ -1,4 +1,3 @@
-
 plugins {
     id "org.flywaydb.flyway" version "4.1.1"
 }
@@ -24,7 +23,7 @@ task testing {
 ext['thymeleaf.version'] = '3.0.3.RELEASE'
 ext['thymeleaf-layout-dialect.version'] = '2.1.2'
 
-gradle.taskGraph.whenReady {taskGraph ->
+gradle.taskGraph.whenReady { taskGraph ->
     if (taskGraph.hasTask(development)) {
         bootRun.systemProperty('spring.profiles.active', 'dev')
         flyway {

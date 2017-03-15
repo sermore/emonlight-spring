@@ -43,11 +43,11 @@ class DelayProbe implements Delayed {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(expireTime.toEpochMilli() - Instant.now().toEpochMilli() , TimeUnit.MILLISECONDS);
+        return unit.convert(expireTime.toEpochMilli() - Instant.now().toEpochMilli(), TimeUnit.MILLISECONDS);
     }
 
     long getMaxTimeBetweenMessages() {
         return probe.getRealSampleTime() * 5;
     }
-    
+
 }

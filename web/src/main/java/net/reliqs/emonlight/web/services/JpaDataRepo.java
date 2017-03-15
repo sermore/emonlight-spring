@@ -1,22 +1,19 @@
 package net.reliqs.emonlight.web.services;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
+import net.reliqs.emonlight.web.entities.Node;
+import net.reliqs.emonlight.web.entities.NodeRepo;
+import net.reliqs.emonlight.web.entities.Sample;
+import net.reliqs.emonlight.web.entities.SampleRepo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
-import net.reliqs.emonlight.web.entities.Node;
-import net.reliqs.emonlight.web.entities.NodeRepo;
-import net.reliqs.emonlight.web.entities.Sample;
-import net.reliqs.emonlight.web.entities.SampleRepo;
+import javax.transaction.Transactional;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by sergio on 19/02/17.
@@ -25,7 +22,7 @@ import net.reliqs.emonlight.web.entities.SampleRepo;
 @Service
 @Repository
 public class JpaDataRepo implements DataRepo {
-	private static final Logger log = LoggerFactory.getLogger(JpaDataRepo.class);
+    private static final Logger log = LoggerFactory.getLogger(JpaDataRepo.class);
 
     private NodeRepo nodeRepo;
 

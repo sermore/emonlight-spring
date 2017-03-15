@@ -1,7 +1,5 @@
 package net.reliqs.emonlight.xbeegw;
 
-import java.util.concurrent.Executor;
-
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,7 +12,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-@Profile({ "default", "prod", "dev" })
+import java.util.concurrent.Executor;
+
+@Profile({"default", "prod", "dev"})
 @SpringBootApplication
 //@Import(KafkaUtils.class)
 @EnableConfigurationProperties
@@ -23,56 +23,56 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @EnableScheduling
 public class MainApp extends AsyncConfigurerSupport {
 
-	public static void main(String[] args) {
-		SpringApplication.run(MainApp.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(MainApp.class, args);
+    }
 
-	@Override
-	public Executor getAsyncExecutor() {
-		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-		executor.setCorePoolSize(2);
-		executor.setMaxPoolSize(4);
-		executor.setQueueCapacity(500);
-		executor.setThreadNamePrefix("Worker-");
-		executor.initialize();
-		return executor;
-	}
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(4);
+        executor.setQueueCapacity(500);
+        executor.setThreadNamePrefix("Worker-");
+        executor.initialize();
+        return executor;
+    }
 
-	@Bean
-	Runner runner() {
-		return new Runner();
-	}
+    @Bean
+    Runner runner() {
+        return new Runner();
+    }
 
-	@Bean
-	public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-		return args -> {
-			runner().run(ctx);
-		};
-	}
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        return args -> {
+            runner().run(ctx);
+        };
+    }
 
-	// @Bean
-	// Runner runner() {
-	// return new Runner();
-	// };
+    // @Bean
+    // Runner runner() {
+    // return new Runner();
+    // };
 
-	// public static void main(String[] args) {
-	// Processor processor = null;
-	// try {
-	// String conf = args.length == 0 ? "conf.json" : args[0];
-	// Settings settings = new Factory().load(conf);
-	// processor = new Processor(settings);
-	// Dispatcher dispatcher = new Dispatcher(settings);
-	// for (int i = 0; true; i++) {
-	// processor.process();
-	// if (i % 10 == 9)
-	// dispatcher.process();
-	// }
-	// } catch (IOException | XBeeException | InterruptedException e) {
-	// e.printStackTrace();
-	// } finally {
-	// if (processor != null)
-	// processor.cleanup();
-	// }
-	// }
+    // public static void main(String[] args) {
+    // Processor processor = null;
+    // try {
+    // String conf = args.length == 0 ? "conf.json" : args[0];
+    // Settings settings = new Factory().load(conf);
+    // processor = new Processor(settings);
+    // Dispatcher dispatcher = new Dispatcher(settings);
+    // for (int i = 0; true; i++) {
+    // processor.process();
+    // if (i % 10 == 9)
+    // dispatcher.process();
+    // }
+    // } catch (IOException | XBeeException | InterruptedException e) {
+    // e.printStackTrace();
+    // } finally {
+    // if (processor != null)
+    // processor.cleanup();
+    // }
+    // }
 
 }

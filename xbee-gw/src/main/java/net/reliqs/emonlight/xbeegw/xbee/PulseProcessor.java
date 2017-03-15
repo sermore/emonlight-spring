@@ -1,19 +1,17 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
-import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.state.GlobalState;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerHandler;
+import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.xbeegw.state.GlobalState;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.nio.ByteBuffer;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 class PulseProcessor extends MessageProcessor implements TriggerHandler {
     private static final Logger log = LoggerFactory.getLogger(PulseProcessor.class);

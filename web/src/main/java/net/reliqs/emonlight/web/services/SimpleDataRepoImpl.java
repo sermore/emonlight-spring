@@ -2,7 +2,6 @@ package net.reliqs.emonlight.web.services;
 
 import net.reliqs.emonlight.web.entities.Node;
 import net.reliqs.emonlight.web.entities.Sample;
-import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;

@@ -1,62 +1,62 @@
 package net.reliqs.emonlight.xbeegw.config;
 
-import java.util.List;
+import org.hibernate.validator.constraints.URL;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import org.hibernate.validator.constraints.URL;
+import java.util.List;
 
 public class Server {
 
-	@NotNull
-	private String name;
-	
-	@URL @NotNull
-	private String url;
-	
-	@Min(1000)
-	private int sendRate;
-	
-	@Valid
-	private List<ServerMap> maps;
+    @NotNull
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    @URL
+    @NotNull
+    private String url;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Min(1000)
+    private int sendRate;
 
-	public String getUrl() {
-		return url;
-	}
+    @Valid
+    private List<ServerMap> maps;
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public int getSendRate() {
-		return sendRate;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setSendRate(int sendRate) {
-		this.sendRate = sendRate;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public List<ServerMap> getMaps() {
-		return maps;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	public void setMaps(List<ServerMap> maps) {
-		this.maps = maps;
-	}
+    public int getSendRate() {
+        return sendRate;
+    }
 
-	@Override
-	public String toString() {
-		return "Server [name=" + name + "]";
-	}
+    public void setSendRate(int sendRate) {
+        this.sendRate = sendRate;
+    }
+
+    public List<ServerMap> getMaps() {
+        return maps;
+    }
+
+    public void setMaps(List<ServerMap> maps) {
+        this.maps = maps;
+    }
+
+    @Override
+    public String toString() {
+        return "Server [name=" + name + "]";
+    }
 
 }

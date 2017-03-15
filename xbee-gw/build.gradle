@@ -1,4 +1,3 @@
-
 repositories {
     maven {
         url "http://ftp1.digi.com/support/m-repo/"
@@ -6,11 +5,11 @@ repositories {
 }
 
 sourceSets {
-	main {
-		java {
-			exclude '**/Kafka*.java'
-		}
-	}
+    main {
+        java {
+            exclude '**/Kafka*.java'
+        }
+    }
     test {
         java {
             exclude '**/Kafka*.java'
@@ -19,7 +18,7 @@ sourceSets {
 }
 
 tasks.withType(JavaCompile) {
-	options.encoding = 'UTF-8'
+    options.encoding = 'UTF-8'
 }
 
 jar {
@@ -27,43 +26,43 @@ jar {
 }
 
 test {
-	exclude '**/RouterTest.class'
-	exclude '**/EndDeviceTest.class'
-	exclude '**/PulsePowerAccuracyTest.class'
-	systemProperty("java.library.path", "/usr/lib/jni")
+    exclude '**/RouterTest.class'
+    exclude '**/EndDeviceTest.class'
+    exclude '**/PulsePowerAccuracyTest.class'
+    systemProperty("java.library.path", "/usr/lib/jni")
 }
 
 bootRun {
-	systemProperty("java.library.path", "/usr/lib/jni")
-	systemProperty 'spring.profiles.active', 'dev'
+    systemProperty("java.library.path", "/usr/lib/jni")
+    systemProperty 'spring.profiles.active', 'dev'
 }
 
 dependencies {
-	compile(project(':commons')) {
-		exclude group: 'org.apache.kafka'
+    compile(project(':commons')) {
+        exclude group: 'org.apache.kafka'
         exclude module: 'spring-kafka'
-	}
-	compile("org.springframework:spring-web")
-	compile("org.springframework.boot:spring-boot-starter-activemq")
-	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+    }
+    compile("org.springframework:spring-web")
+    compile("org.springframework.boot:spring-boot-starter-activemq")
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
 
 
-	compile group: 'org.rxtx', name: 'rxtx', version:'2.1.7'
-	compile(group: 'com.digi.xbee', name: 'xbee-java-library', version: '1.2.0') {
-		exclude(module: 'rxtx-native')
-		exclude(group: 'org.slf4j')
+    compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
+    compile(group: 'com.digi.xbee', name: 'xbee-java-library', version: '1.2.0') {
+        exclude(module: 'rxtx-native')
+        exclude(group: 'org.slf4j')
 //		exclude(module: 'android-sdk')
 //		exclude(module: 'android-sdk-addon')
     }
-	
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version:'2.8.5'
-    compile group: 'javax.validation', name: 'validation-api', version:'1.1.0.Final'
-    compile group: 'org.hibernate', name: 'hibernate-validator', version:'5.0.1.Final'
+
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.5'
+    compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+    compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.0.1.Final'
 //    compile group: 'javax.el', name: 'javax.el-api', version:'3.0.1-b04'
 //    compile group: 'org.glassfish', name: 'javax.el', version:'3.0.1-b08'
 
-	compile group: 'org.influxdb', name: 'influxdb-java', version: '2.5+'
+    compile group: 'org.influxdb', name: 'influxdb-java', version: '2.5+'
 
-	testCompile("org.apache.activemq:activemq-broker")
+    testCompile("org.apache.activemq:activemq-broker")
 
 }

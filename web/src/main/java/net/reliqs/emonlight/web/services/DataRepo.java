@@ -5,7 +5,6 @@ import net.reliqs.emonlight.web.entities.Sample;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.List;
 
 public interface DataRepo {

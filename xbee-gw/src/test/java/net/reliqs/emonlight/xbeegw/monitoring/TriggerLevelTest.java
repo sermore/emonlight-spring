@@ -1,10 +1,9 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.xbee.NodeState;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +13,13 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertThat;
 
 /**
  * Created by sergio on 26/02/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes=Settings.class)
+@SpringBootTest(classes = Settings.class)
 @EnableConfigurationProperties
 @ActiveProfiles("test-router")
 public class TriggerLevelTest {

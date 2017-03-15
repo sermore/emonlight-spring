@@ -37,10 +37,10 @@ public class Publisher {
 
     public void publish(Probe probe, Type type, Data data) {
         log.trace("P {} {} {}", probe.getName(), type, data);
-        for (Subscriber s: subscribers) {
+        for (Subscriber s : subscribers) {
             s.receive(probe, type, data);
         }
-        for (Subscriber s: services) {
+        for (Subscriber s : services) {
             s.receive(probe, type, data);
         }
     }

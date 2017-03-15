@@ -1,10 +1,10 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.config.Server;
 import net.reliqs.emonlight.xbeegw.config.ServerMap;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +22,13 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
 
     private final Queue<RData> receiveQueue = new ArrayDeque<>();
     private final Queue<ServerDataJSON> queue = new ArrayDeque<>();
+    private final Server server;
+    private final Set<Probe> probes;
+    private final RestAsyncService service;
     private ServerDataJSON tempData = null;
     private ServerDataJSON inFlight;
     private ListenableFuture<Boolean> running;
     private int retryCount;
-    private final Server server;
-    private final Set<Probe> probes;
-    private final RestAsyncService service;
 
     public RestDeliveryService(Server server, RestAsyncService service) {
         this.server = server;
@@ -59,7 +59,7 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
 
     ServerDataJSON pollReceiveQueue() {
         Queue<RData> inQueue = new ArrayDeque<>(receiveQueue);
-	    receiveQueue.clear();
+        receiveQueue.clear();
         ServerDataJSON sd = new ServerDataJSON();
         for (ServerMap sm : server.getMaps()) {
             NodeDataJSON nd = new NodeDataJSON(sm.getNodeId(), sm.getApiKey());

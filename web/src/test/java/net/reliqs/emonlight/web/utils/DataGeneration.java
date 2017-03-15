@@ -1,6 +1,11 @@
 package net.reliqs.emonlight.web.utils;
 
-import static java.lang.Math.PI;
+import net.reliqs.emonlight.web.entities.Node;
+import net.reliqs.emonlight.web.entities.NodeRepo;
+import net.reliqs.emonlight.web.entities.Sample;
+import net.reliqs.emonlight.web.entities.SampleRepo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.TestComponent;
 
 import java.sql.Timestamp;
 import java.time.Duration;
@@ -10,13 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.TestComponent;
-
-import net.reliqs.emonlight.web.entities.Node;
-import net.reliqs.emonlight.web.entities.NodeRepo;
-import net.reliqs.emonlight.web.entities.Sample;
-import net.reliqs.emonlight.web.entities.SampleRepo;
+import static java.lang.Math.PI;
 
 /**
  * Created by sergio on 2/21/17.
@@ -90,5 +89,5 @@ public class DataGeneration {
             sampleRepo.save(s);
         }
     }
-        
+
 }

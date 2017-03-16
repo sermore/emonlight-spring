@@ -24,8 +24,8 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { Settings.class, Processor.class, GlobalState.class, Publisher.class,
-        TriggerManager.class, TriggerDataAbsent.class, ProcessorTestConfig.class })
+@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class,
+        TriggerManager.class, TriggerDataAbsent.class, ProcessorTestConfig.class})
 @EnableConfigurationProperties
 @EnableScheduling
 @EnableAsync

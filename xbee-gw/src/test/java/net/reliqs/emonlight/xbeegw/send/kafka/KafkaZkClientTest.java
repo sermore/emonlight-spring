@@ -17,6 +17,15 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest
 public class KafkaZkClientTest {
 
+    @Configuration
+    static class MyConfig {
+
+        @Bean
+        KafkaZkClient zk(@Value("${kafka.zookeeperHosts}") String zookeeperHosts) {
+            return new KafkaZkClient(zookeeperHosts);
+        }
+    }
+
     @Autowired
     KafkaZkClient zk;
 
@@ -29,15 +38,6 @@ public class KafkaZkClientTest {
         zk.deleteTopic(topicName);
         Thread.sleep(2000);
         assertThat(zk.topicExists(topicName), is(false));
-    }
-
-    @Configuration
-    static class MyConfig {
-
-        @Bean
-        KafkaZkClient zk(@Value("${kafka.zookeeperHosts}") String zookeeperHosts) {
-            return new KafkaZkClient(zookeeperHosts);
-        }
     }
 
 }

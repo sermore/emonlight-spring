@@ -17,7 +17,7 @@ import java.util.concurrent.DelayQueue;
 @Component
 public class TriggerDataAbsent extends Trigger {
     private static final Logger log = LoggerFactory.getLogger(TriggerDataAbsent.class);
-    
+
     private DelayQueue<DelayProbe> expires;
     private Map<Probe, DelayProbe> map;
 
@@ -32,14 +32,14 @@ public class TriggerDataAbsent extends Trigger {
         });
         publisher.addSubscriber(this);
     }
-    
+
     void reset(DelayProbe p, int newLevel) {
         expires.remove(p);
         p.setLevel(newLevel);
         p.reset();
         expires.add(p);
     }
-    
+
     @Override
     void process(Probe probe, Data data) {
         DelayProbe p = map.get(probe);
@@ -57,12 +57,12 @@ public class TriggerDataAbsent extends Trigger {
         do {
             p = expires.poll();
             if (p != null) {
-                int newLevel = p.getLevel() +1;
+                int newLevel = p.getLevel() + 1;
                 log.debug("{}: Trigger Data Missing expired, new level {}", p.getProbe(), newLevel);
                 reset(p, newLevel);
                 triggerChanged(p.getProbe(), Type.DATA_MISSING_ALARM, p.getLevel(), newLevel);
             }
-        } while(p != null);
+        } while (p != null);
     }
 
 }

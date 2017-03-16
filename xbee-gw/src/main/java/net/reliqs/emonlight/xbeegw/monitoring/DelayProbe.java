@@ -17,7 +17,7 @@ class DelayProbe implements Delayed {
         this.probe = probe;
         reset();
     }
-    
+
     public Probe getProbe() {
         return probe;
     }
@@ -43,7 +43,7 @@ class DelayProbe implements Delayed {
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(expireTime.toEpochMilli() - Instant.now().toEpochMilli() , TimeUnit.MILLISECONDS);
+        return unit.convert(expireTime.toEpochMilli() - Instant.now().toEpochMilli(), TimeUnit.MILLISECONDS);
     }
 
 }

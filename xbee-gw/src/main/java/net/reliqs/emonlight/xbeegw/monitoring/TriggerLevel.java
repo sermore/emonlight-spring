@@ -14,6 +14,7 @@ public class TriggerLevel extends Trigger {
     //    private final NodeState nodeState;
     private final SimpleTrigger[] triggers;
     private int triggerState;
+
     public TriggerLevel(final Probe p, final NodeState ns, final SimpleTrigger[] triggers) {
         probe = p;
 //        nodeState = ns;

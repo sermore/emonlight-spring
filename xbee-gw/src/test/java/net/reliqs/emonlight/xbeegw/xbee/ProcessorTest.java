@@ -31,8 +31,8 @@ import static org.junit.Assert.assertThat;
  * Created by sergio on 12/03/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class,
-        ProcessorTestConfig.class, TriggerDataAbsent.class })
+@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class,
+        ProcessorTestConfig.class, TriggerDataAbsent.class})
 @EnableConfigurationProperties
 @ActiveProfiles("test-router")
 public class ProcessorTest {
@@ -114,16 +114,16 @@ public class ProcessorTest {
      * Data T=168456504, DT=55461, D=5031, @2017-03-14T10:05:41.584Z
      * skipNext=true N [MAIN, 0013A20041468922]: Pulse(3) Pow=0.0, T=168450717,
      * DT=5787 @2017-03-14T10:05:35.797Z, skipped=true
-     *
+     * <p>
      * Data received from 0013A20041468922 >> 44 0A 0A E6 6E 48 0A 00 DC 00 C9
      * A5 0A 0A E6 6D. Data T=168486510, DT=35793,
      * D=23, @2017-03-14T10:06:11.567Z skipNext=false DHT22 P=10, T=20.1,
      * H=22.0 @2017-03-14T10:06:11.566Z
-     *
+     * <p>
      * Data received from 0013A20041468922 >> 44 0A 0B 0D 78 57 0A 0A E6 7B 0C
      * DF. Data T=168496504, DT=45787, D=24, @2017-03-14T10:06:21.560Z
      * skipNext=false Vcc = 3.295 @2017-03-14T10:06:11.579Z
-     *
+     * <p>
      * Data received from 0013A20041468922 >> 44 0A 0B 34 88 50 03 0A 0B 1D 2F.
      * Data T=168506504, DT=55787, D=40, @2017-03-14T10:06:31.544Z
      * skipNext=false Pulse(3) Pow=72.27464364585424, T=168500527,
@@ -158,12 +158,12 @@ public class ProcessorTest {
                 is(Arrays.asList(new Data(msg1.getTime().toEpochMilli() - 1, 22.0),
                         new Data(msg1.getTime().toEpochMilli() - 1, 20.1),
                         new Data(Instant.parse("2017-03-14T10:06:11.579Z").toEpochMilli(), 9.081164835164834), // calculation
-                                                                                                               // wrong
-                                                                                                               // due
-                                                                                                               // to
-                                                                                                               // different
-                                                                                                               // node
-                                                                                                               // setup
+                        // wrong
+                        // due
+                        // to
+                        // different
+                        // node
+                        // setup
                         new Data(Instant.parse("2017-03-14T10:06:25.605Z").toEpochMilli(), 72.27464364585424))));
         assertThat(testSubscriber.types, is(Arrays.asList(Type.DHT22_H, Type.DHT22_T, Type.VCC, Type.PULSE)));
         assertThat(testSubscriber.probes, is(Arrays.asList(n.getProbe(Type.DHT22_H), n.getProbe(Type.DHT22_T),

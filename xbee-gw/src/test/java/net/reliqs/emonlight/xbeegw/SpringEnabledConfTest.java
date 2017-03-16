@@ -19,24 +19,24 @@ import static org.junit.Assert.assertThat;
 @ActiveProfiles("jms")
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@ComponentScan(basePackages = { "net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
-		"net.reliqs.emonlight.xbeegw.publish" })
+@ComponentScan(basePackages = {"net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
+        "net.reliqs.emonlight.xbeegw.publish"})
 @EnableAutoConfiguration
 @EnableConfigurationProperties
 public class SpringEnabledConfTest {
 
-	@Autowired
-	ApplicationContext ctx;
+    @Autowired
+    ApplicationContext ctx;
 
-	@Autowired
-	Publisher publisher;
+    @Autowired
+    Publisher publisher;
 
-	@Test
-	public void test() {
-		assertThat(ctx.containsBean("jmsConfiguration"), is(true));
-		assertThat(ctx.containsBean("jmsService"), is(true));
-		assertThat(ctx.containsBean("influxdbService"), is(false));
-		assertThat(publisher.getServices(), hasSize(1));
-	}
+    @Test
+    public void test() {
+        assertThat(ctx.containsBean("jmsConfiguration"), is(true));
+        assertThat(ctx.containsBean("jmsService"), is(true));
+        assertThat(ctx.containsBean("influxdbService"), is(false));
+        assertThat(publisher.getServices(), hasSize(1));
+    }
 
 }

@@ -4,8 +4,9 @@ import net.reliqs.emonlight.xbeegw.publish.Subscriber;
 
 public interface DeliveryService extends Subscriber {
 
-	void post();
-	boolean isReady();
+    void post();
+
+    boolean isReady();
 //	boolean isEmpty();
-	
+
 }

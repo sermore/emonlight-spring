@@ -1,9 +1,9 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
+import com.digi.xbee.api.models.XBeeMessage;
+
 import java.time.Instant;
 import java.util.Arrays;
-
-import com.digi.xbee.api.models.XBeeMessage;
 
 class DataMessage {
     final private Instant time;

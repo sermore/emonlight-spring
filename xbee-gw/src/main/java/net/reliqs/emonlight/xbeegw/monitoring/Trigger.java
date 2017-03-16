@@ -29,8 +29,8 @@ abstract class Trigger implements Subscriber {
         }
     }
 
-    protected void triggerChanged(Probe probe, Type type, int oldTriggerState, int newTriggerState) {
-        for (TriggerHandler h: handlers) {
+    void triggerChanged(Probe probe, Type type, int oldTriggerState, int newTriggerState) {
+        for (TriggerHandler h : handlers) {
             h.triggerChanged(probe, type, oldTriggerState, newTriggerState);
         }
     }
@@ -38,7 +38,7 @@ abstract class Trigger implements Subscriber {
     boolean isApplicable(Probe probe, Type type, Data data) {
         return type == probe.getType();
     }
-    
+
     abstract void process(Probe probe, Data data);
 
 }

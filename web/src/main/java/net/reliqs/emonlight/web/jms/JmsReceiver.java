@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import javax.jms.BytesMessage;
 import javax.jms.JMSException;
-import javax.jms.TextMessage;
 import java.time.Instant;
 
 /**

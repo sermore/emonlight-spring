@@ -5,7 +5,7 @@ import net.reliqs.emonlight.xbeegw.publish.Data;
 
 /**
  * TODO implements lowerThan threshold.
- *
+ * <p>
  * Created by sergio on 26/02/17.
  */
 public class SimpleTrigger {

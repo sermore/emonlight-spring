@@ -6,37 +6,37 @@ import javax.validation.constraints.Size;
 
 public class ServerMap {
 
-	@NotNull
-	private Probe probe;
-	
-	@Min(1)
-	private int nodeId;
-	
-	@Size(min = 5)
-	private String apiKey;
+    @NotNull
+    private Probe probe;
 
-	public Probe getProbe() {
-		return probe;
-	}
+    @Min(1)
+    private int nodeId;
 
-	public void setProbe(Probe probe) {
-		this.probe = probe;
-	}
+    @Size(min = 5)
+    private String apiKey;
 
-	public int getNodeId() {
-		return nodeId;
-	}
+    public Probe getProbe() {
+        return probe;
+    }
 
-	public void setNodeId(int nodeId) {
-		this.nodeId = nodeId;
-	}
+    public void setProbe(Probe probe) {
+        this.probe = probe;
+    }
 
-	public String getApiKey() {
-		return apiKey;
-	}
+    public int getNodeId() {
+        return nodeId;
+    }
 
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
+    public void setNodeId(int nodeId) {
+        this.nodeId = nodeId;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
 }

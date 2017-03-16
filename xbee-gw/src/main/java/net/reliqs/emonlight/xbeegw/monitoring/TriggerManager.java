@@ -12,45 +12,30 @@ import java.time.Instant;
 @Component
 public class TriggerManager implements TriggerHandler {
 
-//    private Map<Probe, TriggerLevel> triggers;
-	private Publisher publisher;
+    private Publisher publisher;
     private TriggerDataAbsent triggerDataAbsent;
 
-	TriggerManager(Publisher publisher, TriggerDataAbsent triggerDataAbsent) {
-		this.publisher = publisher;
-//		this.triggers = new HashMap<>();
+    TriggerManager(Publisher publisher, TriggerDataAbsent triggerDataAbsent) {
+        this.publisher = publisher;
         this.triggerDataAbsent = triggerDataAbsent;
         triggerDataAbsent.addHandler(this);
-	}
+    }
 
     public void createTriggerLevel(NodeState ns, Probe p, TriggerHandler handler) {
         TriggerLevel tl = new TriggerLevel(p, ns, TriggerLevel.powerTriggers(p));
         tl.addHandler(handler);
         tl.addHandler(this);
         publisher.addSubscriber(tl);
-//        triggers.put(p, tl);
     }
-    
+
     public void registerTriggerDataAbsent(TriggerHandler handler) {
         triggerDataAbsent.addHandler(handler);
     }
-    
-//	@Override
-//	public void receive(Probe probe, Type type, Data data) {
-//		// avoid loop in publish / subscribe
-//        if (type == probe.getType()) {
-//            TriggerLevel t = triggers.get(probe);
-//            if (t != null) {
-////                log.trace("{}: process trigger {}", probe.getNode(), type);
-//                t.process(data);
-//            }
-//        }		
-//	}
 
-	@Override
-	public void triggerChanged(Probe probe, Type type, int oldValue, int newValue) {
+    @Override
+    public void triggerChanged(Probe probe, Type type, int oldValue, int newValue) {
         publisher.publish(probe, type, new Data(Instant.now().toEpochMilli(), newValue));
-	}
+    }
 
-    
+
 }

@@ -129,7 +129,7 @@ public class Probe {
             return t * 5;
         }
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

@@ -1,8 +1,5 @@
 package net.reliqs.emonlight.streams.client;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.DoubleDeserializer;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -14,43 +11,46 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Configuration
 @EnableKafka
 public class ReceiverConfig {
 
-	@Value("${kafka.bootstrap.servers}")
-	private String bootstrapServers;
+    @Value("${kafka.bootstrap.servers}")
+    private String bootstrapServers;
 
-	@Bean
-	public Map<String, Object> consumerConfigs() {
-		Map<String, Object> props = new HashMap<>();
-		// list of host:port pairs used for establishing the initial connections
-		// to the Kakfa cluster
-		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
-		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, DoubleDeserializer.class);
-		// consumer groups allow a pool of processes to divide the work of
-		// consuming and processing records
-		props.put(ConsumerConfig.GROUP_ID_CONFIG, "helloworld");
+    @Bean
+    public Map<String, Object> consumerConfigs() {
+        Map<String, Object> props = new HashMap<>();
+        // list of host:port pairs used for establishing the initial connections
+        // to the Kakfa cluster
+        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, LongDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, DoubleDeserializer.class);
+        // consumer groups allow a pool of processes to divide the work of
+        // consuming and processing records
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, "helloworld");
 
-		return props;
-	}
+        return props;
+    }
 
-	@Bean
-	public ConsumerFactory<Long, Double> consumerFactory() {
-		return new DefaultKafkaConsumerFactory<>(consumerConfigs());
-	}
+    @Bean
+    public ConsumerFactory<Long, Double> consumerFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+    }
 
-	@Bean
-	public ConcurrentKafkaListenerContainerFactory<Long, Double> kafkaListenerContainerFactory() {
-		ConcurrentKafkaListenerContainerFactory<Long, Double> factory = new ConcurrentKafkaListenerContainerFactory<>();
-		factory.setConsumerFactory(consumerFactory());
-		factory.setBatchListener(true);
-		return factory;
-	}
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<Long, Double> kafkaListenerContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<Long, Double> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        factory.setBatchListener(true);
+        return factory;
+    }
 
-	@Bean
-	public Receiver receiver() {
-		return new Receiver();
-	}
+    @Bean
+    public Receiver receiver() {
+        return new Receiver();
+    }
 }

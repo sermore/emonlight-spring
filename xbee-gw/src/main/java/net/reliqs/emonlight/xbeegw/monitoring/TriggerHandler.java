@@ -7,7 +7,7 @@ import net.reliqs.emonlight.xbeegw.config.Probe.Type;
  * Created by sergio on 26/02/17.
  */
 public interface TriggerHandler {
-	
+
     /**
      * Trigger called when a threshold is trespassed. The parameters type and
      * enable define the new state of the alarm level that needs to be set.

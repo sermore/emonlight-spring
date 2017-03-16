@@ -10,6 +10,18 @@ import net.reliqs.emonlight.xbeegw.xbee.NodeState;
  */
 public class TriggerLevel extends Trigger {
 
+    private final Probe probe;
+    //    private final NodeState nodeState;
+    private final SimpleTrigger[] triggers;
+    private int triggerState;
+    public TriggerLevel(final Probe p, final NodeState ns, final SimpleTrigger[] triggers) {
+        probe = p;
+//        nodeState = ns;
+        this.triggers = triggers;
+//        this.handlers = new ArrayList<>();
+    }
+//    private List<TriggerHandler> handlers;
+
     static public SimpleTrigger[] powerTriggers(final Probe p) {
         return new SimpleTrigger[]{
                 new SimpleTrigger(null, p.getSoftThreshold()),
@@ -17,19 +29,6 @@ public class TriggerLevel extends Trigger {
                 new SimpleTrigger(new AverageCalc(p.getSoftThresholdTimeSec() * 1840 / 10800), p.getSoftThreshold()),
                 new SimpleTrigger(null, p.getHardThreshold())
         };
-    }
-
-    private final Probe probe;
-//    private final NodeState nodeState;
-    private final SimpleTrigger[] triggers;
-    private int triggerState;
-//    private List<TriggerHandler> handlers;
-
-    public TriggerLevel(final Probe p, final NodeState ns, final SimpleTrigger[] triggers) {
-        probe = p;
-//        nodeState = ns;
-        this.triggers = triggers;
-//        this.handlers = new ArrayList<>();
     }
 
 //    public void addHandler(TriggerHandler h) {
@@ -40,7 +39,7 @@ public class TriggerLevel extends Trigger {
     boolean isApplicable(Probe probe, Type type, Data data) {
         return super.isApplicable(probe, type, data) && probe == this.probe;
     }
-    
+
     @Override
     void process(Probe pulse, Data d) {
         boolean[] triggerValues = new boolean[triggers.length];

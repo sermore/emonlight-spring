@@ -2,7 +2,6 @@ package net.reliqs.emonlight.web.utils;
 
 import net.reliqs.emonlight.web.entities.Node;
 import net.reliqs.emonlight.web.services.JpaDataRepo;
-import net.reliqs.emonlight.web.utils.DataGeneration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

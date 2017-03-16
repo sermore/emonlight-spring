@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TestSubscriber implements Subscriber {
-    
+
     public final List<Probe> probes = new ArrayList<>();
     public final List<Type> types = new ArrayList<>();
     public final List<Data> data = new ArrayList<>();
@@ -20,8 +20,8 @@ public final class TestSubscriber implements Subscriber {
         types.add(type);
         data.add(d);
     }
-    
-    
+
+
     public void clear() {
         probes.clear();
         types.clear();

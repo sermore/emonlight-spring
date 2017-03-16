@@ -1,8 +1,8 @@
 package net.reliqs.emonlight.xbeegw.send.jms;
 
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
 import org.junit.Test;
@@ -31,6 +31,24 @@ import static org.hamcrest.Matchers.is;
 @ActiveProfiles("jms")
 public class JmsServiceTest {
 
+    @Autowired
+    Settings settings;
+    @Autowired
+    MessageConverter messageConverter;
+    @Autowired
+    Receiver receiver;
+    @Autowired
+    private JmsTemplate jmsTemplate;
+
+    @Test
+    public void test() throws InterruptedException {
+        Probe probe = settings.getProbes().findFirst().get();
+        StoreData s = new StoreData(probe, probe.getType(), new Data(1, 12.5));
+        jmsTemplate.convertAndSend("test", s);
+        Thread.sleep(1000);
+        assertThat(receiver.received, is(true));
+    }
+
     @Component
     static class Receiver {
         boolean received;
@@ -41,24 +59,6 @@ public class JmsServiceTest {
             received = true;
         }
 
-    }
-
-    @Autowired
-    Settings settings;
-    @Autowired
-    MessageConverter messageConverter;
-    @Autowired
-    private JmsTemplate jmsTemplate;
-    @Autowired
-    Receiver receiver;
-
-    @Test
-    public void test() throws InterruptedException {
-        Probe probe = settings.getProbes().findFirst().get();
-        StoreData s = new StoreData(probe, probe.getType(), new Data(1, 12.5));
-        jmsTemplate.convertAndSend("test", s);
-        Thread.sleep(1000);
-        assertThat(receiver.received, is(true));
     }
 
 }

@@ -3,8 +3,6 @@ package net.reliqs.emonlight.web.entities;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.time.LocalDateTime;
 
 /**
  * Created by sergio on 19/02/17.

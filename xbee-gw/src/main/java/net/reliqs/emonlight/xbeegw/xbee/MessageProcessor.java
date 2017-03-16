@@ -13,7 +13,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 abstract class MessageProcessor {
-	private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(MessageProcessor.class);
 
     private final Processor processor;
 

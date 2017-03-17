@@ -1,12 +1,14 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import org.influxdb.InfluxDB;
+import org.influxdb.InfluxDBFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+
+import net.reliqs.emonlight.xbeegw.publish.Publisher;
 
 /**
  * Created by sergio on 08/03/17.
@@ -23,14 +25,18 @@ public class InfluxdbConfiguration {
     }
 
     @Bean
-    InfluxdbAsyncService influxdbAsyncService(@Value("${influxdb.url}") String influxdbUrl, @Value("${influxdb.database}") String dbName) {
-        return new InfluxdbAsyncService(influxdbUrl, dbName);
+    InfluxdbAsyncService influxdbAsyncService(InfluxDB influxdb) {
+        return new InfluxdbAsyncService(influxdb);
+    }
+    
+    @Bean(destroyMethod="close")
+    InfluxDB influxDB(@Value("${influxdb.url}") String influxdbUrl, @Value("${influxdb.database}") String dbName) {
+        return InfluxDBFactory.connect(influxdbUrl);
     }
 
     @Bean
-    @Order(10)
-    InfluxdbService influxdbService(InfluxdbAsyncService service, @Value("${influxdb.database}") String dbName) {
-        InfluxdbService s = new InfluxdbService(service, dbName);
+    InfluxdbService influxdbService(InfluxdbAsyncService service, @Value("${influxdb.database}") String dbName, @Value("${influxdb.measurement}") String measurement) {
+        InfluxdbService s = new InfluxdbService(service, dbName, measurement);
         publisher.addService(s);
         return s;
     }

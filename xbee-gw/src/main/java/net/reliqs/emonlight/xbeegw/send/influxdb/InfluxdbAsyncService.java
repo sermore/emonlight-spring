@@ -1,8 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
-import net.reliqs.emonlight.xbeegw.GwException;
 import org.influxdb.InfluxDB;
-import org.influxdb.InfluxDBFactory;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Pong;
 import org.slf4j.Logger;
@@ -12,9 +10,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import javax.annotation.PreDestroy;
-import java.util.HashMap;
-import java.util.Map;
+import net.reliqs.emonlight.xbeegw.GwException;
 
 /**
  * Created by sergio on 05/03/17.
@@ -22,14 +18,10 @@ import java.util.Map;
 public class InfluxdbAsyncService {
     private static final Logger log = LoggerFactory.getLogger(InfluxdbAsyncService.class);
 
-    private final String influxdbUrl;
-    private final String dbName;
     private InfluxDB influxdb;
 
-    public InfluxdbAsyncService(String influxdbUrl, String dbName) {
-        this.influxdbUrl = influxdbUrl;
-        this.dbName = dbName;
-        influxdb = InfluxDBFactory.connect(this.influxdbUrl);
+    public InfluxdbAsyncService(InfluxDB influxdb) {
+        this.influxdb = influxdb;
         Pong p = influxdb.ping();
         if (p == null) {
             influxdb.close();
@@ -41,7 +33,6 @@ public class InfluxdbAsyncService {
     @Async
     @Transactional
     public ListenableFuture<Integer> post(BatchPoints inFlight) {
-        Map<String, Integer> counters = new HashMap<String, Integer>();
         int cnt = inFlight.getPoints().size();
         if (cnt > 0) {
             influxdb.write(inFlight);
@@ -49,13 +40,6 @@ public class InfluxdbAsyncService {
         }
         AsyncResult<Integer> res = new AsyncResult<>(cnt);
         return res;
-    }
-
-    @PreDestroy
-    public void close() {
-        if (influxdb != null) {
-            influxdb.close();
-        }
     }
 
 }

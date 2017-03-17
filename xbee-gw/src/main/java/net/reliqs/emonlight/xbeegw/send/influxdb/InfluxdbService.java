@@ -29,25 +29,27 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     private boolean running;
     private InfluxdbAsyncService service;
     private String dbName;
+    private String measurement;
     @Value("${timezone}")
     private String timezone;
     private ZoneId zoneId;
 
-    public InfluxdbService(InfluxdbAsyncService service, String dbName) {
+    public InfluxdbService(InfluxdbAsyncService service, String dbName, String measurement) {
         this.service = service;
         this.dbName = dbName;
+        this.measurement = measurement;
         this.zoneId = timezone != null ? ZoneId.of(timezone) : ZoneId.systemDefault();
         queue = createBatchPoints();
     }
 
     BatchPoints createBatchPoints() {
-        return BatchPoints.database(this.dbName).retentionPolicy("autogen").consistency(InfluxDB.ConsistencyLevel.ALL).build();
+        return BatchPoints.database(dbName).retentionPolicy("autogen").consistency(InfluxDB.ConsistencyLevel.ALL).build();
     }
 
     @Override
     public void receive(Probe p, Type type, Data d) {
         ZonedDateTime t = ZonedDateTime.ofInstant(Instant.ofEpochMilli(d.t), zoneId);
-        Point point = Point.measurement("zigbee")
+        Point point = Point.measurement(measurement)
                 .tag("node", p.getNode().getName())
                 .tag("address", p.getNode().getAddress())
                 .tag("probe", p.getName())

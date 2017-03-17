@@ -42,13 +42,13 @@ public class TriggerDataAbsentTest {
     public void test() throws InterruptedException {
         TestSubscriber t = new TestSubscriber();
         publisher.addSubscriber(t);
-        Thread.sleep(2000);
+        Thread.sleep(2200);
         assertThat(t.data, hasSize(2));
         assertThat(t.types, is(Arrays.asList(Type.DATA_MISSING_ALARM, Type.DATA_MISSING_ALARM)));
         assertThat(t.data.get(0).v, is(1.0));
         assertThat(t.data.get(1).v, is(1.0));
         t.clear();
-        Thread.sleep(3000);
+        Thread.sleep(3200);
         assertThat(t.data, hasSize(5));
         assertThat(t.types.stream().allMatch(tt -> tt == Type.DATA_MISSING_ALARM), is(true));
         assertThat(t.data.stream().filter(d -> d.v == 1).count(), is(3L));

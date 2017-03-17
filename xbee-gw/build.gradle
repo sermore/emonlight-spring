@@ -40,6 +40,7 @@ bootRun {
 remotes {
     deployHost {
         host = project.hasProperty('deploy_host') ? project.property('deploy_host') : 'localhost'
+        port = project.hasProperty('deploy_port') ? project.property('deploy_port') : 22
         user = project.hasProperty('deploy_user') ? project.property('deploy_user') : System.properties['user.name']        
         sudoPassword = project.hasProperty('deploy_sudo_password') ? project.property('deploy_sudo_password') : ''
         identity = project.hasProperty('identity') ? project.property('identity') : file("${System.properties['user.home']}/.ssh/id_rsa")

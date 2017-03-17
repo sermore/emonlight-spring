@@ -39,10 +39,10 @@ bootRun {
 
 remotes {
     deployHost {
-        host = deploy_host
-        user = deploy_user
-        sudoPassword = deploy_sudo_password
-        identity = file("${System.properties['user.home']}/.ssh/id_rsa")
+        host = project.hasProperty('deploy_host') ? project.property('deploy_host') : 'localhost'
+        user = project.hasProperty('deploy_user') ? project.property('deploy_user') : System.properties['user.name']        
+        sudoPassword = project.hasProperty('deploy_sudo_password') ? project.property('deploy_sudo_password') : ''
+        identity = project.hasProperty('identity') ? project.property('identity') : file("${System.properties['user.home']}/.ssh/id_rsa")
     }
 }
 

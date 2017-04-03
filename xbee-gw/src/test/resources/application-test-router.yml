@@ -12,6 +12,11 @@ dispatcher.rate: 10000
 
 jms.enabled: false
 
+notification:
+  url: https://fcm.googleapis.com/fcm/send
+  serverKey: #TODO insert your google server key
+  deviceId: # For testing only
+
 settings:
   serialPort: "/dev/ttyUSB0"
   baudRate: 115200

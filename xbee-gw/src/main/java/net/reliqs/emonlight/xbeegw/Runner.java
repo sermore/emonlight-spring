@@ -45,9 +45,6 @@ class Runner {
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-        } finally {
-            if (processor != null)
-                processor.cleanup();
         }
     }
 

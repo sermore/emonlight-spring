@@ -104,11 +104,6 @@ public class Processor {
         } while (Instant.now().isBefore(processTime));
     }
 
-    @PreDestroy
-    public void cleanup() {
-        gateway.cleanup();
-    }
-
     private void processDataMessage(DataMessage m) {
         NodeState ns = globalState.getNodeState(m.getDeviceAddress());
         if (ns != null) {

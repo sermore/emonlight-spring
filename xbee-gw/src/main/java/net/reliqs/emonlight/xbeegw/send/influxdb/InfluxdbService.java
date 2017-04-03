@@ -30,15 +30,13 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     private InfluxdbAsyncService service;
     private String dbName;
     private String measurement;
-    @Value("${timezone}")
-    private String timezone;
     private ZoneId zoneId;
 
-    public InfluxdbService(InfluxdbAsyncService service, String dbName, String measurement) {
+    public InfluxdbService(InfluxdbAsyncService service, String dbName, String measurement, String timezone) {
         this.service = service;
         this.dbName = dbName;
         this.measurement = measurement;
-        this.zoneId = timezone != null ? ZoneId.of(timezone) : ZoneId.systemDefault();
+        this.zoneId = timezone != null && !timezone.isEmpty() ? ZoneId.of(timezone) : ZoneId.systemDefault();
         queue = createBatchPoints();
     }
 
@@ -54,7 +52,7 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
                 .tag("address", p.getNode().getAddress())
                 .tag("probe", p.getName())
                 .tag("hour", String.valueOf(t.getHour()))
-                .tag("weekDay", String.valueOf(t.getDayOfWeek().ordinal()))
+                .tag("dayOfWeek", String.valueOf(t.getDayOfWeek().ordinal()))
                 .tag("month", String.valueOf(t.getMonthValue()))
                 .tag("year", String.valueOf(t.getYear()))
                 .addField(type.name(), d.v).time(d.t, TimeUnit.MILLISECONDS).build();

@@ -1,11 +1,14 @@
 [Unit]
 Description=Emonlight Xbee Gateway
-After=syslog.target
+After=influxd.service
+Requires=influxd.service
 
 [Service]
-User=emonlight
-ExecStart=/var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar -Djava.library.path=/usr/lib/jni --spring-config-name=/etc/emonlight-xbee-gw.yml
-SuccessExitStatus=143
+User=emonlight-xbee-gw
+Environment=JAVA_OPTS=-Djava.library.path=/usr/lib/jni
+ExecStart=/var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar --spring.config.location=/etc/emonlight-xbee-gw.yml
+Restart=always
+RestartSec=30
 
 [Install]
 WantedBy=multi-user.target

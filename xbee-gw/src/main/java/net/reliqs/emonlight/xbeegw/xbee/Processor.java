@@ -60,11 +60,13 @@ public class Processor {
         procs = new HashMap<>();
         procs.put((byte) 'C', new ConfigurationProcessor(this));
         procs.put((byte) 'J', new DHT22Processor(this));
+        procs.put((byte) 'S', new DS18B20Processor(this));
         procs.put((byte) 'V', new VCCProcessor(this));
         procs.put((byte) 'P', new PulseProcessor(this, globalState));
         procs.put((byte) 'D', new MultiDataProcessor(this));
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
+        procs.put((byte) 'B', procs.get((byte) 'S'));
         gateway.setProcessor(this);
         settings.getNodes().forEach(n -> registerNode(triggerManager, n));
 //        triggerManager.registerTriggerDataAbsent(handler);
@@ -118,16 +120,16 @@ public class Processor {
         while (in.hasRemaining()) {
             byte b = in.get();
             MessageProcessor mp = procs.get(b);
-            if (mp != null)
+            if (mp != null) {
                 try {
                     mp.process(m, nodeState, b, in);
                 } catch (BufferUnderflowException e) {
-                    log.error("{}: Incomplete message discarded {}", nodeState.getNode(),
+                    log.error("{}: Processor {}, Incomplete message discarded from position {}: {}", nodeState.getNode(), (char)b, in.position(),
                             HexUtils.byteArrayToHexString(in.array()));
                 }
-            else {
-                log.error("{}: no processor is available for '{}', remaining content {} discarded", nodeState.getNode(),
-                        (char) b, HexUtils.byteArrayToHexString(in.array()));
+            } else {
+                log.error("{}: no processor is available for {} ({}), remaining content from position {} discarded: {}", nodeState.getNode(),
+                        HexUtils.byteToHexString(b), (char)b, in.position(), HexUtils.byteArrayToHexString(in.array()));
                 return;
             }
         }

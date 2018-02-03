@@ -161,7 +161,7 @@ public class Probe {
     }
 
     public enum Type {
-        PULSE, DHT22_T, DHT22_H, VCC, THRESOLD_ALARM, DATA_MISSING_ALARM
+        PULSE, DHT22_T, DHT22_H, DS18B20, VCC, THRESOLD_ALARM, DATA_MISSING_ALARM
     }
 
 }

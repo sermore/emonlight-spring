@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 /**
  * Created by sergio on 01/04/17.
  */
-@Service
+//@Service
 public class NotificationAsyncService {
     private static final Logger log = LoggerFactory.getLogger(NotificationAsyncService.class);
 

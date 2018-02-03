@@ -165,7 +165,7 @@ public class Node {
     }
 
     public enum OpMode {
-        UNCONFIGURED, PULSE, PULSE_DHT22, DHT22
+        UNCONFIGURED, PULSE, PULSE_DHT22, DHT22, PULSE_DS18B20, DS18B20
     }
 
 }

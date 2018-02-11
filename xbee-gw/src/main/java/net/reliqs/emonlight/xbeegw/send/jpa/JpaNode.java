@@ -11,9 +11,10 @@ public class JpaNode {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     private String name;
     private String address;
+    @Enumerated(EnumType.STRING)
     private Node.OpMode mode;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "node")
     private Collection<JpaProbe> probes;
@@ -21,11 +22,11 @@ public class JpaNode {
     public JpaNode() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -59,5 +60,16 @@ public class JpaNode {
 
     public void setProbes(Collection<JpaProbe> probes) {
         this.probes = probes;
+    }
+
+    @Override
+    public String toString() {
+        return "JpaNode{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", mode=" + mode +
+                ", probes=" + probes +
+                '}';
     }
 }

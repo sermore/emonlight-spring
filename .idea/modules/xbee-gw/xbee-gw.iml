@@ -5,6 +5,7 @@
     <content url="file://$MODULE_DIR$/../../../xbee-gw">
       <excludeFolder url="file://$MODULE_DIR$/../../../xbee-gw/.gradle" />
       <excludeFolder url="file://$MODULE_DIR$/../../../xbee-gw/build" />
+      <excludeFolder url="file://$MODULE_DIR$/../../../xbee-gw/out" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

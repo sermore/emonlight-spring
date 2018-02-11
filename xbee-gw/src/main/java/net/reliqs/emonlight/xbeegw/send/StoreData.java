@@ -63,4 +63,15 @@ public class StoreData {
     public void setV(double v) {
         this.v = v;
     }
+
+    @Override
+    public String toString() {
+        return "StoreData{" +
+                "node='" + node + '\'' +
+                ", probe='" + probe + '\'' +
+                ", type='" + type + '\'' +
+                ", t=" + t +
+                ", v=" + v +
+                '}';
+    }
 }

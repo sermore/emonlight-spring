@@ -57,6 +57,11 @@ public class RestDeliveryService implements DeliveryService, ListenableFutureCal
         return (inFlight != null || !queue.isEmpty() || !receiveQueue.isEmpty()) && (running == null || running.isDone());
     }
 
+    @Override
+    public boolean isQueueEmpty() {
+        return queue.isEmpty() && inFlight == null && receiveQueue.isEmpty();
+    }
+
     ServerDataJSON pollReceiveQueue() {
         Queue<RData> inQueue = new ArrayDeque<>(receiveQueue);
         receiveQueue.clear();

@@ -35,7 +35,8 @@ subprojects {
         compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: '1.5+'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-logging'
         compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
-        compile group: 'mysql', name: 'mysql-connector-java'
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
+        compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
 
         testCompile("org.springframework.boot:spring-boot-starter-test")
         testCompile("junit:junit")

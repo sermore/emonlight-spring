@@ -8,19 +8,35 @@ logging:
         emonlight: TRACE
 
 spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/emonlight_dev?createDatabaseIfNotExist=true&useSSL=false
+    username: emonlight
+    password: emonlight
+    initialize: true
+  jpa:
+    show-sql: false
+    generate-ddl: false
+#    database-platform: org.hibernate.dialect.MySQLDialect
+    properties:
+      hibernate.dialect.storage_engine: myisam
+      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+#      javax.persistence.schema-generation.create-source: metadata
+#      javax.persistence.schema-generation.scripts.action: create
+#      javax.persistence.schema-generation.scripts.create-target: schema.sql
+    hibernate:
+      ddl-auto: create-drop
   jms:
+#    pub-sub-domain: true
     template:
       default-destination: test
-#  jms.isPubSubDomain: true
-#  activemq:
-#    broker-url: tcp://lime2:61616
-    pool:
-      enabled: true
+
+
+jpa.enabled: true
 
 jms.enabled: true
 
-influxdb:
-  enabled: false
+influxdb.enabled: false
 
 settings:
   serialPort: "/dev/ttyUSB0"

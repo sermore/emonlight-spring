@@ -3,6 +3,8 @@ jms:
   enabled: false
 influxdb:
   enabled: false
+jpa:
+  enabled: false
 
 settings:
   serialPort: "/dev/ttyUSB0"

@@ -4,13 +4,14 @@ import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -23,11 +24,12 @@ import static org.hamcrest.Matchers.*;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, JpaConfiguration.class, Publisher.class})
+@SpringBootTest(classes = {Settings.class, JpaConfiguration.class, JpaServiceConfiguration.class, Publisher.class})
 @EnableAutoConfiguration
 @EnableAsync
-//@EnableCaching
+@EnableCaching
 @ActiveProfiles("jpa")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class JpaServiceTest {
 
     @Autowired
@@ -40,8 +42,6 @@ public class JpaServiceTest {
     private JpaDataRepo dataRepo;
     @Autowired
     private JpaService service;
-    @Autowired
-    private JpaConfiguration configuration;
 
     public JpaProbe prepareData() {
         JpaNode n = new JpaNode();
@@ -54,12 +54,18 @@ public class JpaServiceTest {
         return p;
     }
 
-    @Before
-    public void clearData() {
-        dataRepo.deleteAll();
-        probeRepo.deleteAll();
-        nodeRepo.deleteAll();
-        dataRepo.flush();
+    private void produceData(int cnt) throws InterruptedException {
+        Random rng = new Random();
+        for (int j = 0; j < cnt; j++) {
+            for (int i = 0; i < 1000; i++) {
+                int q = rng.nextInt(Long.valueOf(settings.getProbes().count()).intValue() - 1);
+                Probe p = settings.getProbes().skip(q).findFirst().get();
+                Data in = new Data(Instant.now().toEpochMilli(), rng.nextDouble() * 100.0);
+                service.receive(p, p.getType(), in);
+            }
+            service.post();
+            Thread.sleep(10);
+        }
     }
 
     @Test
@@ -68,8 +74,14 @@ public class JpaServiceTest {
         JpaData d = new JpaData(p, Instant.now(), 14.67F);
         dataRepo.save(d);
         assertThat(dataRepo.count(), is(1L));
-        dataRepo.deleteAll();
+        assertThat(nodeRepo.count(), is(2L));
+    }
+
+    @Test
+    public void checkForInitialDbSetup() {
+        assertThat(dataRepo.count(), is(0L));
         assertThat(nodeRepo.count(), is(1L));
+        assertThat(probeRepo.count(), is(4L));
     }
 
     @Test
@@ -82,8 +94,6 @@ public class JpaServiceTest {
 
     @Test
     public void serviceTest() throws InterruptedException {
-        configuration.setupDb(settings, nodeRepo, probeRepo);
-
         Probe p = settings.getProbes().findFirst().get();
 
         assertThat(service.isReady(), is(false));
@@ -110,28 +120,15 @@ public class JpaServiceTest {
 //        assertThat(dataRepo.countByProbe(probes.get(0)), is(3L));
     }
 
-    @Test
+    @Test(timeout = 10_000)
     public void checkForCaching() throws InterruptedException {
-        configuration.setupDb(settings, nodeRepo, probeRepo);
-
-        Random rng = new Random();
-        for (int j = 0; j < 50; j++) {
-            for (int i = 0; i < 1000; i++) {
-                int q = rng.nextInt(Long.valueOf(settings.getProbes().count()).intValue() - 1);
-                Probe p = settings.getProbes().skip(q).findFirst().get();
-                Data in = new Data(Instant.now().toEpochMilli(), rng.nextDouble() * 100.0);
-                service.receive(p, p.getType(), in);
-            }
-            service.post();
-            Thread.sleep(10);
-        }
+        produceData(20);
         while (!service.isQueueEmpty()) {
             service.post();
-            Thread.sleep(1000);
+            Thread.sleep(500);
         }
         assertThat(service.isQueueEmpty(), is(true));
-        assertThat(dataRepo.count(), is(50_000L));
-//        Thread.sleep(2000);
+        assertThat(dataRepo.count(), is(20_000L));
     }
 
 }

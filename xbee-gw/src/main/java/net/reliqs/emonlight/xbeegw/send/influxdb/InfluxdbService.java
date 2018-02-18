@@ -77,7 +77,7 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
 
     @Override
     public boolean isQueueEmpty() {
-        return !running && queue.getPoints().isEmpty() && inFlight.getPoints().isEmpty();
+        return !running && queue.getPoints().isEmpty() && inFlight == null;
     }
 
     @Override
@@ -88,7 +88,7 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
 
     @Override
     public void onSuccess(Integer result) {
-        log.debug("Influxdb q={}, {}", queue.getPoints().size(), result);
+        log.debug("Influxdb sent q={}, {}", queue.getPoints().size(), result);
         running = false;
         inFlight = null;
     }

@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.concurrent.ListenableFuture;
 
+import javax.annotation.PreDestroy;
 import java.time.Instant;
 import java.util.Queue;
 
@@ -56,6 +57,11 @@ public class JpaAsyncService {
         dataRepo.save(data);
 //        log.trace("JPA OK {}", t);
         return true;
+    }
+
+    @PreDestroy
+    void onClose() {
+        log.debug("close");
     }
 
 }

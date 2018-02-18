@@ -1,45 +1,84 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
-import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.AbstractJpaVendorAdapter;
+import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
+import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.sql.DataSource;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+@ConditionalOnProperty(name = "jpa.enabled")
 @Configuration
-@ConditionalOnProperty(name = "jpa.enabled", matchIfMissing = true, havingValue = "")
-//@EnableJpaRepositories("net.reliqs.emonlight.xbeegw.send.jpa")
-@EnableTransactionManagement
-@EnableCaching
+//@EnableTransactionManagement
+//@EntityScan("net.reliqs.emonlight.xbeegw.send.jpa")
 public class JpaConfiguration {
-    private static final Logger log = LoggerFactory.getLogger(JpaConfiguration.class);
+//    private static final Logger log = LoggerFactory.getLogger(JpaConfiguration.class);
 
-    public JpaConfiguration(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
-        setupDb(settings, nodeRepo, probeRepo);
-    }
-
-    void setupDb(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo) {
-        settings.getNodes().forEach(n -> {
-            JpaNode node = nodeRepo.createNodeIfNotExists(probeRepo, n);
-//            log.debug("JPA: node saved {}", node);
-        });
-        log.debug("JPA: database setup completed");
+    @Bean
+//    @ConfigurationProperties(prefix = "spring.jpa")
+    JpaProperties jpaProperties() {
+        return new JpaProperties();
     }
 
     @Bean
-    JpaAsyncService jpaAsyncService(JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
-        return new JpaAsyncService(nodeRepo, probeRepo, dataRepo);
+    @ConfigurationProperties(prefix = "spring.datasource")
+    DataSource dataSource() {
+        return DataSourceBuilder.create().build();
     }
 
     @Bean
-    JpaService jpaService(Publisher publisher, JpaAsyncService asyncService) {
-        JpaService service = new JpaService(asyncService);
-        publisher.addService(service);
-        return service;
+    PlatformTransactionManager transactionManager() {
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+//        if (this.transactionManagerCustomizers != null) {
+//            this.transactionManagerCustomizers.customize(transactionManager);
+//        }
+        return transactionManager;
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+        DataSource dataSource = dataSource();
+        JpaProperties properties = jpaProperties();
+//        log.debug("PROPS {}", properties.getProperties());
+        EntityManagerFactoryBuilder builder = entityManagerFactoryBuilder(dataSource, properties);
+        Map<String, Object> vendorProperties = getVendorProperties(dataSource, properties);
+        return builder.dataSource(dataSource).packages("net.reliqs.emonlight.xbeegw.send.jpa")
+                .properties(vendorProperties).build();
+    }
+
+    private EntityManagerFactoryBuilder entityManagerFactoryBuilder(DataSource dataSource, JpaProperties properties) {
+        EntityManagerFactoryBuilder builder = new EntityManagerFactoryBuilder(
+                jpaVendorAdapter(dataSource, properties), properties.getProperties(),
+                null);
+//        builder.setCallback(getVendorCallback());
+        return builder;
+    }
+
+    private Map<String, Object> getVendorProperties(DataSource dataSource, JpaProperties properties) {
+        Map<String, Object> vendorProperties = new LinkedHashMap<String, Object>();
+        vendorProperties.putAll(properties.getHibernateProperties(dataSource));
+        return vendorProperties;
+    }
+
+
+    private JpaVendorAdapter jpaVendorAdapter(DataSource dataSource, JpaProperties properties) {
+        AbstractJpaVendorAdapter adapter = new HibernateJpaVendorAdapter();
+        adapter.setShowSql(properties.isShowSql());
+        adapter.setDatabase(properties.determineDatabase(dataSource));
+        adapter.setDatabasePlatform(properties.getDatabasePlatform());
+        adapter.setGenerateDdl(properties.isGenerateDdl());
+        return adapter;
     }
 
 }

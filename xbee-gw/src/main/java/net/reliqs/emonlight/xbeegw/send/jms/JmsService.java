@@ -7,7 +7,6 @@ import net.reliqs.emonlight.xbeegw.send.StoreData;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -26,7 +25,6 @@ public class JmsService implements DeliveryService, ListenableFutureCallback<Map
     private boolean running;
     private JmsAsyncService service;
 
-    @Autowired
     public JmsService(JmsAsyncService service) {
         this.service = service;
         this.queue = new ArrayDeque<>();
@@ -63,7 +61,7 @@ public class JmsService implements DeliveryService, ListenableFutureCallback<Map
 
     @Override
     public void onSuccess(Map<String, Integer> result) {
-        log.debug("JMS q={}, {}", queue.size(), result.entrySet().stream()
+        log.debug("JMS sent q={}, {}", queue.size(), result.entrySet().stream()
                 .map(e -> e.getKey() + "(" + e.getValue() + ")").collect(Collectors.joining(", ")));
         running = false;
         assert inFlight.isEmpty();

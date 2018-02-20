@@ -16,7 +16,6 @@ import java.time.temporal.ChronoUnit;
 public class Dispatcher implements SmartLifecycle {
     private static final Logger log = LoggerFactory.getLogger(Dispatcher.class);
 
-    private Instant nextExecution;
     @Value("${dispatcher.rate:5000}")
     private long rate;
     private Publisher publisher;
@@ -27,7 +26,6 @@ public class Dispatcher implements SmartLifecycle {
     public Dispatcher(Publisher publisher) {
         log.debug("init dispatcher");
         this.publisher = publisher;
-        nextExecution = Instant.now().plus(rate, ChronoUnit.MILLIS);
         running = true;
     }
 
@@ -36,11 +34,11 @@ public class Dispatcher implements SmartLifecycle {
      * No Thread-Safe, must be called in main thread.
      */
     public void process() {
-        Instant now = Instant.now();
-        if (nextExecution.isBefore(now)) {
-            nextExecution = now.plus(rate, ChronoUnit.MILLIS);
             publisher.getServices().stream().filter(DeliveryService::isReady).forEach(DeliveryService::post);
-        }
+    }
+
+    public long getRate() {
+        return rate;
     }
 
     /**
@@ -75,6 +73,7 @@ public class Dispatcher implements SmartLifecycle {
             }
         }
         running = false;
+        // continue shutdown process
         callback.run();
     }
 

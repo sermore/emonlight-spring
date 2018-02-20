@@ -3,9 +3,9 @@ package net.reliqs.emonlight.xbeegw.xbee;
 import com.digi.xbee.api.exceptions.XBeeException;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
+import net.reliqs.emonlight.xbeegw.Runner;
 import net.reliqs.emonlight.xbeegw.TestRouterConfig;
 import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.send.Dispatcher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,20 +27,14 @@ public class RouterTest {
     Settings settings;
 
     @Autowired
-    Dispatcher t;
-
-    @Autowired
-    Processor p;
+    Runner runner;
 
     @Test
     public void testRouter()
             throws XBeeException, JsonParseException, JsonMappingException, IOException, InterruptedException {
         assertThat(settings.getNodes().size(), is(1));
         assertThat(settings.getServers().size(), is(2));
-        for (int i = 0; i < 40000; i++) {
-            p.process();
-            t.process();
-        }
+        runner.run(40000L);
     }
 
 }

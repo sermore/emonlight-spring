@@ -1,6 +1,5 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.utils.HexUtils;
 import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
@@ -12,20 +11,12 @@ import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import javax.annotation.PreDestroy;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Processor of the xbee events.
@@ -36,27 +27,20 @@ import java.util.concurrent.TimeUnit;
  * message processing is handled by specific MessageProcessor instances,
  * selected using the first byte of the received message.
  */
-@Component
+@Service
 public class Processor {
     private static final Logger log = LoggerFactory.getLogger(Processor.class);
 
-    private final BlockingQueue<DataMessage> queue;
     private final Map<Byte, MessageProcessor> procs;
-    private final XbeeGateway gateway;
+    private final XbeeProcessor gateway;
     private final GlobalState globalState;
     private final Publisher publisher;
-    //    @Value("${processor.timeout:1000}")
-//    private long timeout;
-    @Value("${processor.maxProcessTime:1000}")
-    private long maxProcessTime;
 
-    @Autowired
-    public Processor(final Settings settings, final XbeeGateway gateway, final GlobalState globalState,
-                     final Publisher publisher, final TriggerManager triggerManager) throws XBeeException {
+    public Processor(final Settings settings, final XbeeProcessor gateway, final GlobalState globalState,
+                     final Publisher publisher, final TriggerManager triggerManager) {
         this.gateway = gateway;
         this.globalState = globalState;
         this.publisher = publisher;
-        queue = new LinkedBlockingQueue<>();
         procs = new HashMap<>();
         procs.put((byte) 'C', new ConfigurationProcessor(this));
         procs.put((byte) 'J', new DHT22Processor(this));
@@ -67,7 +51,6 @@ public class Processor {
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
         procs.put((byte) 'B', procs.get((byte) 'S'));
-        gateway.setProcessor(this);
         settings.getNodes().forEach(n -> registerNode(triggerManager, n));
 //        triggerManager.registerTriggerDataAbsent(handler);
         log.debug("processor configuration complete");
@@ -91,22 +74,7 @@ public class Processor {
         gateway.sendDataAsync(ns.getDevice(), data);
     }
 
-    void queue(final DataMessage msg) {
-        queue.offer(msg);
-    }
-
-    public void process() throws InterruptedException {
-        Instant processTime = Instant.now().plus(maxProcessTime, ChronoUnit.MILLIS);
-        do {
-            DataMessage m = queue.poll(maxProcessTime / 4, TimeUnit.MILLISECONDS);
-            if (m != null) {
-                processDataMessage(m);
-            } else
-                return;
-        } while (Instant.now().isBefore(processTime));
-    }
-
-    private void processDataMessage(DataMessage m) {
+    public void processDataMessage(DataMessage m) {
         NodeState ns = globalState.getNodeState(m.getDeviceAddress());
         if (ns != null) {
             ByteBuffer in = ByteBuffer.wrap(m.getData());

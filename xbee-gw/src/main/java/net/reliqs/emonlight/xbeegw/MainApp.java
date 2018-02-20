@@ -1,5 +1,8 @@
 package net.reliqs.emonlight.xbeegw;
 
+import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.events.EventQueue;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -17,6 +20,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
+import java.util.Arrays;
 import java.util.concurrent.Executor;
 
 @Profile({"default", "prod", "dev"})
@@ -33,6 +37,40 @@ public class MainApp extends AsyncConfigurerSupport {
         SpringApplication.run(MainApp.class, args);
     }
 
+    @Autowired
+    Settings settings;
+
+//    @Bean
+//    Runner runner() {
+//        return new Runner();
+//    }
+
+    @Autowired
+    EventQueue queue;
+
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+
+        String[] beanNames = ctx.getBeanDefinitionNames();
+        Arrays.sort(beanNames);
+        for (String beanName : beanNames) {
+            System.out.println(beanName);
+        }
+
+        System.out.printf("\n\nActive profiles: %s\n\n", Arrays.toString(ctx.getEnvironment().getActiveProfiles()));
+
+        System.out.println("Nodes defined:");
+        settings.getNodes().forEach(n -> System.out.println(" - " + n.getName()));
+        System.out.println("\nServers defined:");
+        settings.getServers().forEach(s -> System.out.println(" - " + s.getName()));
+        System.out.println("\n\n\n");
+
+        return args -> {
+//            runner().run(0L);
+            queue.run(0);
+        };
+    }
+
     @Override
     public Executor getAsyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
@@ -42,18 +80,6 @@ public class MainApp extends AsyncConfigurerSupport {
         executor.setThreadNamePrefix("Worker-");
         executor.initialize();
         return executor;
-    }
-
-    @Bean
-    Runner runner() {
-        return new Runner();
-    }
-
-    @Bean
-    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
-        return args -> {
-            runner().run(ctx);
-        };
     }
 
     // @Bean

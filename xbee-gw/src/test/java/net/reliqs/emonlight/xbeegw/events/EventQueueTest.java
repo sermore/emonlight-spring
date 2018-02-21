@@ -3,6 +3,8 @@ package net.reliqs.emonlight.xbeegw.events;
 import com.digi.xbee.api.utils.HexUtils;
 import net.reliqs.emonlight.xbeegw.xbee.DataMessage;
 import net.reliqs.emonlight.xbeegw.xbee.XbeeProcessor;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,29 @@ public class EventQueueTest {
     @MockBean
     XbeeProcessor xbeeGateway;
 
+    final String[][] q = {
+            {"0013A20041468922", "44E79F6EDA5003E79F6ED9"},
+            {"0013A20041479F96", "530765560CAE"},
+            {"0013A20041468922", "44E79F8BB45003E79F8BB4"},
+            {"0013A20041468938", "4A0A020000BFC1"},
+            {"0013A20041468922", "44E79FA8835003E79FA883"},
+            {"0013A20041468922", "44E79FC5555003E79FC555"}
+    };
+
+    private void populate() {
+
+        for (int i = 0; i < q.length; i++) {
+            DataMessage msg = new DataMessage(Instant.now().plus(i * 500L, ChronoUnit.MILLIS), q[i][0], HexUtils.hexStringToByteArray(q[i][1]));
+            queue.offerDataMessage(msg, i * 500L);
+        }
+    }
+
+    @Before
+    @After
+    public void clearQueue() {
+        queue.clear();
+    }
+
     @Test(timeout = 600L)
     public void testStopEvent() {
         queue.offerStopEvent(500L);
@@ -51,20 +76,18 @@ public class EventQueueTest {
 
     @Test
     public void testEventQueue() {
-        String[][] q = {
-                {"0013A20041468922", "44E79F6EDA5003E79F6ED9"},
-                {"0013A20041479F96", "530765560CAE"},
-                {"0013A20041468922", "44E79F8BB45003E79F8BB4"},
-                {"0013A20041468938", "4A0A020000BFC1"},
-                {"0013A20041468922", "44E79FA8835003E79FA883"},
-                {"0013A20041468922", "44E79FC5555003E79FC555"}
-        };
+        populate();
+        queue.run(5_000L);
+    }
 
-        for (int i = 0; i < q.length; i++) {
-            DataMessage msg = new DataMessage(Instant.now().plus(i * 500L, ChronoUnit.MILLIS), q[i][0], HexUtils.hexStringToByteArray(q[i][1]));
-            queue.offerDataMessage(msg, i * 500L);
-        }
-        queue.run(40_000L);
+    @Test
+    public void testBackup() {
+        populate();
+        assertThat(queue.size(), is(Integer.toUnsignedLong(q.length)));
+        queue.close();
+        queue.clear();
+        queue.init();
+        assertThat(queue.size(), is(Integer.toUnsignedLong(q.length)));
     }
 
 }

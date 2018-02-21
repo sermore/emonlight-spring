@@ -2,14 +2,22 @@ package net.reliqs.emonlight.xbeegw.events;
 
 import net.reliqs.emonlight.xbeegw.GwException;
 import net.reliqs.emonlight.xbeegw.send.Dispatcher;
+import net.reliqs.emonlight.xbeegw.state.SaveToFile;
 import net.reliqs.emonlight.xbeegw.xbee.DataMessage;
 import net.reliqs.emonlight.xbeegw.xbee.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static net.reliqs.emonlight.xbeegw.events.DelayedEvent.EventType.Stop;
 
@@ -24,10 +32,41 @@ public class EventQueue {
 
     private DelayQueue<DelayedEvent> queue;
 
+    @Value("${eventQueue.backup:event-queue-backup.dat}")
+    private String backupPath;
+
     public EventQueue() {
         this.queue = new DelayQueue<>();
-//        this.processor = processor;
-//        this.dispatcher = dispatcher;
+    }
+
+    /**
+     * Queue initialization. Read DataMessage events from file and remove the file.
+     */
+    @PostConstruct
+    void init() {
+        SaveToFile<DelayedEvent> s = new SaveToFile<DelayedEvent>(backupPath);
+        Collection<DelayedEvent> data = s.read(true);
+        data.forEach(e -> offerDataMessage(e.getMsg(), e.getDelay(TimeUnit.MILLISECONDS)));
+        log.debug("read {} events from {}", data.size(), backupPath);
+    }
+
+    /**
+     * Queue state backup on termination. Write queued DataMessage events to file.
+     */
+    @PreDestroy
+    void close() {
+        if (queue.size() > 0) {
+            SaveToFile<DelayedEvent> s = new SaveToFile<DelayedEvent>(backupPath);
+            List<DelayedEvent> data = queue.stream().filter(e -> e.getEventType() == DelayedEvent.EventType.Message).collect(Collectors.toList());
+            s.write(data);
+            log.debug("saved {} events to {}", data.size(), backupPath);
+        } else {
+            log.debug("queue empty on close");
+        }
+    }
+
+    public String getBackupPath() {
+        return backupPath;
     }
 
     public void offerDataMessage(DataMessage dataMessage, long delay) {
@@ -84,5 +123,11 @@ public class EventQueue {
         return false;
     }
 
+    public void clear() {
+        queue.clear();
+    }
 
+    public long size() {
+        return queue.size();
+    }
 }

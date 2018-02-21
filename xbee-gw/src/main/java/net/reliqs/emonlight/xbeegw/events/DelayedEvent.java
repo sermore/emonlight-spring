@@ -2,14 +2,15 @@ package net.reliqs.emonlight.xbeegw.events;
 
 import net.reliqs.emonlight.xbeegw.xbee.DataMessage;
 
+import java.io.Serializable;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
-class DelayedEvent implements Delayed {
+class DelayedEvent implements Delayed, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     enum EventType {Message, Dispatcher, Stop}
-
-    ;
 
     private long startTime;
     private EventType eventType;

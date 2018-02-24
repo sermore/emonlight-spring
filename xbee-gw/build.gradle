@@ -63,8 +63,9 @@ task deploy(dependsOn: 'build') {
                 // deploy executable file
                 put from: jar.archivePath.absolutePath, into: '/tmp'
                 execute 'chmod a+x /tmp/' + jar.archiveName
+                executeSudo 'systemctl stop emonlight-xbee-gw', pty: true
                 executeSudo 'mv -f /tmp/' + jar.archiveName + ' /var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar', pty: true
-                executeSudo 'systemctl restart emonlight-xbee-gw', pty: true
+                executeSudo 'systemctl start emonlight-xbee-gw', pty: true
             }
         }
     }

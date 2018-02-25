@@ -6,6 +6,7 @@ Requires=influxd.service
 [Service]
 User=emonlight-xbee-gw
 Environment=JAVA_OPTS=-Djava.library.path=/usr/lib/jni
+WorkingDirectory=/var/lib/emonlight-xbee-gw
 ExecStart=/var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar --spring.config.location=/etc/emonlight-xbee-gw.yml
 Restart=always
 RestartSec=30

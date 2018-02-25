@@ -15,7 +15,7 @@ public class JmsService extends AbstractService<StoreData, JmsAsyncService> {
     private static final Logger log = LoggerFactory.getLogger(JmsService.class);
 
     public JmsService(JmsAsyncService service) {
-        super(service, "JMS");
+        super(service, "JMS", 0);
     }
 
     @Override

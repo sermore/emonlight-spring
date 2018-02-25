@@ -8,7 +8,7 @@ import net.reliqs.emonlight.xbeegw.send.StoreData;
 public class JpaService extends AbstractService<StoreData, JpaAsyncService> {
 
     public JpaService(JpaAsyncService service) {
-        super(service, "JPA");
+        super(service, "JPA", 0);
     }
 
     @Override

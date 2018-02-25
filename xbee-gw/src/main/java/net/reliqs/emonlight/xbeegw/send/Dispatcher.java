@@ -61,7 +61,7 @@ public class Dispatcher implements SmartLifecycle {
 
     @Override
     public void stop(Runnable callback) {
-        log.debug("clean up services queues");
+        log.debug("clean up services queues, timeout {}", timeOut);
         Instant timeout = Instant.now().plus(timeOut, ChronoUnit.MILLIS);
         while (Instant.now().isBefore(timeout) && publisher.getServices().stream().anyMatch(s -> !s.isQueueEmpty())) {
             try {

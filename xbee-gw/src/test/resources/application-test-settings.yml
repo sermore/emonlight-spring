@@ -1,8 +1,16 @@
 ---
+logging:
+  level:
+    root: info
+    com.digi.xbee: INFO
+    net.reliqs.emonlight: TRACE
+
 jms:
   enabled: false
 influxdb:
   enabled: false
+
+dispatcher.timeout: 1200
 
 settings:
   serialPort: "/dev/ttyUSB0"

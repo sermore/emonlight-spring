@@ -32,7 +32,7 @@ public class JpaServiceConfiguration {
         return new JpaAsyncService(nodeRepo, probeRepo, dataRepo);
     }
 
-    @Bean
+    @Bean(initMethod = "onInit", destroyMethod = "onClose")
     JpaService jpaService(Publisher publisher, JpaAsyncService asyncService) {
         JpaService service = new JpaService(asyncService);
         publisher.addService(service);

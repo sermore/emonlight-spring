@@ -5,6 +5,7 @@ import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class StoreData implements Serializable {
 
@@ -66,6 +67,24 @@ public class StoreData implements Serializable {
 
     public void setV(double v) {
         this.v = v;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StoreData storeData = (StoreData) o;
+        return t == storeData.t &&
+                Double.compare(storeData.v, v) == 0 &&
+                Objects.equals(node, storeData.node) &&
+                Objects.equals(probe, storeData.probe) &&
+                Objects.equals(type, storeData.type);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(node, probe, type, t, v);
     }
 
     @Override

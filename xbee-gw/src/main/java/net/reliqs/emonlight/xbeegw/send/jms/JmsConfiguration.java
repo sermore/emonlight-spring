@@ -96,7 +96,7 @@ public class JmsConfiguration {
         return new JmsAsyncService(jmsTemplate);
     }
 
-    @Bean
+    @Bean(initMethod = "onInit", destroyMethod = "onClose")
     JmsService jmsService(JmsAsyncService jmsAsyncService) {
         JmsService s = new JmsService(jmsAsyncService);
         publisher.addService(s);

@@ -2,7 +2,7 @@ package net.reliqs.emonlight.xbeegw.events;
 
 import net.reliqs.emonlight.xbeegw.GwException;
 import net.reliqs.emonlight.xbeegw.send.Dispatcher;
-import net.reliqs.emonlight.xbeegw.state.SaveToFile;
+import net.reliqs.emonlight.xbeegw.state.CollectionStoreToFile;
 import net.reliqs.emonlight.xbeegw.xbee.DataMessage;
 import net.reliqs.emonlight.xbeegw.xbee.Processor;
 import org.slf4j.Logger;
@@ -44,7 +44,7 @@ public class EventQueue {
      */
     @PostConstruct
     void init() {
-        SaveToFile<DelayedEvent> s = new SaveToFile<DelayedEvent>(backupPath);
+        CollectionStoreToFile<DelayedEvent> s = new CollectionStoreToFile<DelayedEvent>(backupPath);
         Collection<DelayedEvent> data = s.read(true);
         data.forEach(e -> offerDataMessage(e.getMsg(), e.getDelay(TimeUnit.MILLISECONDS)));
         log.debug("read {} events from {}", data.size(), backupPath);
@@ -56,7 +56,7 @@ public class EventQueue {
     @PreDestroy
     void close() {
         if (queue.size() > 0) {
-            SaveToFile<DelayedEvent> s = new SaveToFile<DelayedEvent>(backupPath);
+            CollectionStoreToFile<DelayedEvent> s = new CollectionStoreToFile<DelayedEvent>(backupPath);
             List<DelayedEvent> data = queue.stream().filter(e -> e.getEventType() == DelayedEvent.EventType.Message).collect(Collectors.toList());
             s.write(data);
             log.debug("saved {} events to {}", data.size(), backupPath);

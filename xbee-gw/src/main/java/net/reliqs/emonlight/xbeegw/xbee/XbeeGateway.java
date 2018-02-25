@@ -29,6 +29,10 @@ class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleRecei
 
     public XbeeGateway(Settings settings, EventQueue queue) throws XBeeException {
         this.queue = queue;
+        init(settings);
+    }
+
+    private void init(Settings settings) throws XBeeException {
         localDevice = new XBeeDevice(settings.getSerialPort(), settings.getBaudRate());
         localDevice.setReceiveTimeout(settings.getReceiveTimeout());
         localDevice.open();

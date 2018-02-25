@@ -4,7 +4,11 @@ import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 
-public class StoreData {
+import java.io.Serializable;
+
+public class StoreData implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String node;
     private String probe;

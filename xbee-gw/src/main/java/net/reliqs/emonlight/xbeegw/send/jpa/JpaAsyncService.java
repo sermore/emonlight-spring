@@ -1,19 +1,14 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
 import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.concurrent.ListenableFuture;
 
-import javax.annotation.PreDestroy;
 import java.time.Instant;
-import java.util.Queue;
 
-public class JpaAsyncService {
+public class JpaAsyncService extends AbstractAsyncService<StoreData> {
     private static final Logger log = LoggerFactory.getLogger(JpaAsyncService.class);
 
     private JpaNodeRepo nodeRepo;
@@ -21,27 +16,14 @@ public class JpaAsyncService {
     private JpaDataRepo dataRepo;
 
     public JpaAsyncService(JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
+        super();
         this.nodeRepo = nodeRepo;
         this.probeRepo = probeRepo;
         this.dataRepo = dataRepo;
     }
 
-    @Async
-    @Transactional
-    public ListenableFuture<Integer> post(Queue<StoreData> inFlight) {
-        int cnt = 0;
-        while (!inFlight.isEmpty()) {
-            StoreData t = inFlight.peek();
-            if (send(t)) {
-                cnt++;
-            }
-            inFlight.poll();
-        }
-        AsyncResult<Integer> res = new AsyncResult<>(cnt);
-        return res;
-    }
-
-    private boolean send(StoreData t) {
+    @Override
+    protected boolean send(StoreData t) {
         JpaNode node = nodeRepo.findByName(t.getNode());
         if (node == null) {
             log.error("JPA: node not found from {}", t);
@@ -57,11 +39,6 @@ public class JpaAsyncService {
         dataRepo.save(data);
 //        log.trace("JPA OK {}", t);
         return true;
-    }
-
-    @PreDestroy
-    void onClose() {
-        log.debug("close");
     }
 
 }

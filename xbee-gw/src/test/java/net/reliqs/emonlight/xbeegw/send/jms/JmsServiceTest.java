@@ -9,14 +9,23 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
+import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.stereotype.Component;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.jms.ConnectionFactory;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -25,18 +34,19 @@ import static org.hamcrest.Matchers.is;
  * Created by sergio on 2/28/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, JmsConfiguration.class, Publisher.class})
-@EnableAutoConfiguration
+@SpringBootTest(classes = {Settings.class, JmsConfiguration.class, Publisher.class, JmsServiceTest.TestJmsListenerConf.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class})
 @EnableAsync
 @ActiveProfiles("jms")
+@EnableJms
 public class JmsServiceTest {
 
     @Autowired
     Settings settings;
     @Autowired
-    MessageConverter messageConverter;
-    @Autowired
     Receiver receiver;
+    @Autowired
+    JmsService service;
     @Autowired
     private JmsTemplate jmsTemplate;
 
@@ -47,18 +57,67 @@ public class JmsServiceTest {
         jmsTemplate.convertAndSend("test", s);
         Thread.sleep(1000);
         assertThat(receiver.received, is(true));
+
     }
 
-    @Component
+    @Test
+    public void serviceTest() throws InterruptedException {
+        Probe p = settings.getProbes().findFirst().get();
+
+        assertThat(service.isReady(), is(false));
+        Data in = new Data(100, 10.0);
+        service.receive(p, p.getType(), in);
+        assertThat(service.isReady(), is(true));
+        in = new Data(200, 20.0);
+        service.receive(p, p.getType(), in);
+        service.post();
+        Thread.sleep(1000);
+        assertThat(service.isReady(), is(false));
+//        assertThat(service.isEmpty(), is(true));
+        in = new Data(300, 30.0);
+        service.receive(p, p.getType(), in);
+        service.post();
+        assertThat(service.isReady(), is(false));
+        Thread.sleep(1000);
+        assertThat(service.isReady(), is(false));
+        assertThat(Receiver.count, is(3));
+    }
+
     static class Receiver {
+        public static int count = 0;
         boolean received;
 
         @JmsListener(destination = "test")
         public void receiveMessage(StoreData data) {
             System.out.println("Received <" + data + ">");
+            count++;
             received = true;
         }
 
     }
 
+    @TestConfiguration
+    static class TestJmsListenerConf {
+
+        @Autowired
+        MessageConverter messageConverter;
+
+        @Bean
+        public DefaultJmsListenerContainerFactoryConfigurer configurer() {
+            return new DefaultJmsListenerContainerFactoryConfigurer();
+        }
+
+        @Bean
+        public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
+            DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
+            factory.setConnectionFactory(connectionFactory);
+            factory.setMessageConverter(messageConverter);
+            return factory;
+        }
+
+        @Bean
+        Receiver receiver() {
+            return new Receiver();
+        }
+    }
 }

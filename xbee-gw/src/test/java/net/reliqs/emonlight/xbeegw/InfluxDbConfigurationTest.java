@@ -7,16 +7,8 @@ import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -27,20 +19,16 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-@ActiveProfiles("jpa")
 @RunWith(SpringRunner.class)
-@SpringBootTest
-@ComponentScan(basePackages = {"net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
-        "net.reliqs.emonlight.xbeegw.publish"})
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class})
-@EnableConfigurationProperties
-@EnableAsync
-@EnableCaching
-public class SpringJpaConfigurationTest {
+@SpringBootTest(classes = {TestApp.class})
+@ActiveProfiles({"integration", "influxdb"})
+//@ComponentScan(basePackages = {"net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
+//        "net.reliqs.emonlight.xbeegw.publish"})
+//@EnableAsync
+public class InfluxDbConfigurationTest {
 
     @Autowired
     ApplicationContext ctx;
-
     @Autowired
     Publisher publisher;
     @Autowired
@@ -50,8 +38,8 @@ public class SpringJpaConfigurationTest {
     public void test() {
         assertThat(ctx.containsBean("jmsConfiguration"), is(false));
         assertThat(ctx.containsBean("jmsService"), is(false));
-        assertThat(ctx.containsBean("influxdbService"), is(false));
-        assertThat(ctx.containsBean("jpaService"), is(true));
+        assertThat(ctx.containsBean("influxdbService"), is(true));
+        assertThat(ctx.containsBean("jpaService"), is(false));
         assertThat(publisher.getServices(), hasSize(1));
     }
 

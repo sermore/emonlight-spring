@@ -5,7 +5,6 @@ import net.reliqs.emonlight.xbeegw.config.Node;
 import net.reliqs.emonlight.xbeegw.config.Probe;
 import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.events.EventQueue;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerDataAbsent;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
 import net.reliqs.emonlight.xbeegw.publish.Data;
@@ -17,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -32,8 +32,7 @@ import static org.junit.Assert.assertThat;
  * Created by sergio on 12/03/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class,
-        ProcessorTestConfig.class, TriggerDataAbsent.class, EventQueue.class})
+@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class, TriggerDataAbsent.class})
 @EnableConfigurationProperties
 @ActiveProfiles("test-router")
 public class ProcessorTest {
@@ -43,11 +42,13 @@ public class ProcessorTest {
     @Autowired
     private Processor processor;
     @Autowired
-    Publisher publisher;
+    private Publisher publisher;
     @Autowired
     private Settings settings;
     @Autowired
-    GlobalState globalState;
+    private GlobalState globalState;
+    @MockBean
+    private XbeeProcessor xbeeGateway;
 
 //    @Test
 //    public void testMaxProcessTime() throws Exception {

@@ -25,7 +25,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-jpa.enabled: true
+jpa.enabled: false
 
 jms.enabled: false
 

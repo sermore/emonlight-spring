@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -31,8 +32,7 @@ import static org.junit.Assert.assertThat;
  * Created by sergio on 12/03/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class,
-        ProcessorTestConfig.class, TriggerDataAbsent.class})
+@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class, TriggerDataAbsent.class})
 @EnableConfigurationProperties
 @ActiveProfiles("test-router")
 public class ProcessorTest {
@@ -42,37 +42,39 @@ public class ProcessorTest {
     @Autowired
     private Processor processor;
     @Autowired
-    Publisher publisher;
+    private Publisher publisher;
     @Autowired
     private Settings settings;
     @Autowired
-    GlobalState globalState;
+    private GlobalState globalState;
+    @MockBean
+    private XbeeProcessor xbeeGateway;
 
-    @Test
-    public void testMaxProcessTime() throws Exception {
-
-        Thread t = new Thread() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    processor.queue(new DataMessage(Instant.now(), "", null));
-                    try {
-                        Thread.sleep(maxProcessTime / 5);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        };
-        t.start();
-        Thread.sleep(maxProcessTime / 2);
-        Instant start = Instant.now();
-        processor.process();
-        Instant end = Instant.now();
-        assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS)), is(true));
-        assertThat(end.isBefore(start.plus((long) (maxProcessTime * 1.2), ChronoUnit.MILLIS)), is(true));
-    }
+//    @Test
+//    public void testMaxProcessTime() throws Exception {
+//
+//        Thread t = new Thread() {
+//            @Override
+//            public void run() {
+//                for (int i = 0; i < 10; i++) {
+//                    processor.queue(new DataMessage(Instant.now(), "", null));
+//                    try {
+//                        Thread.sleep(maxProcessTime / 5);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
+//            }
+//        };
+//        t.start();
+//        Thread.sleep(maxProcessTime / 2);
+//        Instant start = Instant.now();
+//        processor.process();
+//        Instant end = Instant.now();
+//        assertThat(end.isAfter(start.plus(maxProcessTime, ChronoUnit.MILLIS)), is(true));
+//        assertThat(end.isBefore(start.plus((long) (maxProcessTime * 1.2), ChronoUnit.MILLIS)), is(true));
+//    }
 
     @Test
     public void testDHT22MessageProcessing() throws InterruptedException {
@@ -86,8 +88,7 @@ public class ProcessorTest {
         Probe pt = settings.getProbes()
                 .filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.DHT22_T)
                 .findFirst().get();
-        processor.queue(msg);
-        processor.process();
+        processor.processDataMessage(msg);
         assertThat(testSubscriber.data, is(Arrays.asList(new Data(msg.getTime().toEpochMilli(), 88.8),
                 new Data(msg.getTime().toEpochMilli(), 12.7))));
         assertThat(testSubscriber.types, is(Arrays.asList(Type.DHT22_H, Type.DHT22_T)));
@@ -102,8 +103,7 @@ public class ProcessorTest {
         Probe pv = settings.getProbes()
                 .filter(p -> p.getNode().getAddress().equals("0013A20041468937") && p.getType() == Type.VCC).findFirst()
                 .get();
-        processor.queue(msg);
-        processor.process();
+        processor.processDataMessage(msg);
         assertThat(testSubscriber.data, is(Arrays.asList(new Data(msg.getTime().toEpochMilli(), 4.043116483516483))));
         assertThat(testSubscriber.types, is(Arrays.asList(Type.VCC)));
         assertThat(testSubscriber.probes, is(Arrays.asList(pv)));
@@ -148,11 +148,10 @@ public class ProcessorTest {
         NodeState ns = globalState.getNodeState(n.getAddress());
         ns.lastTimeMSec = 168456504 - 55461;
         ns.lastTime = msg0.getTime().minus(55461 - 5031, ChronoUnit.MILLIS);
-        processor.queue(msg0);
-        processor.queue(msg1);
-        processor.queue(msg2);
-        processor.queue(msg3);
-        processor.process();
+        processor.processDataMessage(msg0);
+        processor.processDataMessage(msg1);
+        processor.processDataMessage(msg2);
+        processor.processDataMessage(msg3);
         assertThat(testSubscriber.data, hasSize(4));
         assertThat(testSubscriber.data,
                 is(Arrays.asList(new Data(msg1.getTime().toEpochMilli() - 1, 22.0),
@@ -176,8 +175,7 @@ public class ProcessorTest {
         publisher.addSubscriber(testSubscriber);
         DataMessage msg = new DataMessage(Instant.now(), "0013A20041468937",
                 HexUtils.hexStringToByteArray("4A0A0378007F"));
-        processor.queue(msg);
-        processor.process();
+        processor.processDataMessage(msg);
         assertThat(testSubscriber.data.isEmpty(), is(true));
     }
 

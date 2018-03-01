@@ -1,8 +1,16 @@
 ---
+logging:
+  level:
+    root: info
+    com.digi.xbee: INFO
+    net.reliqs.emonlight: TRACE
+
 jms:
   enabled: false
 influxdb:
   enabled: false
+
+dispatcher.timeout: 1200
 
 settings:
   serialPort: "/dev/ttyUSB0"
@@ -16,7 +24,7 @@ settings:
     vccThreshold: 3.1
     adcRange: 4095
     adcVRef: 3.3
-    probes:    
+    probes:
     - &P1
       name: P1
       type: PULSE

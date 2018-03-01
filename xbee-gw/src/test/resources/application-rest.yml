@@ -1,0 +1,55 @@
+---
+jms:
+  enabled: false
+influxdb:
+  enabled: false
+jpa:
+  enabled: false
+
+settings:
+  serialPort: "/dev/ttyUSB0"
+  baudRate: 115200
+  receiveTimeout: 2000
+  nodes:
+  - name: N1
+    address: X1
+    sampleTime: 500
+    mode: PULSE_DHT22
+    vccThreshold: 3.1
+    adcRange: 4095
+    adcVRef: 3.3
+    probes:    
+    - &P1
+      name: P1
+      type: PULSE
+      pulsesPerKilowattHour: 1000
+      softThreshold: 3300
+      softThresholdTimeSec: 10800
+      hardThreshold: 4000
+      hardThresholdTimeSec: 240
+    - &P2
+      name: P2
+      type: DHT22_H
+    - &P3
+      name: P3
+      type: DHT22_T
+    - &VCC
+      name: VCC
+      type: VCC
+  - name: N2
+    address: X2
+    sampleTime: 300
+    mode: DHT22
+    probes:
+    - name: P4
+      type: DHT22_T
+    - name: P5
+      type: DHT22_H
+  servers:
+  - name: S1
+    url: http://url.1
+    sendRate: 2000
+    maps:
+    - probe: *P1
+      nodeId: 1
+      apiKey: '12345'

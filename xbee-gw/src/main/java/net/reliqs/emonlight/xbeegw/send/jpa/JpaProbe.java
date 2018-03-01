@@ -10,21 +10,22 @@ public class JpaProbe {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private Integer id;
     private String name;
+    @Enumerated(EnumType.STRING)
     private Probe.Type type;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private JpaNode node;
 
     public JpaProbe() {
     }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -52,4 +53,13 @@ public class JpaProbe {
         this.node = node;
     }
 
+    @Override
+    public String toString() {
+        return "JpaProbe{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", type=" + type +
+                ", node=" + node +
+                '}';
+    }
 }

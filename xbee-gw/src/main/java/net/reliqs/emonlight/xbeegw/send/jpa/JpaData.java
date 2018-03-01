@@ -11,13 +11,13 @@ public class JpaData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     // FIXME datetime is mysql specific!
-    @Column(nullable = false, length = 6, columnDefinition = "datetime(6)")
-//    @Column(nullable = false, length = 6)
+    @Column(nullable = false, length = 3, columnDefinition = "datetime(3)")
+//    @Column(nullable = false, length = 3)
     private Timestamp time;
     @Column(nullable = false)
     private Float value;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne
     private JpaProbe probe;
 
     public JpaData() {

@@ -1,23 +1,21 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.concurrent.TimeUnit;
-
+import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.BatchPoints;
 import org.influxdb.dto.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by sergio on 05/03/17.
@@ -78,6 +76,11 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
     }
 
     @Override
+    public boolean isQueueEmpty() {
+        return !running && queue.getPoints().isEmpty() && inFlight == null;
+    }
+
+    @Override
     public void onFailure(Throwable ex) {
         running = false;
         log.warn("Influxdb FAIL q={}, inFlight={}: {}", queue.getPoints().size(), inFlight.getPoints().size(), ex.getMessage());
@@ -85,7 +88,7 @@ public class InfluxdbService implements DeliveryService, ListenableFutureCallbac
 
     @Override
     public void onSuccess(Integer result) {
-        log.debug("Influxdb q={}, {}", queue.getPoints().size(), result);
+        log.debug("Influxdb sent q={}, {}", queue.getPoints().size(), result);
         running = false;
         inFlight = null;
     }

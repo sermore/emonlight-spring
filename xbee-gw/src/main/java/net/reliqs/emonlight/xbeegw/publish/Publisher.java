@@ -5,7 +5,7 @@ import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by sergio on 25/02/17.
  */
-@Component
+@Service
 public class Publisher {
     private static final Logger log = LoggerFactory.getLogger(Publisher.class);
 

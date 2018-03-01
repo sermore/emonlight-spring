@@ -5,14 +5,19 @@ logging:
     com.digi.xbee: INFO
     net:
       reliqs:
-        emonlight: DEBUG     
+        emonlight: TRACE
 
 spring:
-  jms.isPubSubDomain: true
+  jms:
+    template:
+      default-destination: test
+#  jms.isPubSubDomain: true
 #  activemq:
-#    broker-url:
-#    pool:
-#      enabled: true
+#    broker-url: tcp://lime2:61616
+    pool:
+      enabled: true
+
+jms.enabled: true
 
 influxdb:
   enabled: false

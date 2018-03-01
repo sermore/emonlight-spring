@@ -13,22 +13,26 @@ import com.digi.xbee.api.models.XBeeMessage;
 import com.digi.xbee.api.utils.ByteUtils;
 import net.reliqs.emonlight.xbeegw.GwException;
 import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.xbeegw.events.EventQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PreDestroy;
 
-@Component
-class XbeeGateway implements IDataReceiveListener, IIOSampleReceiveListener {
+@Service
+class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleReceiveListener {
     private static final Logger log = LoggerFactory.getLogger(XbeeGateway.class);
 
     private XBeeDevice localDevice;
-    private Processor processor;
+    private EventQueue queue;
 
-    @Autowired
-    public XbeeGateway(Settings settings) throws XBeeException {
+    public XbeeGateway(Settings settings, EventQueue queue) throws XBeeException {
+        this.queue = queue;
+        init(settings);
+    }
+
+    private void init(Settings settings) throws XBeeException {
         localDevice = new XBeeDevice(settings.getSerialPort(), settings.getBaudRate());
         localDevice.setReceiveTimeout(settings.getReceiveTimeout());
         localDevice.open();
@@ -52,19 +56,13 @@ class XbeeGateway implements IDataReceiveListener, IIOSampleReceiveListener {
         localDevice.setParameter("ST", ByteUtils.shortToByteArray(st));
     }
 
-    Processor getProcessor() {
-        return processor;
-    }
-
-    void setProcessor(Processor processor) {
-        this.processor = processor;
-    }
-
     @PreDestroy
     void cleanup() {
         localDevice.close();
+        log.debug("close");
     }
 
+    @Override
     public RemoteXBeeDevice addDevice(String address) {
         XBeeNetwork network = localDevice.getNetwork();
         XBee64BitAddress addr = new XBee64BitAddress(address);
@@ -76,6 +74,7 @@ class XbeeGateway implements IDataReceiveListener, IIOSampleReceiveListener {
         return device;
     }
 
+    @Override
     public void sendDataAsync(RemoteXBeeDevice device, byte[] data) {
         // log.debug("send {} to device {}",
         // HexUtils.byteArrayToHexString(data), device);
@@ -93,7 +92,7 @@ class XbeeGateway implements IDataReceiveListener, IIOSampleReceiveListener {
 
     @Override
     public void dataReceived(XBeeMessage msg) {
-        processor.queue(new DataMessage(msg));
+        queue.offerDataMessage(new DataMessage(msg));
     }
 
 }

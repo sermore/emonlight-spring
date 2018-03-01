@@ -7,6 +7,7 @@ public interface DeliveryService extends Subscriber {
     void post();
 
     boolean isReady();
-//	boolean isEmpty();
+
+    boolean isQueueEmpty();
 
 }

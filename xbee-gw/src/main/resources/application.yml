@@ -13,12 +13,12 @@ logging:
 #  noOfPartitions: 1
 #  noOfReplication: 1
 
-spring:
+#spring:
 #  activemq:
 #    broker-url: tcp://lime2:61616
-  jms:
-    pub-sub-domain: true
+#  jms:
+#    pub-sub-domain: true
 
-influxdb:
-  url: http://lime2:8086
-  database: emonlight_test
+#influxdb:
+#  url: http://lime2:8086
+#  database: emonlight_test

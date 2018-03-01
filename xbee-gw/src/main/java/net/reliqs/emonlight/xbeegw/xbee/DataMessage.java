@@ -1,11 +1,13 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
 import com.digi.xbee.api.models.XBeeMessage;
+import com.digi.xbee.api.utils.HexUtils;
 
+import java.io.Serializable;
 import java.time.Instant;
-import java.util.Arrays;
 
-class DataMessage {
+public class DataMessage implements Serializable {
+    private static final long serialVersionUID = 1L;
     final private Instant time;
     final private String address;
     final private byte[] data;
@@ -16,7 +18,7 @@ class DataMessage {
         this.time = Instant.now();
     }
 
-    DataMessage(Instant time, String address, byte[] data) {
+    public DataMessage(Instant time, String address, byte[] data) {
         this.data = data;
         this.address = address;
         this.time = time;
@@ -36,7 +38,7 @@ class DataMessage {
 
     @Override
     public String toString() {
-        return "DataMessage [time=" + time + ", address=" + address + ", data=" + Arrays.toString(data) + "]";
+        return "DM [time=" + time + ", address=" + address + ", data=" + HexUtils.byteArrayToHexString(data) + "]";
     }
 
 }

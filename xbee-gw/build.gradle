@@ -30,15 +30,15 @@ test {
     exclude '**/EndDeviceTest.class'
     exclude '**/PulsePowerAccuracyTest.class'
     systemProperty("java.library.path", "/usr/lib/jni")
-    systemProperty 'notification.serverKey', project.property('notification_serverKey')
-    systemProperty 'notification.deviceId', project.property('notification_deviceId')
+    systemProperty 'notification.serverKey', project.hasProperty('notification_serverKey') ? project.property('notification_serverKey') : 'notification-server'
+    systemProperty 'notification.deviceId', project.hasProperty('notification_deviceId') ? project.property('notification_deviceId') : 'deviceId'
 }
 
 bootRun {
     systemProperty("java.library.path", "/usr/lib/jni")
     systemProperty 'spring.profiles.active', 'dev'
-    systemProperty 'notification.serverKey', project.property('notification_serverKey')
-    systemProperty 'notification.deviceId', project.property('notification_deviceId')
+    systemProperty 'notification.serverKey', project.hasProperty('notification_serverKey') ? project.property('notification_serverKey') : 'notification-server'
+    systemProperty 'notification.deviceId', project.hasProperty('notification_deviceId') ? project.property('notification_deviceId') : 'deviceId'
 }
 
 remotes {

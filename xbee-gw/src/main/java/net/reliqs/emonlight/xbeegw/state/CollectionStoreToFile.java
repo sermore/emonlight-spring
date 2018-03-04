@@ -51,6 +51,9 @@ public class CollectionStoreToFile<E extends Serializable> {
     }
 
     public boolean write(Collection<E> data) {
+        if (data == null) {
+            return false;
+        }
         File f = new File(path);
         try (
                 FileOutputStream fo = new FileOutputStream(f);

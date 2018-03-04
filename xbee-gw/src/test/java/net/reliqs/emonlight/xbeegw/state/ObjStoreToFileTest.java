@@ -43,7 +43,9 @@ public class ObjStoreToFileTest {
         p = settings.getProbes().filter(pp -> pp.getName().equals("P2")).findFirst().get();
         q2.add(new StoreData(p, Probe.Type.PULSE, new Data(120L, 140.4)));
         q2.add(new StoreData(p, Probe.Type.PULSE, new Data(130L, 150.4)));
+        assertThat(ss.isEmpty(), is(true));
         ss.add(q1);
+        assertThat(ss.isEmpty(), is(false));
         ss.add(q2);
         assertThat(ss.write(), is(true));
         assertThat(Files.exists(Paths.get("test.dat")), is(true));

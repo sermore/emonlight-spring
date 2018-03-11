@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.Arrays;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class ChartController {
@@ -37,12 +40,19 @@ public class ChartController {
     @RequestMapping("/data")
     public
     @ResponseBody
-    Iterable<Number[]> data(@RequestParam(value = "id[]", required = true) Long[] ids,
-                            @RequestParam(value = "timeStart", required = true, defaultValue = "0") long timeStart,
-                            Model model) {
-        log.debug("PARAM {}", Arrays.toString(ids));
-        Iterable<Number[]> d = repo.getData(Arrays.asList(ids), timeStart);
-        return d;
+    Map<Long, List<Number[]>> data(@RequestParam(value = "id[]", required = true) List<Long> ids,
+                                   @RequestParam(value = "tstart", required = true, defaultValue = "0") long timeStart,
+                                   @RequestParam(value = "tend", required = true, defaultValue = "-1") long timeEnd,
+                                   @RequestParam(value = "tzone", required = true, defaultValue = "0") int tzone,
+                                   Model model) {
+//        log.debug("ids = {}, timeStart = {}", Arrays.toString(ids), timeStart);
+//        Iterable<Number[]> d = repo.getData(Arrays.asList(ids), timeStart);
+        if (timeEnd == -1) {
+            timeEnd = Instant.now().atOffset(ZoneOffset.ofTotalSeconds(tzone * 60)).toInstant().toEpochMilli();
+        }
+        Map<Long, List<Number[]>> data = repo.getData(ids, timeStart, timeEnd, tzone);
+        log.debug("ids = {}, timeStart = {}, timeEnd = {}, tzone = {} -> size = {}", ids, timeStart, timeEnd, tzone, data.size());
+        return data;
     }
 
 }

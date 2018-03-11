@@ -3,144 +3,96 @@
 <head>
     <title>Getting Started: Serving Web Content</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <link href="../static/css/dc.css" th:href="@{css/dc.css}"
-          rel="stylesheet" media="screen"/>
-    <script src="../static/js/crossfilter.js" th:src="@{js/crossfilter.js}"></script>
-    <script src="../static/js/d3.js" th:src="@{js/d3.js}"></script>
-    <script src="../static/js/dc.js" th:src="@{js/dc.js}"></script>
+    <!--<link href="../static/css/dc.css" th:href="@{css/dc.css}"-->
+    <!--rel="stylesheet" media="screen"/>-->
+    <script src="../static/js/jquery-3.3.1.js" th:src="@{js/jquery-3.3.1.js}"></script>
+    <script src="../static/js/highstock.js" th:src="@{js/highstock.js}"></script>
+    <!--<script src="../static/js/themes/gray.js" th:src="@{js/themes/gray.js}"></script>-->
 </head>
 <body>
-<p th:text="'Hello, ' + ${id} + '!'"/>
+<p th:inline="text"> Parameters: [[${#numbers.listFormatInteger(ids, 0)}]] </p>
 
-<div id="test"></div>
-<div id="test-overview"></div>
-<button class="btn" onclick="button1()">1</button>
+<div id="container" style="width:100%; height:400px;"></div>
 
 <script th:inline="javascript">
     /*<![CDATA[*/
 
-    var focusChart = dc.seriesChart("#test");
-    var overviewChart = dc.seriesChart("#test-overview");
-    var url = '/data.json?id[]=1&id[]=2&id[]=3&id[]=4';
-    var lastTime, ndx;
+    var param_id = /*[[${ids}]]*/ [0];
+    var now = new Date();
+    var timeMax = now.getTime() - 6 * 3600000;
+    var timezoneOffset = now.getTimezoneOffset();
 
-    d3.json(url, function (error, data) {
+    /**
+     * Request data from the server, add it to the graph and set a timeout
+     * to request again
+     */
+    function requestData() {
+        $.ajax({
+            url: '/data?id[]=' + param_id + '&tstart=' + timeMax + '&tend=' + new Date().getTime() + '&tzone=' + timezoneOffset,
+            success: function (data) {
 
-        lastTime = data[data.length - 1][0];
-        data.forEach(function (d) {
-            d[0] = new Date(d[0]);
-        });
-
-        ndx = crossfilter(data);
-        var runDimension = ndx.dimension(function (d) {
-                return [+d[2], d[0]];
-            }),
-            overviewRunDimension = ndx.dimension(function (d) {
-                return [+d[2], d[0]];
-            }),
-            runGroup = runDimension.group().reduceSum(function (d) {
-                return +d[1];
-            }),
-            overviewRunGroup = runDimension.group().reduceSum(function (d) {
-                return +d[1];
-            });
-
-        focusChart
-            .width(768)
-            .height(480)
-            .chart(function (c) {
-                return dc.lineChart(c);
-            })
-            .x(d3.time.scale().domain([data[0][0], data[data.length - 1][0]]))
-            .brushOn(false)
-            .clipPadding(10)
-            .elasticY(true)
-            /* .yAxisLabel("This is the Y Axis!") */
-            .dimension(runDimension)
-            .group(runGroup)
-            .mouseZoomable(true)
-            .rangeChart(overviewChart)
-            .seriesAccessor(function (d) {
-                return "Ext: " + d.key[0];
-            })
-            .keyAccessor(function (d) {
-                return d.key[1];
-            })
-            .valueAccessor(function (d) {
-                return +d.value;
-            })
-            .legend(dc.legend().x(350).y(350).itemHeight(13).gap(5).horizontal(1).legendWidth(140).itemWidth(70));
-
-        focusChart.elasticX = function () {
-            return arguments.length ? this : false;
-        };
-
-        function rangesEqual(range1, range2) {
-            if (!range1 && !range2) {
-                return true;
-            } else if (!range1 || !range2) {
-                return false;
-            } else if (range1.length === 0 && range2.length === 0) {
-                return true;
-            } else if (range1[0].valueOf() === range2[0].valueOf() &&
-                range1[1].valueOf() === range2[1].valueOf()) {
-                return true;
-            }
-            return false;
-        }
-
-        overviewChart
-            .width(768)
-            .height(100)
-            .chart(function (c, _, _, i) {
-                var chart = dc.lineChart(c).interpolate('basis');
-                if (i === 0)
-                    chart.on('filtered', function (chart) {
-                        if (!chart.filter()) {
-                            dc.events.trigger(function () {
-                                overviewChart.focusChart().x().domain(overviewChart.focusChart().xOriginalDomain());
-                                overviewChart.focusChart().redraw();
-                            });
-                        } else if (!rangesEqual(chart.filter(), overviewChart.focusChart().filter())) {
-                            dc.events.trigger(function () {
-                                overviewChart.focusChart().focus(chart.filter());
-                            });
+                for (var s = 0; s < chart.series.length; s += 1) {
+                    var series = chart.series[s],
+                        shift = series.data.length > 200; // shift if the series is longer than 20
+                    var points = data[series.options.key];
+                    if (points) {
+                        // add the points
+                        var i = 0;
+                        for (i; i < points.length; i += 1) {
+                            timeMax = timeMax > points[i][0] ? timeMax : points[i][0];
+                            series.addPoint(points[i], false, shift);
                         }
-                    });
-                return chart;
-            })
-            .x(d3.time.scale().domain([data[0][0], data[data.length - 1][0]]))
-            .brushOn(true)
-            .xAxisLabel("Run")
-            .clipPadding(10)
-            .dimension(runDimension)
-            .group(runGroup)
-            .seriesAccessor(function (d) {
-                return "Expt: " + d.key[0];
-            })
-            .keyAccessor(function (d) {
-                return +d.key[1];
-            })
-            .valueAccessor(function (d) {
-                return +d.value;
-            })
-        dc.renderAll();
-    });
-
-    function load_button() {
-        return function load_it() {
-            var url = '/data.json?start=' + lastTime + '&id=' + /*[[${id}]]*/ 0;
-            d3.json(url, function (error, data) {
-                data.forEach(function (d) {
-                    d[0] = new Date(d[0]);
-                });
-                ndx.add(data);
-                dc.redrawAll();
-            });
-        };
+                    }
+                }
+                chart.redraw();
+                // call it again after one second
+                setTimeout(requestData, 5000);
+            },
+            cache: false
+        });
     }
 
-    var button1 = load_button();
+    $(document).ready(function () {
+        Highcharts.setOptions({
+            time: {
+                timezoneOffset: timezoneOffset
+            }
+        });
+        chart = new Highcharts.StockChart({
+            chart: {
+                renderTo: 'container',
+                defaultSeriesType: 'spline',
+                events: {
+                    load: requestData
+                }
+            },
+            title: {
+                text: 'Live random data'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150,
+                maxZoom: 20 * 1000
+            },
+            yAxis: {
+                minPadding: 0.2,
+                maxPadding: 0.2,
+                title: {
+                    text: 'Value',
+                    margin: 80
+                }
+            },
+            series: [{
+                name: 'Random data',
+                data: [],
+                key: '6'
+            }, {
+                name: 'Random data',
+                data: [],
+                key: '9'
+            }]
+        });
+    });
     /*]]>*/
 </script>
 </body>

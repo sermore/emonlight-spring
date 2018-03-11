@@ -1,26 +1,24 @@
 package net.reliqs.emonlight.web.services;
 
-import net.reliqs.emonlight.web.entities.Node;
-import net.reliqs.emonlight.web.entities.Sample;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 
 public interface DataRepo {
 
-    Node findNode(long id);
-
-    Node findNodeByAuthenticationToken(String token);
-
-    @Transactional(readOnly = true)
-    Iterable<Number[]> getData(Iterable<Long> nodeIds, long timeStart);
+//    Node findNode(long id);
+//
+//    Node findNodeByAuthenticationToken(String token);
 
     @Transactional(readOnly = true)
-    List<Sample> getSamples(Long nodeId, Timestamp from);
+    Map<Long, List<Number[]>> getData(Iterable<Long> probeIds, long timeStart, long timeEnd, int tzone);
 
-    Node saveNode(Node node);
-
-    List<Sample> saveSamples(Iterable<Sample> samples);
+//    @Transactional(readOnly = true)
+//    List<Sample> getSamples(Long nodeId, Timestamp from);
+//
+//    Node saveNode(Node node);
+//
+//    List<Sample> saveSamples(Iterable<Sample> samples);
 
 }

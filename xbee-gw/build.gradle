@@ -26,9 +26,9 @@ springBoot {
 }
 
 test {
-    exclude '**/RouterTest.class'
-    exclude '**/EndDeviceTest.class'
-    exclude '**/PulsePowerAccuracyTest.class'
+//    exclude '**/RouterTest.class'
+//    exclude '**/EndDeviceTest.class'
+//    exclude '**/PulsePowerAccuracyTest.class'
     systemProperty("java.library.path", "/usr/lib/jni")
     systemProperty 'notification.serverKey', project.property('notification_serverKey')
     systemProperty 'notification.deviceId', project.property('notification_deviceId')
@@ -94,7 +94,7 @@ dependencies {
 
 
     compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
-    compile(group: 'com.digi.xbee', name: 'xbee-java-library', version: '1.2.0') {
+    compile(group: 'com.digi.xbee', name: 'xbee-java-library', version: '1.2.+') {
         exclude(module: 'rxtx-native')
         exclude(group: 'org.slf4j')
     }

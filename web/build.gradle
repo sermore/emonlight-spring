@@ -62,6 +62,12 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-activemq")
     compile("org.springframework.boot:spring-boot-devtools")
 
+    compile group: 'org.webjars', name: 'webjars-locator', version: '0.33'
+    compile 'org.webjars:jquery:3.3.1-1'
+    compile 'org.webjars:popper.js:1.12.9-1'
+    compile 'org.webjars:bootstrap:4.0.0-2'
+    compile 'org.webjars:highcharts:6.0.7'
+
 //    testCompile("com.h2database:h2")
 
     // https://mvnrepository.com/artifact/org.apache.kafka/kafka-streams

@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.config.annotations;
+package net.reliqs.emonlight.commons.config.annotations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;

@@ -1,10 +1,10 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
 import com.digi.xbee.api.utils.HexUtils;
-import net.reliqs.emonlight.xbeegw.config.Node;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Node;
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe.Type;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerDataAbsent;
 import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
 import net.reliqs.emonlight.xbeegw.publish.Data;

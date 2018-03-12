@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
 import com.digi.xbee.api.RemoteXBeeDevice;
-import net.reliqs.emonlight.xbeegw.config.Node;
+import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 
 import java.time.Duration;

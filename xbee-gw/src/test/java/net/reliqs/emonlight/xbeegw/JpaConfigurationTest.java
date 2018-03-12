@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.junit.Test;
@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestApp.class})
 @ActiveProfiles({"integration", "jpa"})
-//@ComponentScan(basePackages = {"net.reliqs.emonlight.xbeegw.config", "net.reliqs.emonlight.xbeegw.send",
+//@ComponentScan(basePackages = {"net.reliqs.emonlight.commons.config", "net.reliqs.emonlight.xbeegw.send",
 //        "net.reliqs.emonlight.xbeegw.publish"})
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class})
 //@EnableConfigurationProperties

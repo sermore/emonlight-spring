@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
 import org.slf4j.Logger;

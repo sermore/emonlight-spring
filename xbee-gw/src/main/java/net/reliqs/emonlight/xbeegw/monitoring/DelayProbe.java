@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

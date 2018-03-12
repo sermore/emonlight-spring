@@ -1,6 +1,6 @@
-package net.reliqs.emonlight.xbeegw.config.annotations;
+package net.reliqs.emonlight.commons.config.annotations;
 
-import net.reliqs.emonlight.xbeegw.config.Node;
+import net.reliqs.emonlight.commons.config.Node;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

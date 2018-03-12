@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.rest;
 
-import net.reliqs.emonlight.xbeegw.config.Server;
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Server;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

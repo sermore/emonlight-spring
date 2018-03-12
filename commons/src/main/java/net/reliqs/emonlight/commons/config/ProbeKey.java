@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.config;
+package net.reliqs.emonlight.commons.config;
 
 /**
  * Created by sergio on 25/02/17.

@@ -1,16 +1,13 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Settings;
-import net.reliqs.emonlight.xbeegw.send.TopicData;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -20,7 +17,6 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
-@Service
 public class KafkaDeliveryService implements DeliveryService, ListenableFutureCallback<Map<String, Integer>> {
     private static final Logger log = LoggerFactory.getLogger(KafkaDeliveryService.class);
 
@@ -34,7 +30,6 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
     @Value("${gatewayId:0}")
     private int gatewayId;
 
-    @Autowired
     public KafkaDeliveryService(Settings settings, KafkaAsyncService service, KafkaUtils ku) {
         super();
         this.service = service;
@@ -56,7 +51,7 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
     }
 
     @Override
-    public void receive(Probe p, Data d) {
+    public void receive(Probe p, Probe.Type t, Data d) {
         queue.add(new TopicData(TopicData.getTopic(gatewayId, p), d));
     }
 
@@ -75,7 +70,7 @@ public class KafkaDeliveryService implements DeliveryService, ListenableFutureCa
     }
 
     @Override
-    public boolean isEmpty() {
+    public boolean isQueueEmpty() {
         return queue.isEmpty() && inFlight.isEmpty();
     }
 

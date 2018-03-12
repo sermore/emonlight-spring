@@ -1,16 +1,21 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
-import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
+import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.kafka.test.rule.KafkaEmbedded;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,11 +24,14 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {KafkaConfig.class, Settings.class, KafkaUtils.class})
-@EnableConfigurationProperties
+@SpringBootTest(classes = {KafkaConfig.class, Settings.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class, KafkaAutoConfiguration.class})
 @EnableAsync
-@ActiveProfiles("test-router")
+@ActiveProfiles("kafka")
 public class KafkaDeliveryServiceTest {
+
+    @ClassRule
+    public static KafkaEmbedded embeddedKafka = new KafkaEmbedded(1, true, "topic");
 
     @Autowired
     @Qualifier("kafkaDeliveryService")
@@ -44,21 +52,21 @@ public class KafkaDeliveryServiceTest {
 
         long t = 0;
         Data in = new Data(t, 0.0);
-        kds.receive(p, in);
+        kds.receive(p, p.getType(), in);
 
         t += 1000;
         in = new Data(t, 100.0);
-        kds.receive(p, in);
+        kds.receive(p, p.getType(), in);
 
         t += 1000;
         in = new Data(t, 140.0);
-        kds.receive(p, in);
+        kds.receive(p, p.getType(), in);
 
         assertThat(kds.isReady(), is(true));
         kds.post();
-        assertThat(kds.isEmpty(), is(false));
+        assertThat(kds.isQueueEmpty(), is(false));
         Thread.sleep(1000);
-        assertThat(kds.isEmpty(), is(true));
+        assertThat(kds.isQueueEmpty(), is(true));
 
     }
 

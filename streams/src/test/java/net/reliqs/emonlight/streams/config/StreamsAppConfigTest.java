@@ -1,12 +1,14 @@
 package net.reliqs.emonlight.streams.config;
 
 import net.reliqs.emonlight.streams.config.StreamsAppConfigTest.MyConfig;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.test.rule.KafkaEmbedded;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -14,6 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MyConfig.class})
 public class StreamsAppConfigTest {
+
+    @ClassRule
+    public static KafkaEmbedded embeddedKafka = new KafkaEmbedded(1, true, "topic");
 
     @Autowired
     StreamsAppConfig config;

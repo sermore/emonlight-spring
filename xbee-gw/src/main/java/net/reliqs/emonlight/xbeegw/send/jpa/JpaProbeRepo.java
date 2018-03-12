@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
+import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.xbeegw.GwException;
-import net.reliqs.emonlight.xbeegw.config.Probe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.Cacheable;

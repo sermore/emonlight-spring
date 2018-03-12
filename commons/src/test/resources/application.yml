@@ -7,9 +7,9 @@ logging:
       reliqs:
         emonlight: DEBUG     
 
-kafka:
-  bootstrap.servers: betulla:9092
-  zookeeperHosts: betulla:2181
-  noOfPartitions: 1
-  noOfReplication: 1
-  consumerGroup: test
+#kafka:
+#  bootstrap.servers: betulla:9092
+#  zookeeperHosts: betulla:2181
+#  noOfPartitions: 1
+#  noOfReplication: 1
+#  consumerGroup: test

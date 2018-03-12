@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Probe.Type;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
 import net.reliqs.emonlight.xbeegw.xbee.Processor;

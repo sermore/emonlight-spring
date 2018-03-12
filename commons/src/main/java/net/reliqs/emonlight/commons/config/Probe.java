@@ -1,6 +1,6 @@
-package net.reliqs.emonlight.xbeegw.config;
+package net.reliqs.emonlight.commons.config;
 
-import net.reliqs.emonlight.xbeegw.config.annotations.ValidProbe;
+import net.reliqs.emonlight.commons.config.annotations.ValidProbe;
 
 import javax.validation.constraints.*;
 

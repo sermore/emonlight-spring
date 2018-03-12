@@ -6,8 +6,8 @@ logging:
         emonlight: debug
 
 kafka:
-  bootstrap.servers: betulla:9092
-  zookeeperHosts: betulla:2181
+  bootstrap.servers: ${spring.embedded.kafka.brokers}
+  zookeeperHosts: ${spring.embedded.zookeeper.connect}
   noOfPartitions: 1
   noOfReplication: 1
   consumerGroup: testClient

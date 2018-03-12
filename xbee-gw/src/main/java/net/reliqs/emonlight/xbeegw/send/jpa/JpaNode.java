@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
-import net.reliqs.emonlight.xbeegw.config.Node;
+import net.reliqs.emonlight.commons.config.Node;
 
 import javax.persistence.*;
 import java.util.Collection;

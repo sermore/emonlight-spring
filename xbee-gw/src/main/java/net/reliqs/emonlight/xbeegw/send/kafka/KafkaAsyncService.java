@@ -1,17 +1,14 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
 import net.reliqs.emonlight.xbeegw.GwException;
-import net.reliqs.emonlight.xbeegw.send.TopicData;
-import net.reliqs.emonlight.xbeegw.xbee.Data;
+import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
-import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
 import java.util.HashMap;
@@ -19,13 +16,11 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ExecutionException;
 
-@Service
 class KafkaAsyncService {
     private static final Logger log = LoggerFactory.getLogger(KafkaAsyncService.class);
 
     private KafkaTemplate<Long, Double> kafkaTemplate;
 
-    @Autowired
     KafkaAsyncService(KafkaTemplate<Long, Double> kafkaTemplate) {
         super();
         this.kafkaTemplate = kafkaTemplate;

@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.config;
+package net.reliqs.emonlight.commons.config;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;

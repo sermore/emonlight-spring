@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.config;
+package net.reliqs.emonlight.commons.config;
 
 import org.hibernate.validator.constraints.URL;
 

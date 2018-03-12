@@ -1,10 +1,13 @@
 package net.reliqs.emonlight.commons.kafka.client;
 
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.kafka.test.rule.KafkaEmbedded;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.is;
@@ -14,7 +17,11 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {KafkaConfig.class})
+@ActiveProfiles("kafka")
 public class KafkaMsgListenerTest {
+
+    @ClassRule
+    public static KafkaEmbedded embeddedKafka = new KafkaEmbedded(1, true, "topic");
 
     @Autowired
     KafkaListenerContainerBuilder builder;

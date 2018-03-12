@@ -1,7 +1,7 @@
-package net.reliqs.emonlight.xbeegw.config.annotations;
+package net.reliqs.emonlight.commons.config.annotations;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe.Type;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

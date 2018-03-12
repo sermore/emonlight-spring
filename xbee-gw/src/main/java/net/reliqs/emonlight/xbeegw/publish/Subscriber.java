@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.publish;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe.Type;
 
 /**
  * Created by sergio on 25/02/17.

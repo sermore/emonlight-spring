@@ -1,6 +1,5 @@
-package net.reliqs.emonlight.xbeegw.config;
+package net.reliqs.emonlight.commons.config;
 
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +19,7 @@ import static org.junit.Assert.*;
 public class SettingsTest {
 
     @Autowired
-    Settings s;
+    private Settings s;
 
     @Test
     public void test() {
@@ -35,7 +34,7 @@ public class SettingsTest {
         Probe p = n.getProbes().get(0);
         assertThat(p.getNode(), sameInstance(n));
         assertEquals("P1", p.getName());
-        assertEquals(Type.PULSE, p.getType());
+        assertEquals(Probe.Type.PULSE, p.getType());
         // assertNotNull(p.getData());
         // assertSame(p, n.getProbe(Type.PULSE));
         Probe p2 = n.getProbes().get(1);

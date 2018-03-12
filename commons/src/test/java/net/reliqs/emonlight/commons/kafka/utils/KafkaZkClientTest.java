@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.commons.kafka.utils;
 
 import net.reliqs.emonlight.commons.kafka.utils.KafkaZkClientTest.MyConfig;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.test.rule.KafkaEmbedded;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -17,8 +19,11 @@ import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MyConfig.class)
-@ActiveProfiles("test-router")
+@ActiveProfiles("kafka")
 public class KafkaZkClientTest {
+
+    @ClassRule
+    public static KafkaEmbedded embeddedKafka = new KafkaEmbedded(1, true, "topic");
 
     @Autowired
     KafkaZkClient zk;
@@ -35,7 +40,7 @@ public class KafkaZkClientTest {
     }
 
     @SpringBootApplication(scanBasePackages = "my.fake")
-    @Profile("test-router")
+    @Profile("kafka")
     static class MyConfig {
 
         @Bean

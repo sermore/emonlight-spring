@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.config.annotations;
+package net.reliqs.emonlight.commons.config.annotations;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -10,9 +10,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target(TYPE)
-@Constraint(validatedBy = NodeValidator.class)
-public @interface ValidNode {
-    String message() default "Invalid node";
+@Constraint(validatedBy = ProbeValidator.class)
+public @interface ValidProbe {
+    String message() default "Invalid probe";
 
     Class<?>[] groups() default {};
 

@@ -1,9 +1,12 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
+import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.commons.kafka.utils.KafkaUtils;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.DoubleSerializer;
 import org.apache.kafka.common.serialization.LongSerializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -13,6 +16,7 @@ import org.springframework.kafka.core.ProducerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+@ConditionalOnProperty(name = "kafka.enabled")
 @Configuration
 public class KafkaConfig {
 
@@ -20,7 +24,7 @@ public class KafkaConfig {
     private String bootstrapServers;
 
     @Bean
-    public Map<String, Object> producerConfigs() {
+    Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
         // list of host:port pairs used for establishing the initial connections
         // to the Kakfa cluster
@@ -37,13 +41,28 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ProducerFactory<Long, Double> producerFactory() {
+    ProducerFactory<Long, Double> producerFactory() {
         return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
 
     @Bean
-    public KafkaTemplate<Long, Double> kafkaTemplate() {
+    KafkaTemplate<Long, Double> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
+    }
+
+    @Bean
+    public KafkaDeliveryService kafkaDeliveryService(Settings settings, KafkaAsyncService kafkaAsyncService, KafkaUtils kafkaUtils) {
+        return new KafkaDeliveryService(settings, kafkaAsyncService, kafkaUtils);
+    }
+
+    @Bean
+    KafkaAsyncService kafkaAsyncService(KafkaTemplate kafkaTemplate) {
+        return new KafkaAsyncService(kafkaTemplate);
+    }
+
+    @Bean
+    KafkaUtils kafkaUtils() {
+        return new KafkaUtils();
     }
 
 }

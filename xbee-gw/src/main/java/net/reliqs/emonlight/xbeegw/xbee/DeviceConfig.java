@@ -1,9 +1,9 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import net.reliqs.emonlight.xbeegw.config.Node;
-import net.reliqs.emonlight.xbeegw.config.Node.OpMode;
-import net.reliqs.emonlight.xbeegw.config.Probe;
-import net.reliqs.emonlight.xbeegw.config.Probe.Type;
+import net.reliqs.emonlight.commons.config.Node;
+import net.reliqs.emonlight.commons.config.Node.OpMode;
+import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe.Type;
 
 import java.nio.ByteBuffer;
 

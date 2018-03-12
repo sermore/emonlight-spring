@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
-import net.reliqs.emonlight.xbeegw.config.Probe;
+import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.send.AbstractService;
 import net.reliqs.emonlight.xbeegw.send.StoreData;

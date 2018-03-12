@@ -4,6 +4,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.DoubleDeserializer;
 import org.apache.kafka.common.serialization.LongDeserializer;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -13,6 +14,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
+@ConditionalOnProperty(name = "kafka.enabled")
 @Configuration
 public class KafkaConfig {
 
@@ -21,6 +23,9 @@ public class KafkaConfig {
 
     @Value("${kafka.consumerGroup}")
     private String consumerGroup;
+
+//    @Value("${kafka.zookeeperHosts}")
+//    private String zookeeperHosts;
 
 //	private String[] topics;
 
@@ -50,5 +55,9 @@ public class KafkaConfig {
         return new KafkaListenerContainerBuilder(consumerFactory());
     }
 
+//    @Bean
+//    KafkaZkClient kafkaZkClient() {
+//        return new KafkaZkClient(zookeeperHosts);
+//    }
 
 }

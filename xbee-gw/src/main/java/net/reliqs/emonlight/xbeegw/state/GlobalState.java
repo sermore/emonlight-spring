@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.state;
 
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

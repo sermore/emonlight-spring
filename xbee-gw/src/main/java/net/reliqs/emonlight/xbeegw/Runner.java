@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw;
 
-import net.reliqs.emonlight.xbeegw.config.Settings;
+import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.events.EventQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 

@@ -1,3 +1,17 @@
+
+//sourceSets {
+//    main {
+//        java {
+//            exclude '**/Kafka*.java'
+//        }
+//    }
+//    test {
+//        java {
+//            exclude '**/Kafka*.java'
+//        }
+//    }
+//}
+
 jar {
     baseName = 'emonlight-commons'
 }
@@ -8,11 +22,15 @@ bootRepackage {
 
 dependencies {
 
-    compile(group: 'org.apache.kafka', name: 'kafka_2.11', version: '0.10.1.1') {
+    compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+    compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.0.1.Final'
+
+    compileOnly(group: 'org.apache.kafka', name: 'kafka_2.11', version: '1.0.1') {
         exclude(module: 'slf4j-log4j12')
         exclude(module: 'org.slf4j:log4j-over-slf4j')
-        exclude group: 'log4j'
+//        exclude group: 'log4j'
     }
-    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '1.1.2.RELEASE'
+    compileOnly group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.4.RELEASE'
+    testCompile group: 'org.springframework.kafka', name: 'spring-kafka-test', version: '2.1.4.RELEASE'
 
 }

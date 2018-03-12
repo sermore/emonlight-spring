@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.xbee;
 
-import net.reliqs.emonlight.xbeegw.config.Node;
+import net.reliqs.emonlight.commons.config.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

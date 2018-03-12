@@ -1,7 +1,7 @@
-package net.reliqs.emonlight.xbeegw.config;
+package net.reliqs.emonlight.commons.config;
 
-import net.reliqs.emonlight.xbeegw.config.Node.OpMode;
-import net.reliqs.emonlight.xbeegw.config.annotations.ValidNodes;
+import net.reliqs.emonlight.commons.config.Node.OpMode;
+import net.reliqs.emonlight.commons.config.annotations.ValidNodes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;

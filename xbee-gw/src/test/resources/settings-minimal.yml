@@ -1,0 +1,66 @@
+!!net.reliqs.emonlight.commons.config.Settings
+baudRate: 115200
+idCnt: 6
+nodes:
+- &id001
+  adcRange: 4095
+  adcVRef: 3.3
+  address: 0013A20041468937
+  id: 1
+  mode: PULSE_DHT22
+  name: TEST
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 4000.0
+    hardThresholdTimeSec: 240
+    id: 2
+    name: TEST_PULSE
+    node: *id001
+    port: 3
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 3300.0
+    softThresholdTimeSec: 10800
+    type: PULSE
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 3
+    name: TEST_H
+    node: *id001
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 40000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 4
+    name: TEST_T
+    node: *id001
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - adcMult: 3.42
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 5
+    name: TEST_VCC
+    node: *id001
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 5000
+  vccFromADC: true
+  vccThreshold: 0.0
+receiveTimeout: 2000
+serialPort: /dev/ttyUSB0
+servers: []

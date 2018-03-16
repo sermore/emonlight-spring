@@ -2,6 +2,7 @@ package net.reliqs.emonlight.streams;
 
 import net.reliqs.emonlight.streams.client.Receiver;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ public class StreamsApplicationTests {
     @Autowired
     private Receiver receiver;
 
+    @Ignore
     @Test
     public void testReceiver() throws Exception {
 //		sender.sendMessage("helloworld.t", "Hello Spring Kafka!");

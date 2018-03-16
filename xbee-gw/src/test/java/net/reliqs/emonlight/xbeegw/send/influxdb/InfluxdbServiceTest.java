@@ -1,7 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.influxdb;
 
-import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
+import net.reliqs.emonlight.xbeegw.TestApp;
 import org.influxdb.InfluxDB;
 import org.influxdb.dto.Query;
 import org.influxdb.dto.QueryResult;
@@ -10,13 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -35,10 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, InfluxdbConfiguration.class, Publisher.class})
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class, KafkaAutoConfiguration.class})
-@EnableAsync
-@ActiveProfiles("influxdb")
+@SpringBootTest(classes = TestApp.class)
+@ActiveProfiles("integration, influxdb")
 public class InfluxdbServiceTest {
 
     @Autowired

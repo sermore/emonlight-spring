@@ -2,19 +2,13 @@ package net.reliqs.emonlight.xbeegw.send.jpa;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.xbeegw.TestApp;
 import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -28,11 +22,9 @@ import static org.hamcrest.Matchers.*;
 
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, JpaConfiguration.class, JpaServiceConfiguration.class, Publisher.class})
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class, KafkaAutoConfiguration.class})
-@EnableAsync
+@SpringBootTest(classes = TestApp.class)
 @EnableCaching
-@ActiveProfiles("jpa")
+@ActiveProfiles("integration,jpa")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class JpaServiceTest {
 
@@ -46,17 +38,6 @@ public class JpaServiceTest {
     private JpaDataRepo dataRepo;
     @Autowired
     private JpaService service;
-
-    public JpaProbe prepareData() {
-        JpaNode n = new JpaNode();
-        n.setName("test1");
-        nodeRepo.save(n);
-        JpaProbe p = new JpaProbe();
-        p.setName("p1");
-        p.setNode(n);
-        probeRepo.save(p);
-        return p;
-    }
 
     private void produceData(int cnt) throws InterruptedException {
         Random rng = new Random();
@@ -74,11 +55,12 @@ public class JpaServiceTest {
 
     @Test
     public void checkIfJpaIsWorkingFine() {
-        JpaProbe p = prepareData();
+        Probe probe = settings.getProbes().findFirst().get();
+        JpaProbe p = probeRepo.findById(probe.getId());
         JpaData d = new JpaData(p, Instant.now(), 14.67F);
         dataRepo.save(d);
         assertThat(dataRepo.count(), is(1L));
-        assertThat(nodeRepo.count(), is(2L));
+        assertThat(nodeRepo.count(), is(1L));
     }
 
     @Test
@@ -90,7 +72,8 @@ public class JpaServiceTest {
 
     @Test
     public void checkForMillisecondInTimestamps() {
-        JpaProbe p = prepareData();
+        Probe probe = settings.getProbes().findFirst().get();
+        JpaProbe p = probeRepo.findById(probe.getId());
         JpaData d = new JpaData(p, Instant.ofEpochMilli(765), 14.67F);
         dataRepo.save(d);
         assertThat(dataRepo.findFirstByProbe(p).getTime(), equalTo(Timestamp.from(Instant.ofEpochMilli(765))));
@@ -117,8 +100,7 @@ public class JpaServiceTest {
         Thread.sleep(1000);
         assertThat(service.isReady(), is(false));
 
-        assertThat(nodeRepo.countByName(p.getNode().getName()), is(1L));
-        assertThat(nodeRepo.findByName(p.getNode().getName()), is(notNullValue()));
+        assertThat(nodeRepo.findById(p.getNode().getId()), is(notNullValue()));
 //        List<JpaProbe> probes = probeRepo.findByNodeAndName(nodes.get(0), p.getName());
 //        assertThat(probes.size(), is(1  ));
 //        assertThat(dataRepo.countByProbe(probes.get(0)), is(3L));

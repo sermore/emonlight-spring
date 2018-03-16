@@ -28,8 +28,8 @@ public class JpaServiceConfiguration {
     }
 
     @Bean
-    JpaAsyncService jpaAsyncService(JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
-        return new JpaAsyncService(nodeRepo, probeRepo, dataRepo);
+    JpaAsyncService jpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
+        return new JpaAsyncService(settings, nodeRepo, probeRepo, dataRepo);
     }
 
     @Bean(initMethod = "onInit", destroyMethod = "onClose")

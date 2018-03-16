@@ -2,6 +2,7 @@ package net.reliqs.emonlight.xbeegw.send;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.xbeegw.TestApp;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.ObjStoreToFile;
@@ -12,17 +13,10 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
-import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -39,11 +33,8 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class})
-@ActiveProfiles("test-settings")
-@EnableConfigurationProperties
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class, KafkaAutoConfiguration.class})
-@EnableAsync
+@SpringBootTest(classes = {TestApp.class, AbstractServiceTest.Config.class})
+@ActiveProfiles("integration,test-queue")
 public class AbstractServiceTest {
 
     private static int runCount = 0;
@@ -153,12 +144,12 @@ public class AbstractServiceTest {
         public void onInit() throws IOException {
             postCount = 0;
             if (runCount == 0) {
-                Files.deleteIfExists(Paths.get("TEST_store.dat"));
+                Files.deleteIfExists(Paths.get("FakeService.dat"));
             }
         }
 
         public void onClose() {
-            ObjStoreToFile<LinkedList<StoreData>> s = new ObjStoreToFile<>("TEST_store.dat", runCount > 0);
+            ObjStoreToFile<LinkedList<StoreData>> s = new ObjStoreToFile<>("FakeService.dat", runCount > 0);
             List<LinkedList<StoreData>> res = s.read();
             assertThat(res.size(), is(2));
             assertThat(res.get(0).size(), is(runCount > 0 ? 3 : 2));

@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.web.utils;
 
 import net.reliqs.emonlight.web.services.DataRepo;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class TestDataGeneration {
     @Autowired
     DataGeneration dbUtils;
 
+    @Ignore
     @Test
     @Commit
     public void testDataGeneration() {

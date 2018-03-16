@@ -18,6 +18,10 @@ public class NodeValidator implements ConstraintValidator<ValidNode, Node> {
     public boolean isValid(Node value, ConstraintValidatorContext context) {
         boolean ret = true;
         context.disableDefaultConstraintViolation();
+//        if (value.getId() == 0) {
+//            context.buildConstraintViolationWithTemplate("node id is zero").addConstraintViolation();
+//            ret = false;
+//        }
         List<Probe> lp = value.getProbes();
         if (value.getVccThreshold() > 0) {
             if (lp == null || lp.size() < 1 || lp.stream().filter(p -> p.getType() == Type.VCC).count() != 1) {

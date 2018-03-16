@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 
 @SpringBootApplication
 @EnableConfigurationProperties(StreamsAppConfig.class)
+//@Profile("dev")
 public class StreamApplication {
 
     @Autowired

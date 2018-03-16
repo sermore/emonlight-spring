@@ -1,19 +1,13 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
 import net.reliqs.emonlight.commons.config.Probe.Type;
-import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.xbeegw.TestApp;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
-import net.reliqs.emonlight.xbeegw.state.GlobalState;
-import net.reliqs.emonlight.xbeegw.xbee.Processor;
 import net.reliqs.emonlight.xbeegw.xbee.TestSubscriber;
-import net.reliqs.emonlight.xbeegw.xbee.XbeeProcessor;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -25,12 +19,9 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class,
-        TriggerManager.class, TriggerDataAbsent.class})
-@EnableConfigurationProperties
+@SpringBootTest(classes = {TestApp.class})
 @EnableScheduling
-@EnableAsync
-@ActiveProfiles("test-settings")
+@ActiveProfiles("integration,test-settings")
 public class TriggerDataAbsentTest {
 
     @Autowired
@@ -39,14 +30,11 @@ public class TriggerDataAbsentTest {
     @Autowired
     private Publisher publisher;
 
-    @MockBean
-    private XbeeProcessor xbeeGateway;
-
     @Test
     public void test() throws InterruptedException {
         TestSubscriber t = new TestSubscriber();
         publisher.addSubscriber(t);
-        Thread.sleep(2200);
+        Thread.sleep(2000);
         assertThat(t.data, hasSize(2));
         assertThat(t.types, is(Arrays.asList(Type.DATA_MISSING_ALARM, Type.DATA_MISSING_ALARM)));
         assertThat(t.data.get(0).v, is(1.0));

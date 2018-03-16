@@ -1,12 +1,17 @@
 package net.reliqs.emonlight.commons.config;
 
 import net.reliqs.emonlight.commons.config.annotations.ValidProbe;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 
 @ValidProbe
+@Validated
 public class Probe {
 
+    @NotNull
+    @Min(1)
+    private Integer id;
     @Size(min = 1)
     private String name;
     @NotNull
@@ -28,6 +33,14 @@ public class Probe {
     @Min(0)
     private int hardThresholdTimeSec;
     private Node node;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -125,7 +138,7 @@ public class Probe {
         if (type == Type.PULSE) {
             return 1800_000;
         } else {
-            int t = sampleTime > 0 ? sampleTime : getNode().getSampleTime();
+            int t = sampleTime > 0 ? sampleTime : getNode() != null ? getNode().getSampleTime() : 1800_000;
             return t * 5;
         }
     }
@@ -157,7 +170,7 @@ public class Probe {
 
     @Override
     public String toString() {
-        return "Probe [name=" + name + ", type=" + type + ", node=" + node + "]";
+        return String.format("P[%d, %s, %s, %s]", id, name, type, node.getName());
     }
 
     public enum Type {

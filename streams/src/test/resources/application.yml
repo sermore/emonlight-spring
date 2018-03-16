@@ -11,6 +11,8 @@ kafka:
   noOfPartitions: 1
   noOfReplication: 1
   consumerGroup: testClient
+  enabled: true
+
 
 streams:
   stateDir: /tmp/kafka-streams

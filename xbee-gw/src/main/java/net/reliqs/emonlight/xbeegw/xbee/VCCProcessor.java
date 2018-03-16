@@ -20,7 +20,7 @@ class VCCProcessor extends MessageProcessor {
     @Override
     void process(DataMessage m, NodeState ns, byte selector, ByteBuffer in) {
         Node node = ns.getNode();
-        Probe p = node.getProbe(Type.VCC, (byte) 0);
+        Probe p = node.findProbeByTypeAndPort(Type.VCC, (byte) 0);
         Instant time;
         if (selector == (byte) 'V') {
             time = m.getTime();

@@ -22,11 +22,6 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestApp.class})
 @ActiveProfiles({"integration", "jms"})
-//@ComponentScan(basePackages = {"net.reliqs.emonlight.commons.config", "net.reliqs.emonlight.xbeegw.send",
-//        "net.reliqs.emonlight.xbeegw.publish"})
-//@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class})
-//@EnableConfigurationProperties
-//@EnableAsync
 public class JmsConfigurationTest {
 
     @Autowired

@@ -37,12 +37,12 @@ class DeviceConfig {
         name = n.getName();
         mode = n.getMode();
         dataSampleTime = n.getSampleTime();
-        Probe p = n.getProbe(Type.DHT22_T);
+        Probe p = n.findProbeByType(Type.DHT22_T);
         if (p != null && p.getSampleTime() == 0) {
-            p = n.getProbe(Type.DHT22_H);
+            p = n.findProbeByType(Type.DHT22_H);
         }
         dht22SampleTime = p != null && p.getSampleTime() > 0 ? p.getSampleTime() : dataSampleTime;
-        p = n.getProbe(Type.VCC);
+        p = n.findProbeByType(Type.VCC);
         vccSampleTime = p != null && p.getSampleTime() > 0 ? p.getSampleTime() : dataSampleTime * 3;
         vccFromADC = n.isVccFromADC();
     }

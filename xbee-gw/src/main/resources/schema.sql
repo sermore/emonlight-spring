@@ -6,16 +6,11 @@ CREATE TABLE IF NOT EXISTS data (
   PRIMARY KEY (id)
 ) engine = MyIsam;
 CREATE TABLE IF NOT EXISTS node (
-  id      INTEGER NOT NULL auto_increment,
-  address VARCHAR(255),
-  mode    VARCHAR(255),
-  name    VARCHAR(255),
+  id INTEGER NOT NULL,
   PRIMARY KEY (id)
 ) engine = MyIsam;
 CREATE TABLE IF NOT EXISTS probe (
-  id      INTEGER NOT NULL auto_increment,
-  name    VARCHAR(255),
-  type    VARCHAR(255),
+  id      INTEGER NOT NULL,
   node_id INTEGER,
   PRIMARY KEY (id)
 ) engine = MyIsam;

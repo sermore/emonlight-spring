@@ -14,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.DelayQueue;
 
+/**
+ * TODO remove the need for @Scheduled, implement using DelayedEvent
+ */
 @Component
 public class TriggerDataAbsent extends Trigger {
     private static final Logger log = LoggerFactory.getLogger(TriggerDataAbsent.class);
@@ -53,7 +56,7 @@ public class TriggerDataAbsent extends Trigger {
     @Scheduled(fixedRate = 1000)
     void checkTriggers() {
         DelayProbe p;
-//        expires.stream().forEach(dp -> log.debug("{} {}", dp.getProbe().getName(), dp.getDelay(TimeUnit.MILLISECONDS)));
+//        expires.stream().forEach(dp -> log.debug("{} {}", dp.findProbeByTypeAndPort().getName(), dp.getDelay(TimeUnit.MILLISECONDS)));
         do {
             p = expires.poll();
             if (p != null) {

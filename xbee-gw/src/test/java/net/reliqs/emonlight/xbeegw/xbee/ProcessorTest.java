@@ -5,8 +5,7 @@ import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
 import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.monitoring.TriggerDataAbsent;
-import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
+import net.reliqs.emonlight.xbeegw.TestApp;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
@@ -14,9 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -32,9 +29,9 @@ import static org.junit.Assert.assertThat;
  * Created by sergio on 12/03/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, Processor.class, GlobalState.class, Publisher.class, TriggerManager.class, TriggerDataAbsent.class})
-@EnableConfigurationProperties
-@ActiveProfiles("test-router")
+@SpringBootTest(classes = {TestApp.class})
+//@EnableConfigurationProperties
+@ActiveProfiles("integration,test-router")
 public class ProcessorTest {
 
     @Value("${processor.maxProcessTime:1000}")
@@ -47,8 +44,6 @@ public class ProcessorTest {
     private Settings settings;
     @Autowired
     private GlobalState globalState;
-    @MockBean
-    private XbeeProcessor xbeeGateway;
 
 //    @Test
 //    public void testMaxProcessTime() throws Exception {
@@ -165,8 +160,8 @@ public class ProcessorTest {
                         // setup
                         new Data(Instant.parse("2017-03-14T10:06:25.605Z").toEpochMilli(), 72.27464364585424))));
         assertThat(testSubscriber.types, is(Arrays.asList(Type.DHT22_H, Type.DHT22_T, Type.VCC, Type.PULSE)));
-        assertThat(testSubscriber.probes, is(Arrays.asList(n.getProbe(Type.DHT22_H), n.getProbe(Type.DHT22_T),
-                n.getProbe(Type.VCC), n.getProbe(Type.PULSE))));
+        assertThat(testSubscriber.probes, is(Arrays.asList(n.findProbeByType(Type.DHT22_H), n.findProbeByType(Type.DHT22_T),
+                n.findProbeByType(Type.VCC), n.findProbeByType(Type.PULSE))));
     }
 
     @Test

@@ -33,6 +33,7 @@ public class EventQueueTest {
             {"0013A20041468922", "44E79FA8835003E79FA883"},
             {"0013A20041468922", "44E79FC5555003E79FC555"}
     };
+
     @Autowired
     EventQueue queue;
 
@@ -64,6 +65,7 @@ public class EventQueueTest {
 
     @Test
     public void testBackup() {
+        queue.setBackupEnabled(true);
         populate();
         assertThat(queue.size(), is(Integer.toUnsignedLong(q.length)));
         queue.close();

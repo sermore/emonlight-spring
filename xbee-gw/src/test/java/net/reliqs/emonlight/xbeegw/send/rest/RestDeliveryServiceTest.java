@@ -3,15 +3,13 @@ package net.reliqs.emonlight.xbeegw.send.rest;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Server;
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.xbeegw.TestApp;
 import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.client.MockRestServiceServer;
@@ -25,11 +23,9 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 /**
  * Created by sergio on 09/03/17.
  */
-@ActiveProfiles("test-router")
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class, RestConfiguration.class, Publisher.class})
-@EnableConfigurationProperties
-@EnableAsync
+@SpringBootTest(classes = {TestApp.class})
+@ActiveProfiles("integration,test-router")
 public class RestDeliveryServiceTest {
 
     @Autowired

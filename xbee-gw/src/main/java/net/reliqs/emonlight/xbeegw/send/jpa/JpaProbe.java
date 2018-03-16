@@ -1,19 +1,16 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
-import net.reliqs.emonlight.commons.config.Probe;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "probe")
 public class JpaProbe {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String name;
-    @Enumerated(EnumType.STRING)
-    private Probe.Type type;
 
     @ManyToOne
     private JpaNode node;
@@ -29,22 +26,6 @@ public class JpaProbe {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Probe.Type getType() {
-        return type;
-    }
-
-    public void setType(Probe.Type type) {
-        this.type = type;
-    }
-
     public JpaNode getNode() {
         return node;
     }
@@ -57,9 +38,7 @@ public class JpaProbe {
     public String toString() {
         return "JpaProbe{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", type=" + type +
-                ", node=" + node +
+//                ", node=" + node +
                 '}';
     }
 }

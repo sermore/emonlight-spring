@@ -38,7 +38,7 @@ class PulseProcessor extends MessageProcessor implements TriggerHandler {
             time = ns.lastTime.plus(dt + (ns.delta > 20 ? -2 : ns.delta < -20 ? 2 : 0),
                     ChronoUnit.MILLIS);
         }
-        Probe probe = node.getProbe(Type.PULSE, port);
+        Probe probe = node.findProbeByTypeAndPort(Type.PULSE, port);
         double pow = ns.skipLastTime ? 0 : calcPower(probe.getPulsesPerKilowattHour(), dt);
         log.debug("{}: Pulse({}) Pow={}, T={}, DT={} @{}, skipped={}", node, port, pow, Integer.toUnsignedLong(t), dt,
                 time, ns.skipLastTime);

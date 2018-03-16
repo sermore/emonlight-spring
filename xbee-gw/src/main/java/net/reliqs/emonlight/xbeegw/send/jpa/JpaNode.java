@@ -1,7 +1,5 @@
 package net.reliqs.emonlight.xbeegw.send.jpa;
 
-import net.reliqs.emonlight.commons.config.Node;
-
 import javax.persistence.*;
 import java.util.Collection;
 
@@ -10,12 +8,7 @@ import java.util.Collection;
 public class JpaNode {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    private String name;
-    private String address;
-    @Enumerated(EnumType.STRING)
-    private Node.OpMode mode;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "node")
     private Collection<JpaProbe> probes;
 
@@ -30,30 +23,6 @@ public class JpaNode {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Node.OpMode getMode() {
-        return mode;
-    }
-
-    public void setMode(Node.OpMode mode) {
-        this.mode = mode;
-    }
-
     public Collection<JpaProbe> getProbes() {
         return probes;
     }
@@ -66,9 +35,6 @@ public class JpaNode {
     public String toString() {
         return "JpaNode{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
-                ", address='" + address + '\'' +
-                ", mode=" + mode +
                 ", probes=" + probes +
                 '}';
     }

@@ -1,11 +1,11 @@
 package net.reliqs.emonlight.xbeegw.state;
 
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.commons.config.SettingsConfiguration;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -14,8 +14,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {Settings.class})
-@EnableConfigurationProperties
+@SpringBootTest(classes = {SettingsConfiguration.class})
 @ActiveProfiles("test-settings")
 public class GlobalStateTest {
 

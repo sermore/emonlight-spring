@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.commons.kafka.client;
 
+import net.reliqs.emonlight.commons.kafka.utils.KafkaZkClient;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.DoubleDeserializer;
 import org.apache.kafka.common.serialization.LongDeserializer;
@@ -24,8 +25,8 @@ public class KafkaConfig {
     @Value("${kafka.consumerGroup}")
     private String consumerGroup;
 
-//    @Value("${kafka.zookeeperHosts}")
-//    private String zookeeperHosts;
+    @Value("${kafka.zookeeperHosts}")
+    private String zookeeperHosts;
 
 //	private String[] topics;
 
@@ -55,9 +56,9 @@ public class KafkaConfig {
         return new KafkaListenerContainerBuilder(consumerFactory());
     }
 
-//    @Bean
-//    KafkaZkClient kafkaZkClient() {
-//        return new KafkaZkClient(zookeeperHosts);
-//    }
+    @Bean
+    KafkaZkClient kafkaZkClient() {
+        return new KafkaZkClient(zookeeperHosts);
+    }
 
 }

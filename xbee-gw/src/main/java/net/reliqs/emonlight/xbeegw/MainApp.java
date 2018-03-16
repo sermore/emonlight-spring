@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.xbeegw;
 
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.commons.config.SettingsConfiguration;
 import net.reliqs.emonlight.xbeegw.events.EventQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -11,10 +12,10 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -26,8 +27,7 @@ import java.util.concurrent.Executor;
 
 @Profile({"default", "prod", "dev"})
 @SpringBootApplication
-//@Import(KafkaUtils.class)
-@EnableConfigurationProperties({Settings.class})
+@Import(SettingsConfiguration.class)
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class, KafkaAutoConfiguration.class})
 @EnableAsync
 @EnableScheduling

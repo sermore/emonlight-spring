@@ -32,7 +32,7 @@ class DS18B20Processor extends MessageProcessor {
         log.debug("{}: DS18B20 T={}, D={}, @{}", node, t, d, time);
         verifyTime(node, time);
         Data data = new Data(time.toEpochMilli(), t);
-        publish(node.getProbe(Type.DS18B20), Type.DS18B20, data);
+        publish(node.findProbeByType(Type.DS18B20), Type.DS18B20, data);
     }
 
 }

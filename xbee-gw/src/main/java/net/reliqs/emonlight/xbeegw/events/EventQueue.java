@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.DelayQueue;
@@ -32,6 +33,9 @@ public class EventQueue {
 
     private DelayQueue<DelayedEvent> queue;
 
+    @Value("${eventQueue.backupEnabled:true}")
+    private boolean backupEnabled;
+
     @Value("${eventQueue.backup:event-queue-backup.dat}")
     private String backupPath;
 
@@ -44,10 +48,12 @@ public class EventQueue {
      */
     @PostConstruct
     void init() {
-        CollectionStoreToFile<DelayedEvent> s = new CollectionStoreToFile<DelayedEvent>(backupPath);
-        Collection<DelayedEvent> data = s.read(true);
-        data.forEach(e -> offerDataMessage(e.getMsg(), e.getDelay(TimeUnit.MILLISECONDS)));
-        log.debug("read {} events from {}", data.size(), backupPath);
+        if (backupEnabled) {
+            CollectionStoreToFile<DelayedEvent> s = new CollectionStoreToFile<DelayedEvent>(backupPath);
+            Collection<DelayedEvent> data = s.read(true);
+            data.forEach(e -> offerDataMessage(e.getMsg(), e.getDelay(TimeUnit.MILLISECONDS)));
+            log.debug("read {} events from {}", data.size(), Paths.get(backupPath).toAbsolutePath());
+        }
     }
 
     /**
@@ -55,18 +61,35 @@ public class EventQueue {
      */
     @PreDestroy
     void close() {
-        if (queue.size() > 0) {
+        int qsize = queue.size();
+        if (backupEnabled && qsize > 0) {
             CollectionStoreToFile<DelayedEvent> s = new CollectionStoreToFile<DelayedEvent>(backupPath);
             List<DelayedEvent> data = queue.stream().filter(e -> e.getEventType() == DelayedEvent.EventType.Message).collect(Collectors.toList());
             s.write(data);
-            log.debug("saved {} events to {}", data.size(), backupPath);
+            log.debug("saved {} events to {}", data.size(), Paths.get(backupPath).toAbsolutePath());
         } else {
-            log.debug("queue empty on close");
+            if (qsize > 0) {
+                log.warn("termination without backup and queue size = {}", qsize);
+            } else {
+                log.debug("termination with empty queue");
+            }
         }
+    }
+
+    public boolean isBackupEnabled() {
+        return backupEnabled;
+    }
+
+    public void setBackupEnabled(boolean backupEnabled) {
+        this.backupEnabled = backupEnabled;
     }
 
     public String getBackupPath() {
         return backupPath;
+    }
+
+    public void setBackupPath(String backupPath) {
+        this.backupPath = backupPath;
     }
 
     public void offerDataMessage(DataMessage dataMessage, long delay) {

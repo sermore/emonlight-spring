@@ -16,12 +16,6 @@ import static org.junit.Assert.assertThat;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestApp.class})
 @ActiveProfiles({"integration", "rest"})
-//@ComponentScan(basePackages = {"net.reliqs.emonlight.commons.config", "net.reliqs.emonlight.xbeegw.send",
-//        "net.reliqs.emonlight.xbeegw.publish"})
-////@EnableAutoConfiguration
-//@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class})
-//@EnableConfigurationProperties
-//@EnableAsync
 public class RestConfigurationTest {
 
     @Autowired
@@ -36,7 +30,7 @@ public class RestConfigurationTest {
         assertThat(ctx.containsBean("jmsService"), is(false));
         assertThat(ctx.containsBean("influxdbService"), is(false));
         assertThat(ctx.containsBean("jpaService"), is(false));
-        assertThat(publisher.getServices(), hasSize(1));
+        assertThat(publisher.getServices(), hasSize(2));
     }
 
 }

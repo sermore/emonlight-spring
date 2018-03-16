@@ -5,14 +5,14 @@ import javax.validation.Payload;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
-@Target(FIELD)
-@Constraint(validatedBy = NodesValidator.class)
-public @interface ValidNodes {
-    String message() default "nodes invalid";
+@Target(TYPE)
+@Constraint(validatedBy = SettingsValidator.class)
+public @interface ValidSettings {
+    String message() default "Invalid settings";
 
     Class<?>[] groups() default {};
 

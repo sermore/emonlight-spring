@@ -35,13 +35,19 @@ public class Publisher {
         subscribers.add(s);
     }
 
+    boolean isApplicableToServices(Probe probe, Probe.Type type, Data data) {
+        return type == probe.getType();
+    }
+
     public void publish(Probe probe, Type type, Data data) {
         log.trace("P {} {} {}", probe.getName(), type, data);
         for (Subscriber s : subscribers) {
             s.receive(probe, type, data);
         }
-        for (Subscriber s : services) {
-            s.receive(probe, type, data);
+        if (isApplicableToServices(probe, type, data)) {
+            for (Subscriber s : services) {
+                s.receive(probe, type, data);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.web.services;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ public class JpaDataRepoTest {
     @Autowired
     DataRepo dataRepo;
 
+    @Ignore
     @Test
     public void test() throws Exception {
 //        Node n = new Node();

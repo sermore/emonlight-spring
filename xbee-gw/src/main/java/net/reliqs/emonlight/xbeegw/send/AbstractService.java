@@ -93,12 +93,12 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         log.warn("{}: batch failed q={}, inFlight={}/{}: {}", logId, queue.size(), inFlight.size(), inFlightLength, ex.getMessage());
     }
 
-    private String getPath() {
-        return logId + "_store.dat";
+    private String getBackupPath() {
+        return this.getClass().getSimpleName() + ".dat";
     }
 
     protected void onInit() {
-        String path = getPath();
+        String path = getBackupPath();
         if (Files.exists(Paths.get(path))) {
             ObjStoreToFile<LinkedList<E>> store = new ObjStoreToFile<>(path, true);
             List<LinkedList<E>> res = store.read();
@@ -113,7 +113,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
 
     protected void onClose() {
         if (!isQueueEmpty()) {
-            String path = getPath();
+            String path = getBackupPath();
             ObjStoreToFile<LinkedList<E>> store = new ObjStoreToFile<>(path, false);
             if (queue != null && !queue.isEmpty()) {
                 store.add(queue);

@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.commons.config;
 
 import net.reliqs.emonlight.commons.config.annotations.ValidNode;
+import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
@@ -9,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 
 @ValidNode
+@Validated
 public class Node {
+
+    @NotNull
+    @Min(1)
+    private Integer id;
 
     @Size(min = 1)
     private String name;
-
-    ;
     // @Size(min = 10, max = 10)
     private String address;
     @NotNull
@@ -34,6 +38,15 @@ public class Node {
     @Valid
     private List<Probe> probes;
     private Map<ProbeKey, Probe> probeMap;
+    private Map<String, Probe> probeNameMap;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -107,13 +120,17 @@ public class Node {
         this.probes = probes;
     }
 
-    public Probe getProbe(Probe.Type type, byte port) {
+    public Probe findProbeByTypeAndPort(Probe.Type type, byte port) {
         return probeMap.get(new ProbeKey(type, port));
     }
 
     // FIXME handle multiple probes with same type
-    public Probe getProbe(Probe.Type type) {
-        return getProbe(type, getDefaultPort(type));
+    public Probe findProbeByType(Probe.Type type) {
+        return findProbeByTypeAndPort(type, getDefaultPort(type));
+    }
+
+    public Probe findProbeByName(String name) {
+        return probeNameMap.get(name);
     }
 
     public byte getDefaultPort(Probe.Type type) {
@@ -127,10 +144,12 @@ public class Node {
         return 0;
     }
 
-    void initProbeMap() {
+    void initMaps() {
         probeMap = new HashMap<>(probes.size());
+        probeNameMap = new HashMap<>(probes.size());
         for (Probe p : probes) {
             probeMap.put(new ProbeKey(p.getType(), p.getPort()), p);
+            probeNameMap.put(p.getName(), p);
         }
     }
 
@@ -161,7 +180,7 @@ public class Node {
 
     @Override
     public String toString() {
-        return "N [" + name + ", " + address + "]";
+        return String.format("N[%d, %s, %s]", id, name, address);
     }
 
     public enum OpMode {

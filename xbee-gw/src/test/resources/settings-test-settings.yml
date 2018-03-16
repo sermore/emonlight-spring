@@ -1,0 +1,109 @@
+!!net.reliqs.emonlight.commons.config.Settings
+baudRate: 115200
+idCnt: 9
+nodes:
+- &id001
+  adcRange: 4095
+  adcVRef: 3.3
+  address: X1
+  id: 1
+  mode: PULSE_DHT22
+  name: N1
+  probes:
+  - &id003
+    adcMult: 0.0
+    hardThreshold: 4000.0
+    hardThresholdTimeSec: 240
+    id: 2
+    name: P1
+    node: *id001
+    port: 3
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 3300.0
+    softThresholdTimeSec: 10800
+    type: PULSE
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 3
+    name: P2
+    node: *id001
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 4
+    name: P3
+    node: *id001
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 5
+    name: VCC
+    node: *id001
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 500
+  vccFromADC: false
+  vccThreshold: 3.1
+- &id002
+  adcRange: 4095
+  adcVRef: 3.3
+  address: X2
+  id: 6
+  mode: DHT22
+  name: N2
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 7
+    name: P4
+    node: *id002
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 8
+    name: P5
+    node: *id002
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  sampleTime: 300
+  vccFromADC: false
+  vccThreshold: 0.0
+receiveTimeout: 2000
+serialPort: /dev/ttyUSB0
+servers:
+- maps:
+  - apiKey: '12345'
+    nodeId: 1
+    probe: *id003
+  name: S1
+  sendRate: 2000
+  url: http://url.1

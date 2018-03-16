@@ -32,9 +32,9 @@ public class JmsAsyncService extends AbstractAsyncService<StoreData> {
 //        while (!inFlight.isEmpty()) {
 //            StoreData t = inFlight.peek();
 //            send(t);
-//            Integer cnt = counters.getOrDefault(t.getProbe(), 0);
-//            counters.put(t.getProbe(), ++cnt);
-//            log.trace("JMS OK probe={} cnt={}", t.getProbe(), cnt);
+//            Integer cnt = counters.getOrDefault(t.findProbeByTypeAndPort(), 0);
+//            counters.put(t.findProbeByTypeAndPort(), ++cnt);
+//            log.trace("JMS OK probe={} cnt={}", t.findProbeByTypeAndPort(), cnt);
 //            inFlight.poll();
 //        }
 //        AsyncResult<Map<String, Integer>> res = new AsyncResult<>(counters);

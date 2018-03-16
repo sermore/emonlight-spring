@@ -104,6 +104,7 @@ public class Processor {
     }
 
     void publish(Probe probe, Type type, Data data) {
+        assert probe != null && type != null && data != null;
         publisher.publish(probe, type, data);
     }
 }

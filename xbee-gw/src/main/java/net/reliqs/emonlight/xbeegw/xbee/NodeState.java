@@ -41,9 +41,9 @@ public class NodeState {
         return node;
     }
 
-//	public Probe getProbe(Type type) {
+//	public Probe findProbeByTypeAndPort(Type type) {
 //		ProbeData pd = probeDataMap.get(type);
-//		return pd != null ? pd.getProbe() : null;
+//		return pd != null ? pd.findProbeByTypeAndPort() : null;
 //	}
 
 //	public ProbeData getProbeData(Type type) {

@@ -16,6 +16,10 @@ public class ProbeValidator implements ConstraintValidator<ValidProbe, Probe> {
     public boolean isValid(Probe probe, ConstraintValidatorContext context) {
         boolean ret = true;
         context.disableDefaultConstraintViolation();
+//        if (probe.getId() == 0) {
+//            context.buildConstraintViolationWithTemplate("probe id is zero").addConstraintViolation();
+//            ret = false;
+//        }
         if (probe.hasThresholds() && probe.getType() != Type.PULSE) {
             context.buildConstraintViolationWithTemplate("thresholds can be used only with probe of type PULSE")
                     .addConstraintViolation();

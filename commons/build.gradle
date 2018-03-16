@@ -22,15 +22,15 @@ bootRepackage {
 
 dependencies {
 
-    compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
-    compile group: 'org.hibernate', name: 'hibernate-validator', version: '5.0.1.Final'
+//    compile group: 'javax.validation', name: 'validation-api', version: '1.1.0.Final'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+//    compile group: 'org.hibernate', name: 'hibernate-validator' //, version: '5.+'
 
-    compileOnly(group: 'org.apache.kafka', name: 'kafka_2.11', version: '1.0.1') {
+    compile(group: 'org.apache.kafka', name: 'kafka_2.11', version: '1.0.1') {
         exclude(module: 'slf4j-log4j12')
         exclude(module: 'org.slf4j:log4j-over-slf4j')
 //        exclude group: 'log4j'
     }
-    compileOnly group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.4.RELEASE'
+    compile group: 'org.springframework.kafka', name: 'spring-kafka', version: '2.1.4.RELEASE'
     testCompile group: 'org.springframework.kafka', name: 'spring-kafka-test', version: '2.1.4.RELEASE'
-
 }

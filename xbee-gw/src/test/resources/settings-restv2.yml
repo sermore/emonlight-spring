@@ -1,0 +1,111 @@
+!!net.reliqs.emonlight.commons.config.Settings
+baudRate: 115200
+idCnt: 7
+nodes:
+- &id001
+  adcRange: 4095
+  adcVRef: 3.3
+  address: 0013A20041468937
+  id: 1
+  mode: PULSE_DS18B20
+  name: TEST
+  probes:
+  - &id005
+    adcMult: 0.0
+    hardThreshold: 4000.0
+    hardThresholdTimeSec: 240
+    id: 2
+    name: TEST_PULSE
+    node: *id001
+    port: 3
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 3300.0
+    softThresholdTimeSec: 10800
+    type: PULSE
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 3
+    name: TEST_D
+    node: *id001
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 40000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DS18B20
+  - &id003
+    adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 4
+    name: TEST_H
+    node: *id001
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 40000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  - &id002
+    adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 5
+    name: TEST_T
+    node: *id001
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - &id004
+    adcMult: 3.42
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 6
+    name: TEST_VCC
+    node: *id001
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 5000
+  vccFromADC: true
+  vccThreshold: 0.0
+receiveTimeout: 2000
+serialPort: /dev/ttyUSB0
+servers:
+- maps:
+  - apiKey: nC1uDMkxnVJwKyKxQis5
+    nodeId: 8
+    probe: *id002
+  - apiKey: ywDxpCXDi2Pc4taeyYLN
+    nodeId: 9
+    probe: *id003
+  - apiKey: uKY33ArrQshrSeafDwqF
+    nodeId: 13
+    probe: *id004
+  - apiKey: dcTRYGK7RB1kqxW2vE-Q
+    nodeId: 2
+    probe: *id005
+  name: pino
+  sendRate: 10000
+  url: http://pino/emonlight-dev/input/read.json
+- maps:
+  - apiKey: dcTRYGK7RB1kqxW2vE-Q
+    nodeId: 2
+    probe: *id005
+  name: acero
+  sendRate: 10000
+  url: http://acero:3000/input/read.json
+- name: test1
+  url: http://testserver1:1234/input/read.json
+  sendRate: 4000
+#- name: test2
+#  url: http://testserver2:1234/input/read.json
+#  sendRate: 6000

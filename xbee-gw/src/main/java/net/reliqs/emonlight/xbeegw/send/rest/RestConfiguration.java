@@ -43,9 +43,9 @@ public class RestConfiguration {
 
     @PostConstruct
     void init() {
-        for (Server s : settings.getServers()) {
-            RestDeliveryService svc = restDeliveryService(s);
-        }
+        settings.getServers().stream().filter(ss -> !ss.getMaps().isEmpty()).forEach(ss -> {
+            RestDeliveryService svc = restDeliveryService(ss);
+        });
     }
 
 }

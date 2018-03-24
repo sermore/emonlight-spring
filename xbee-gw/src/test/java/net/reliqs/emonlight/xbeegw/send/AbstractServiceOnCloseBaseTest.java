@@ -17,10 +17,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest(classes = {TestApp.class, Config.class})
-//@ActiveProfiles("integration,test-queue")
-//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AbstractServiceOnCloseBaseTest {
 
     protected static Runnable testRunner;
@@ -41,7 +37,6 @@ public class AbstractServiceOnCloseBaseTest {
     @AfterClass
     public static void afterClass() {
         testRunner.run();
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXX");
     }
 
     @Before
@@ -68,17 +63,5 @@ public class AbstractServiceOnCloseBaseTest {
             assertThat(res.get(1), hasSize(inFlightLen));
         }
     }
-
-    @FunctionalInterface
-    public interface ExpectResult {
-        void expect(boolean fileExists, int queueLen, int inFlightLen);
-    }
-
-    //    protected void testExpectCleanClose() {
-    //        assertThat(Files.notExists(Paths.get("TEST_backup.dat")), is(true));
-    //        assertThat(fakeService.isQueueEmpty(), is(true));
-    //        assertThat(fakeService.getQueue(), hasSize(0));
-    //        assertThat(fakeService.getInFlight(), hasSize(0));
-    //    }
 
 }

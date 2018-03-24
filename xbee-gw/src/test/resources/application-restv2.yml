@@ -1,0 +1,25 @@
+---
+logging:
+  level:
+    root: info
+    com.digi.xbee: INFO
+    net:
+      reliqs:
+        emonlight: TRACE     
+
+processor.timeout: 1000
+dispatcher.rate: 10000
+
+jms.enabled: false
+
+rest.enabled: false
+
+restV2:
+  enabled: true
+
+notification:
+  url: https://fcm.googleapis.com/fcm/send
+  serverKey: #TODO insert your google server key
+  deviceId: # For testing only
+
+settings.path: src/test/resources/settings-restv2.yml

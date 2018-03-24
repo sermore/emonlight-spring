@@ -21,4 +21,12 @@ public class RestV2AsyncService extends AbstractAsyncService<StoreData> {
         String res = restTemplate.postForObject(url, t, String.class);
         return "OK".equals(res);
     }
+
+    public String getUrl() {
+        return url;
+    }
+
+    RestTemplate getRestTemplate() {
+        return restTemplate;
+    }
 }

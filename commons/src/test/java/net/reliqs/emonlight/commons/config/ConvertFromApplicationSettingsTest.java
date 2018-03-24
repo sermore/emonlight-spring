@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.commons.config;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,7 @@ public class ConvertFromApplicationSettingsTest {
     @Autowired
     private Settings settings;
 
+    @Ignore
     @Test
     public void saveToSettings() {
         assertThat(settingsService.dump(settings, "settings.yml"), is(true));

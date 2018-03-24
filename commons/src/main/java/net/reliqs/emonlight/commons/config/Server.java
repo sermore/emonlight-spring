@@ -6,6 +6,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Server implements Serializable {
@@ -23,7 +24,7 @@ public class Server implements Serializable {
     private int sendRate;
 
     @Valid
-    private List<ServerMap> maps;
+    private List<ServerMap> maps = new ArrayList<>();
 
     public String getName() {
         return name;

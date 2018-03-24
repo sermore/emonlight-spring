@@ -6,9 +6,11 @@ import net.reliqs.emonlight.commons.config.Probe.Type;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.io.Serializable;
 import java.util.List;
 
-public class NodeValidator implements ConstraintValidator<ValidNode, Node> {
+public class NodeValidator implements ConstraintValidator<ValidNode, Node>, Serializable {
+    static final long serialVersionUID = 1L;
 
     @Override
     public void initialize(ValidNode constraintAnnotation) {

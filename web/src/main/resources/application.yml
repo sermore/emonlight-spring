@@ -34,3 +34,4 @@ spring:
     hibernate:
       ddl-auto: none
 
+settings.path: src/test/resources/settings.yml

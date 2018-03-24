@@ -27,21 +27,22 @@ public class JmsConfiguration {
 
     private Publisher publisher;
 
+    public JmsConfiguration(Publisher publisher) {
+        this.publisher = publisher;
+    }
+
+    //    @Value("${spring.activemq.broker-url:vm://localhost?broker.persistent=false}")
+    //    private String brokerUrl;
+
     @Bean
     @ConfigurationProperties(prefix = "spring.jms")
     JmsProperties jmsProperties() {
         return new JmsProperties();
     }
 
-    @Value("${spring.activemq.broker-url:vm://localhost?broker.persistent=false}")
-    private String brokerUrl;
-
-    public JmsConfiguration(Publisher publisher) {
-        this.publisher = publisher;
-    }
-
     @Bean
-    ConnectionFactory connectionFactory() {
+    ConnectionFactory connectionFactory(
+            @Value("${spring.activemq.broker-url:vm://localhost?broker.persistent=false}") String brokerUrl) {
         return new CachingConnectionFactory(new ActiveMQConnectionFactory(brokerUrl));
     }
 
@@ -50,16 +51,16 @@ public class JmsConfiguration {
         JmsTemplate jmsTemplate = new JmsTemplate(connectionFactory);
         JmsProperties properties = jmsProperties();
         jmsTemplate.setPubSubDomain(properties.isPubSubDomain());
-//        DestinationResolver destinationResolver = this.destinationResolver
-//                .getIfUnique();
-//        if (destinationResolver != null) {
-//            jmsTemplate.setDestinationResolver(destinationResolver);
-//        }
+        //        DestinationResolver destinationResolver = this.destinationResolver
+        //                .getIfUnique();
+        //        if (destinationResolver != null) {
+        //            jmsTemplate.setDestinationResolver(destinationResolver);
+        //        }
         jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
-//        MessageConverter messageConverter = this.messageConverter.getIfUnique();
-//        if (messageConverter != null) {
-//            jmsTemplate.setMessageConverter(messageConverter);
-//        }
+        //        MessageConverter messageConverter = this.messageConverter.getIfUnique();
+        //        if (messageConverter != null) {
+        //            jmsTemplate.setMessageConverter(messageConverter);
+        //        }
         JmsProperties.Template template = properties.getTemplate();
         if (template.getDefaultDestination() != null) {
             jmsTemplate.setDefaultDestinationName(template.getDefaultDestination());
@@ -92,13 +93,16 @@ public class JmsConfiguration {
     }
 
     @Bean
-    JmsAsyncService jmsAsyncService(JmsTemplate jmsTemplate) {
-        return new JmsAsyncService(jmsTemplate);
+    JmsAsyncService jmsAsyncService(JmsTemplate jmsTemplate, @Value("${jms.maxRetries:1}") int maxRetries) {
+        return new JmsAsyncService(jmsTemplate, maxRetries);
     }
 
     @Bean(initMethod = "onInit", destroyMethod = "onClose")
-    JmsService jmsService(JmsAsyncService jmsAsyncService) {
-        JmsService s = new JmsService(jmsAsyncService);
+    JmsService jmsService(JmsAsyncService jmsAsyncService, @Value("${jms.enableBackup:true}") boolean enableBackup,
+            @Value("${jms.backupPath:jmsServiceBackup.dat}") String backupPath,
+            @Value("${jms.maxBatch:0}") int maxBatch, @Value("${jms.realTime:true}") boolean realTime,
+            @Value("${jms.timeOutOnClose:2000}") long timeOutOnClose) {
+        JmsService s = new JmsService(jmsAsyncService, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
         publisher.addService(s);
         return s;
     }

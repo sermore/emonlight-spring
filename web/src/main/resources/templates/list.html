@@ -1,0 +1,52 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{index :: header(~{::title})}">
+    <title>Hello, world!</title>
+</head>
+<body>
+<nav th:insert="~{index :: navigation}"></nav>
+
+<div class="container-fluid">
+
+    <table class="table table-sm table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Node (Address)</th>
+            <th scope="col">#</th>
+            <th scope="col">Probe</th>
+            <th scope="col">Type</th>
+            <th scope="col">Last Time</th>
+            <th scope="col">Last Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <th:block th:each="node, nIter: ${settings.nodes}">
+            <tr th:each="probe, pIter: ${node.probes}">
+                <th scope="row" th:if="${pIter.first}" th:rowspan="${#lists.size(node.probes)}" th:text="${node.id}">1
+                </th>
+                <td th:if="${pIter.first}" th:rowspan="${#lists.size(node.probes)}">
+                    <a th:href="@{/node(id=${node.id})}">
+                        <b><span th:text="${node.name}">Node 1</span></b>
+                        <span th:text="${node.address}">0013A20041479F96</span>
+                    </a>
+                </td>
+                <th scope="row" th:text="${probe.id}">1</th>
+                <td>
+                    <a th:href="@{/probe(id=${probe.id})}">
+                        <span th:text="${probe.name}">Probe 1</span>
+                    </a>
+                </td>
+                <td th:text="${probe.type}">DHT22_H</td>
+                <td>11:43</td>
+                <td>345.23</td>
+            </tr>
+        </th:block>
+        </tbody>
+    </table>
+
+</div>
+
+<th:block th:insert="~{index :: bootstrapjs}"></th:block>
+</body>
+</html>

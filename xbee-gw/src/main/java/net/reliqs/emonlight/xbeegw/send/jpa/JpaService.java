@@ -7,12 +7,20 @@ import net.reliqs.emonlight.xbeegw.send.StoreData;
 
 public class JpaService extends AbstractService<StoreData, JpaAsyncService> {
 
-    public JpaService(JpaAsyncService service) {
-        super(service, "JPA", 0);
+    public JpaService(JpaAsyncService service, boolean enableBackup, String backupPath, int maxBatch, boolean realTime,
+            long timeOutOnClose) {
+        super(service, "JPA", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
     }
 
     @Override
     protected StoreData createData(Probe p, Probe.Type t, Data d) {
         return new StoreData(p, t, d);
+    }
+
+    @Override
+    public void receive(Probe p, Probe.Type t, Data d) {
+        if (t == p.getType()) {
+            super.receive(p, t, d);
+        }
     }
 }

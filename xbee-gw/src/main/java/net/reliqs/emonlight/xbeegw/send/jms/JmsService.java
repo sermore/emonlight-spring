@@ -14,8 +14,9 @@ import org.slf4j.LoggerFactory;
 public class JmsService extends AbstractService<StoreData, JmsAsyncService> {
     private static final Logger log = LoggerFactory.getLogger(JmsService.class);
 
-    public JmsService(JmsAsyncService service) {
-        super(service, "JMS", 0);
+    public JmsService(JmsAsyncService service, boolean enableBackup, String backupPath, int maxBatch, boolean realTime,
+            long timeOutOnClose) {
+        super(service, "JMS", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
     }
 
     @Override

@@ -1,10 +1,7 @@
 package net.reliqs.emonlight.commons.config;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,22 +9,23 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.SerializationUtils;
 
-import javax.validation.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.io.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static org.hamcrest.CoreMatchers.*;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SettingsConfiguration.class})
+@SpringBootTest(classes = {SettingsService.class, SettingsConfiguration.class})
 @EnableConfigurationProperties
 @ActiveProfiles({"test-settings"})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -37,18 +35,11 @@ public class SettingsTest {
     private Settings s;
 
     private static Validator validator;
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
 
     @BeforeClass
     public static void setup() {
         ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
         validator = factory.getValidator();
-    }
-
-    @AfterClass
-    public static void afterClass() throws IOException {
-        Files.copy(Paths.get("src/test/resources/settings.yml.bak"), Paths.get("src/test/resources/settings.yml"), REPLACE_EXISTING);
     }
 
     @Test
@@ -91,35 +82,34 @@ public class SettingsTest {
     }
 
     @Test
-    public void testDumpAndLoad() {
-        s.setBaudRate(200);
-        assertThat(s.dump("src/test/resources/settings.yml"), is(true));
-        Settings s1 = Settings.load("src/test/resources/settings.yml");
-        assertThat(s1.getBaudRate(), is(200));
-        assertEquals(2, s.getNodes().size());
-
-        assertThat(Settings.load("not_existing"), is(nullValue()));
-        assertThat(s.dump("src/test/resources/"), is(false));
-    }
-
-    @Test
-    public void testForValidate() {
-        thrown.expect(ValidationException.class);
-        thrown.expectMessage("Settings invalid: nodes[0].id -> may not be null");
-        s.getNodes().get(0).setId(null);
-        Settings.validate(s);
-    }
-
-    @Test
     public void testForValidation() {
+        s.setSerialPort("");
         s.getNodes().get(0).setSampleTime(0);
         s.getNodes().get(0).setId(0);
         s.getProbes().iterator().next().setId(null);
         Set<ConstraintViolation<Settings>> res = validator.validate(s);
-        assertThat(res, hasSize(3));
+        assertThat(res, hasSize(4));
         assertThat(res.stream().map(c -> String.format("%s -> %s", c.getPropertyPath(), c.getMessage())).collect(Collectors.toList()),
-                containsInAnyOrder("nodes[0].sampleTime -> must be greater than or equal to 1",
+                containsInAnyOrder("serialPort -> size must be between 4 and 2147483647",
+                        "nodes[0].sampleTime -> must be greater than or equal to 1",
                         "nodes[0].id -> must be greater than or equal to 1",
                         "nodes[0].probes[0].id -> may not be null"));
+    }
+
+    @Test
+    public void serializationTest() throws IOException, ClassNotFoundException {
+        byte[] b = SerializationUtils.serialize(s);
+        assertThat(b, is(notNullValue()));
+        Settings s1 = (Settings) SerializationUtils.deserialize(b);
+        //        assertThat(s, equalTo(s1));
+        assertThat(s1, is(notNullValue()));
+        FileOutputStream out = new FileOutputStream("test.txt");
+        ObjectOutputStream os = new ObjectOutputStream(out);
+        os.writeObject(s);
+        out.close();
+        FileInputStream in = new FileInputStream("test.txt");
+        ObjectInputStream is = new ObjectInputStream(in);
+        Settings s2 = (Settings) is.readObject();
+        assertThat(s2, is(notNullValue()));
     }
 }

@@ -1,0 +1,230 @@
+!!net.reliqs.emonlight.commons.config.Settings
+baudRate: 115200
+idCnt: 20
+nodes:
+- &id001
+  adcRange: 4095
+  adcVRef: 3.3
+  address: 0013A20041479F9E
+  id: 1
+  mode: DS18B20
+  name: ZIG4
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 2
+    name: ZIG4_T
+    node: *id001
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DS18B20
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 3
+    name: ZIG4_VCC
+    node: *id001
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 40000
+  vccFromADC: false
+  vccThreshold: 0.0
+- &id002
+  adcRange: 4095
+  adcVRef: 3.3
+  address: 0013A20041479F96
+  id: 4
+  mode: DS18B20
+  name: ZIG3
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 5
+    name: ZIG3_T
+    node: *id002
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DS18B20
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 6
+    name: ZIG3_VCC
+    node: *id002
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 40000
+  vccFromADC: false
+  vccThreshold: 0.0
+- &id003
+  adcRange: 4095
+  adcVRef: 3.25
+  address: 0013A2004146893C
+  id: 7
+  mode: DHT22
+  name: ZIG2
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 8
+    name: ZIG2_H
+    node: *id003
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 9
+    name: ZIG2_T
+    node: *id003
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - adcMult: 3.43
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 10
+    name: ZIG2_VCC
+    node: *id003
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 40000
+  vccFromADC: true
+  vccThreshold: 0.0
+- &id004
+  adcRange: 4095
+  adcVRef: 3.25
+  address: 0013A20041468938
+  id: 11
+  mode: DHT22
+  name: ZIG_PINO
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 12
+    name: ZIG_PINO_H
+    node: *id004
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 13
+    name: ZIG_PINO_T
+    node: *id004
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - adcMult: 3.43
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 14
+    name: ZIG_PINO_VCC
+    node: *id004
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 40000
+  vccFromADC: true
+  vccThreshold: 0.0
+- &id005
+  adcRange: 4095
+  adcVRef: 3.3
+  address: 0013A20041468922
+  id: 15
+  mode: PULSE_DHT22
+  name: MAIN
+  probes:
+  - adcMult: 0.0
+    hardThreshold: 4000.0
+    hardThresholdTimeSec: 240
+    id: 16
+    name: MAIN_POWER
+    node: *id005
+    port: 3
+    pulsesPerKilowattHour: 1000
+    sampleTime: 0
+    softThreshold: 3300.0
+    softThresholdTimeSec: 10800
+    type: PULSE
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 17
+    name: MAIN_H
+    node: *id005
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 40000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_H
+  - adcMult: 0.0
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 18
+    name: MAIN_T
+    node: *id005
+    port: 10
+    pulsesPerKilowattHour: 1000
+    sampleTime: 40000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: DHT22_T
+  - adcMult: 3.42
+    hardThreshold: 0.0
+    hardThresholdTimeSec: 0
+    id: 19
+    name: MAIN_VCC
+    node: *id005
+    port: 0
+    pulsesPerKilowattHour: 1000
+    sampleTime: 60000
+    softThreshold: 0.0
+    softThresholdTimeSec: 0
+    type: VCC
+  sampleTime: 3000
+  vccFromADC: false
+  vccThreshold: 0.0
+receiveTimeout: 2000
+serialPort: /dev/ttyUSB0
+servers: []

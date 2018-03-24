@@ -5,8 +5,10 @@ import net.reliqs.emonlight.commons.config.Probe.Type;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.io.Serializable;
 
-public class ProbeValidator implements ConstraintValidator<ValidProbe, Probe> {
+public class ProbeValidator implements ConstraintValidator<ValidProbe, Probe>, Serializable {
+    static final long serialVersionUID = 1L;
 
     @Override
     public void initialize(ValidProbe constraintAnnotation) {

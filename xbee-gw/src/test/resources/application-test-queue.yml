@@ -1,4 +1,11 @@
 ---
+logging:
+  level:
+    root: info
+    com.digi.xbee: INFO
+    net:
+      reliqs:
+        emonlight: TRACE
 
 spring:
   activemq:

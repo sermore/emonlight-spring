@@ -3,6 +3,7 @@ package net.reliqs.emonlight.xbeegw.state;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsConfiguration;
+import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SettingsConfiguration.class})
+@SpringBootTest(classes = {SettingsConfiguration.class, SettingsService.class})
 @ActiveProfiles("test-settings")
 public class ObjStoreToFileTest {
 

@@ -9,18 +9,28 @@ import java.util.Queue;
 
 public abstract class AbstractAsyncService<E> {
 
+    private int maxRetries;
+
+    public AbstractAsyncService(int maxRetries) {
+        this.maxRetries = maxRetries;
+    }
+
     protected abstract boolean send(E t);
 
     @Async
     @Transactional
     public ListenableFuture<Integer> post(Queue<E> inFlight) {
         int cnt = 0;
-        while (!inFlight.isEmpty()) {
+        int retries = 0;
+        while (!inFlight.isEmpty() && retries < maxRetries) {
             E t = inFlight.peek();
             if (send(t)) {
                 cnt++;
+                inFlight.poll();
+                retries = 0;
+            } else {
+                retries++;
             }
-            inFlight.poll();
         }
         AsyncResult<Integer> res = new AsyncResult<>(cnt);
         return res;

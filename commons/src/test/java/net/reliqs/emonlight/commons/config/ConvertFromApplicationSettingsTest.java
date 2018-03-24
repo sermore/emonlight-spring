@@ -21,15 +21,18 @@ import static org.junit.Assert.assertThat;
 public class ConvertFromApplicationSettingsTest {
 
     @Autowired
+    private SettingsService settingsService;
+
+    @Autowired
     private Settings settings;
 
     @Test
     public void saveToSettings() {
-        assertThat(settings.dump("settings.yml"), is(true));
+        assertThat(settingsService.dump(settings, "settings.yml"), is(true));
     }
 
     @SpringBootConfiguration
-    protected static class MyConfiguration {
+    static class MyConfiguration {
 
         @Bean
         @ConfigurationProperties(prefix = "settings")

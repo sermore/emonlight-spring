@@ -17,7 +17,10 @@ spring:
     pool:
       enabled: true
 
-jms.enabled: true
+jms:
+  enabled: true
+  realTime: false
+  enableBackup: false
 
 influxdb:
   enabled: false

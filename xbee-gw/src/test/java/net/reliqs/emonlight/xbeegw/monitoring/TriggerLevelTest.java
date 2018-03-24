@@ -4,6 +4,7 @@ import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsConfiguration;
+import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +21,7 @@ import static org.junit.Assert.assertThat;
  * Created by sergio on 26/02/17.
  */
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SettingsConfiguration.class})
+@SpringBootTest(classes = {SettingsConfiguration.class, SettingsService.class})
 @EnableConfigurationProperties
 @ActiveProfiles("test-router")
 public class TriggerLevelTest {

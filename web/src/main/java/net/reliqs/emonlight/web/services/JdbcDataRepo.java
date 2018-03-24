@@ -15,10 +15,13 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class JdbcDataRepo implements DataRepo {
-    public static final String SQL = "SELECT probe_id, value, time FROM data WHERE time > :tstart AND time <= :tend and probe_id IN (:ids) ORDER BY probe_id, time LIMIT :limit";
     private static final Logger log = LoggerFactory.getLogger(JdbcDataRepo.class);
+
+    private static final String DATA_QUERY =
+            "SELECT probe_id, value, time FROM data WHERE time > :tstart AND time <= :tend AND probe_id IN (:ids) ORDER BY probe_id, time LIMIT :limit";
+    private static long limit = 10000;
+
     private NamedParameterJdbcOperations jdbcOperations;
-    private long limit = 10000;
 
     public JdbcDataRepo(NamedParameterJdbcOperations jdbcOperations) {
         this.jdbcOperations = jdbcOperations;
@@ -35,7 +38,7 @@ public class JdbcDataRepo implements DataRepo {
         paramMap.put("limit", limit);
         final ZoneOffset offset = ZoneOffset.ofTotalSeconds(tzone * 60);
         final AtomicLong size = new AtomicLong();
-        jdbcOperations.query(SQL, paramMap, rch -> {
+        jdbcOperations.query(DATA_QUERY, paramMap, rch -> {
             Long pid = rch.getLong("probe_id");
             List<Number[]> list = result.get(pid);
             if (list == null) {

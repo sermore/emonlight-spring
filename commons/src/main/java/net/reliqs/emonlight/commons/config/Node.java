@@ -5,13 +5,16 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.Valid;
 import javax.validation.constraints.*;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @ValidNode
 @Validated
-public class Node {
+public class Node implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @NotNull
     @Min(1)
@@ -39,6 +42,9 @@ public class Node {
     private List<Probe> probes;
     private Map<ProbeKey, Probe> probeMap;
     private Map<String, Probe> probeNameMap;
+
+    Node() {
+    }
 
     public Integer getId() {
         return id;

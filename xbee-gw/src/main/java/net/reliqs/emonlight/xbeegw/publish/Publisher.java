@@ -44,11 +44,12 @@ public class Publisher {
         for (Subscriber s : subscribers) {
             s.receive(probe, type, data);
         }
-        if (isApplicableToServices(probe, type, data)) {
+        // FIXME move this condition into each service
+        //        if (isApplicableToServices(probe, type, data)) {
             for (Subscriber s : services) {
                 s.receive(probe, type, data);
             }
-        }
+        //        }
     }
 
     public List<DeliveryService> getServices() {

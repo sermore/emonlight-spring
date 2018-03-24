@@ -3,18 +3,27 @@ package net.reliqs.emonlight.commons.config.annotations;
 import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.io.Serializable;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SettingsValidator implements ConstraintValidator<ValidSettings, Settings> {
+public class SettingsValidator implements ConstraintValidator<ValidSettings, Settings>, Serializable {
+    static final long serialVersionUID = 1L;
+
+    private static final Logger log = LoggerFactory.getLogger(SettingsValidator.class);
+
+
     public void initialize(ValidSettings constraint) {
     }
 
     public boolean isValid(Settings settings, ConstraintValidatorContext context) {
+        log.debug("validate settings {}", settings);
         context.disableDefaultConstraintViolation();
         boolean valid = true;
 

@@ -17,8 +17,9 @@ public class JpaAsyncService extends AbstractAsyncService<StoreData> {
     private JpaProbeRepo probeRepo;
     private JpaDataRepo dataRepo;
 
-    public JpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
-        super();
+    public JpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo,
+            int maxRetries) {
+        super(maxRetries);
         this.settings = settings;
         this.nodeRepo = nodeRepo;
         this.probeRepo = probeRepo;

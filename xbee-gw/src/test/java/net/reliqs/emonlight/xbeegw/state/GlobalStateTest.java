@@ -2,6 +2,7 @@ package net.reliqs.emonlight.xbeegw.state;
 
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsConfiguration;
+import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.xbeegw.xbee.NodeState;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,7 +15,7 @@ import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SettingsConfiguration.class})
+@SpringBootTest(classes = {SettingsConfiguration.class, SettingsService.class})
 @ActiveProfiles("test-settings")
 public class GlobalStateTest {
 

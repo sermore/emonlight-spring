@@ -4,6 +4,7 @@ import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,26 +16,32 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 public class JpaServiceConfiguration {
     private static final Logger log = LoggerFactory.getLogger(JpaServiceConfiguration.class);
 
-    public JpaServiceConfiguration(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
+    public JpaServiceConfiguration(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo,
+            JpaDataRepo dataRepo) {
         setupDb(settings, nodeRepo, probeRepo);
     }
 
     void setupDb(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo) {
         settings.getNodes().forEach(n -> {
             JpaNode node = nodeRepo.createNodeIfNotExists(probeRepo, n);
-//            log.debug("JPA: node saved {}", node);
+            //            log.debug("JPA: node saved {}", node);
         });
         log.debug("JPA: database setup completed");
     }
 
     @Bean
-    JpaAsyncService jpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo) {
-        return new JpaAsyncService(settings, nodeRepo, probeRepo, dataRepo);
+    JpaAsyncService jpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo,
+            JpaDataRepo dataRepo, @Value("${jpa.maxRetries:1}") int maxRetries) {
+        return new JpaAsyncService(settings, nodeRepo, probeRepo, dataRepo, maxRetries);
     }
 
     @Bean(initMethod = "onInit", destroyMethod = "onClose")
-    JpaService jpaService(Publisher publisher, JpaAsyncService asyncService) {
-        JpaService service = new JpaService(asyncService);
+    JpaService jpaService(Publisher publisher, JpaAsyncService asyncService,
+            @Value("${jpa.enableBackup:true}") boolean enableBackup,
+            @Value("${jpa.backupPath:jpaServiceBackup.dat}") String backupPath,
+            @Value("${jpa.maxBatch:0}") int maxBatch, @Value("${jpa.realTime:false}") boolean realTime,
+            @Value("${jpa.timeOutOnClose:2000}") long timeOutOnClose) {
+        JpaService service = new JpaService(asyncService, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
         publisher.addService(service);
         return service;
     }

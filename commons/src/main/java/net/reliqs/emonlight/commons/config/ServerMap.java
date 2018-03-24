@@ -3,8 +3,11 @@ package net.reliqs.emonlight.commons.config;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
-public class ServerMap {
+public class ServerMap implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @NotNull
     private Probe probe;

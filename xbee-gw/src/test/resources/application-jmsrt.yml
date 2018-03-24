@@ -1,0 +1,28 @@
+---
+logging:
+  level:
+    root: info
+    com.digi.xbee: INFO
+    net:
+      reliqs:
+        emonlight: TRACE
+
+spring:
+  jms:
+    template:
+      default-destination: test
+#  jms.isPubSubDomain: true
+#  activemq:
+#    broker-url: tcp://lime2:61616
+    pool:
+      enabled: true
+
+jms:
+  enabled: true
+  realTime: true
+  enableBackup: false
+
+influxdb:
+  enabled: false
+
+settings.path: src/test/resources/settings-minimal.yml

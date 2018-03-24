@@ -2,22 +2,14 @@ package net.reliqs.emonlight.xbeegw.send;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.TestApp;
+import net.reliqs.emonlight.commons.config.SettingsConfiguration;
+import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.ObjStoreToFile;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,140 +21,145 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.arrayContaining;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {TestApp.class, AbstractServiceTest.Config.class})
-@ActiveProfiles("integration,test-queue")
+@SpringBootTest(classes = {SettingsConfiguration.class, SettingsService.class})
+@ActiveProfiles("test-queue")
 public class AbstractServiceTest {
-
-    private static int runCount = 0;
-    private static int postCount = 0;
-    private static Boolean[] results = {false, false};
 
     @Autowired
     private Settings settings;
-    @Autowired
-    private Publisher publisher;
-    @Autowired
-    private FakeService fakeService;
-//    @Autowired
-//    private Dispatcher dispatcher;
 
-    @BeforeClass
-    public static void beforeTest() throws IOException {
-    }
-
-    @AfterClass
-    public static void afterTest() {
-        assertThat(results, arrayContaining(true, true));
-//        assertThat(saveOnCloseWithErrorsResult, is(true));
+    @Test
+    public void testIsReadyAndIsQueueEmpty() {
+        FakeAsyncService as = new FakeAsyncService(1);
+        FakeService s = new FakeService(as);
+        assertThat(s.isReady(), is(false));
+        assertThat(s.isQueueEmpty(), is(true));
+        FakeService.populate(settings, s);
+        assertThat(s.isReady(), is(true));
+        assertThat(s.isQueueEmpty(), is(false));
+        s.setMaxBatch(1);
+        s.post();
+        assertThat(s.isReady(), is(true));
+        assertThat(s.isQueueEmpty(), is(false));
+        s.post();
+        assertThat(s.isReady(), is(true));
+        assertThat(s.isQueueEmpty(), is(false));
+        s.post();
+        assertThat(s.isReady(), is(false));
+        assertThat(s.isQueueEmpty(), is(true));
     }
 
     @Test
-    @DirtiesContext
-    public void testSaveOnClose() {
-        populate();
-    }
-
-    @Test
-    @DirtiesContext
-    public void testSaveOnCloseWithErrors() {
-        populate();
-    }
-
-    private void populate() {
-        publisher.addService(fakeService);
+    public void testReceive() {
+        FakeAsyncService as = new FakeAsyncService(1);
+        FakeService s = new FakeService(as);
         Probe p = settings.getProbes().findFirst().get();
-        publisher.publish(p, p.getType(), new Data(Instant.now().toEpochMilli(), 145.43));
-        publisher.publish(p, p.getType(), new Data(Instant.now().toEpochMilli(), 146.43));
-        publisher.publish(p, p.getType(), new Data(Instant.now().toEpochMilli(), 147.43));
+        assertThat(s.getQueue(), hasSize(0));
+        s.receive(p, p.getType(), new Data(Instant.now().toEpochMilli(), 145.43));
+        assertThat(s.getQueue(), hasSize(1));
     }
 
-    @TestConfiguration
-    static class Config {
-        @Bean(initMethod = "onInit", destroyMethod = "onClose")
-        Controller controller() {
-            return new Controller();
-        }
-
-        @Bean
-        @DependsOn("controller")
-        Dispatcher dispatcher() {
-            return new Dispatcher(publisher());
-        }
-
-        @Bean
-        Publisher publisher() {
-            return new Publisher();
-        }
-
-        @Bean
-        FakeAsyncService fakeAsyncService() {
-            return new FakeAsyncService();
-        }
-
-        @Bean(initMethod = "onInit", destroyMethod = "onClose")
-        FakeService fakeService() {
-            return new FakeService(fakeAsyncService());
-        }
+    @Test
+    public void testOnClose() throws IOException {
+        String path = "TEST_backup.dat";
+        Files.deleteIfExists(Paths.get(path));
+        FakeAsyncService as = new FakeAsyncService(1);
+        FakeService s = new FakeService(as);
+        assertThat(s.isEnableBackup(), is(true));
+        assertThat(s.getBackupPath(), is(path));
+        FakeService.populate(settings, s);
+        as.setResult(false);
+        s.setMaxBatch(1);
+        s.post();
+        assertThat(s.getQueue(), hasSize(2));
+        assertThat(s.getInFlight(), hasSize(1));
+        s.onClose();
+        assertThat(Files.exists(Paths.get(path)), is(true));
+        ObjStoreToFile<LinkedList<StoreData>> store = new ObjStoreToFile<>(path, false);
+        List<LinkedList<StoreData>> res = store.read();
+        assertThat(res, hasSize(2));
+        assertThat(res.get(0), hasSize(2));
+        assertThat(res.get(1), hasSize(1));
     }
 
-    static class FakeAsyncService extends AbstractAsyncService<StoreData> {
+    @Test
+    public void testOnInit() throws IOException {
+        String path = "TEST_backup.dat";
+        Files.deleteIfExists(Paths.get(path));
+        Probe p = settings.getProbes().findFirst().get();
 
-        @Override
-        protected boolean send(StoreData t) {
-            postCount++;
-            if (runCount > 1)
-                throw new RuntimeException("XXXX");
-            else {
-                try {
-                    Thread.sleep(1000L);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            }
-        }
+        ObjStoreToFile<LinkedList<StoreData>> store = new ObjStoreToFile<>(path, false);
+        LinkedList<StoreData> q = new LinkedList<>();
+        q.add(new StoreData(p, p.getType(), new Data(Instant.now().toEpochMilli(), 145.43)));
+        store.add(q);
+        q = new LinkedList<>();
+        q.add(new StoreData(p, p.getType(), new Data(Instant.now().toEpochMilli(), 145.43)));
+        q.add(new StoreData(p, p.getType(), new Data(Instant.now().toEpochMilli(), 145.43)));
+        store.add(q);
+        store.write();
+
+        FakeAsyncService as = new FakeAsyncService(1);
+        FakeService s = new FakeService(as);
+        assertThat(s.getBackupPath(), is(path));
+        s.setEnableBackup(false);
+        s.onInit();
+        assertThat(Files.exists(Paths.get(path)), is(true));
+        assertThat(s.getQueue(), hasSize(0));
+        assertThat(s.getInFlight(), hasSize(0));
+
+        s.setEnableBackup(true);
+        s.onInit();
+        assertThat(Files.exists(Paths.get(path)), is(false));
+        assertThat(s.getQueue(), hasSize(1));
+        assertThat(s.getInFlight(), hasSize(2));
     }
 
-    static class FakeService extends AbstractService<StoreData, FakeAsyncService> {
-        private static final Logger log = LoggerFactory.getLogger(DispatcherTest.FakeService.class);
+    @Test
+    public void testPost() {
+        FakeAsyncService as = new FakeAsyncService(1);
+        FakeService s = new FakeService(as);
+        FakeService.populate(settings, s);
 
-        public FakeService(FakeAsyncService service) {
-            super(service, "TEST", 1);
-        }
+        s.setMaxBatch(1);
+        s.post();
+        assertThat(s.getQueue(), hasSize(2));
+        assertThat(s.getInFlight(), hasSize(0));
+        assertThat(as.getPostCount(), is(1));
 
-        @Override
-        protected StoreData createData(Probe p, Probe.Type t, Data d) {
-            return new StoreData(p, t, d);
-        }
-    }
+        as.setPostCount(0);
+        s.setMaxBatch(2);
+        s.post();
+        assertThat(s.getQueue(), hasSize(0));
+        assertThat(s.getInFlight(), hasSize(0));
+        assertThat(s.isReady(), is(false));
+        assertThat(s.isQueueEmpty(), is(true));
+        assertThat(as.getPostCount(), is(2));
 
-    static class Controller {
-        public void onInit() throws IOException {
-            postCount = 0;
-            if (runCount == 0) {
-                Files.deleteIfExists(Paths.get("FakeService.dat"));
-            }
-        }
+        as.setResult(false);
+        as.setPostCount(0);
+        FakeService.populate(settings, s);
+        s.setMaxBatch(0);
+        s.post();
+        assertThat(s.getQueue(), hasSize(0));
+        assertThat(s.getInFlight(), hasSize(3));
+        assertThat(as.getPostCount(), is(1));
+        s.post();
+        assertThat(s.getQueue(), hasSize(0));
+        assertThat(s.getInFlight(), hasSize(3));
+        assertThat(as.getPostCount(), is(2));
 
-        public void onClose() {
-            ObjStoreToFile<LinkedList<StoreData>> s = new ObjStoreToFile<>("FakeService.dat", runCount > 0);
-            List<LinkedList<StoreData>> res = s.read();
-            assertThat(res.size(), is(2));
-            assertThat(res.get(0).size(), is(runCount > 0 ? 3 : 2));
-            assertThat(res.get(1).size(), is(runCount));
-            assertThat(postCount, is(runCount + 1));
-            results[runCount] = true;
-            runCount++;
-//            if (runCount++ == 0) {
-//                saveOnCloseResult = true; // res.size() == 2 && res.get(0).size() == 2 && res.get(1).size() == 0 && postCount == 1;
-//            } else {
-//                saveOnCloseWithErrorsResult =  res.size() == 2 && res.get(0).size() == 2 && res.get(1).size() == 1 && postCount == 1;
-//            }
-        }
+        as.setPostCount(0);
+        as.setResult(true);
+        s.setMaxBatch(0);
+        s.setRealTime(true);
+        FakeService.populate(settings, s);
+        assertThat(s.getQueue(), hasSize(0));
+        assertThat(s.getInFlight(), hasSize(0));
+        assertThat(as.getPostCount(), is(6));
     }
 
 }

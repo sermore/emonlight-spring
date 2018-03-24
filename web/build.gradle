@@ -20,8 +20,8 @@ jar {
 //task testing {
 //}
 
-//ext['thymeleaf.version'] = '3.0.9.RELEASE'
-//ext['thymeleaf-layout-dialect.version'] = '2.1.5'
+ext['thymeleaf.version'] = '3.0.9.RELEASE'
+ext['thymeleaf-layout-dialect.version'] = '2.3.0'
 
 //gradle.taskGraph.whenReady { taskGraph ->
 //    if (taskGraph.hasTask(development)) {
@@ -62,7 +62,7 @@ dependencies {
 //    compile("org.springframework:spring-jdbc")
 //    compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
     compile("org.springframework.boot:spring-boot-starter-activemq")
-    compile("org.springframework.boot:spring-boot-devtools")
+//    compile("org.springframework.boot:spring-boot-devtools")
 
     compile group: 'org.webjars', name: 'webjars-locator'
     compile 'org.webjars:jquery:3.3.1-1'

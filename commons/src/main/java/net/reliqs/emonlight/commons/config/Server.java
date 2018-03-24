@@ -5,9 +5,12 @@ import org.hibernate.validator.constraints.URL;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
 
-public class Server {
+public class Server implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @NotNull
     private String name;
@@ -16,7 +19,7 @@ public class Server {
     @NotNull
     private String url;
 
-    @Min(1000)
+    @Min(0)
     private int sendRate;
 
     @Valid

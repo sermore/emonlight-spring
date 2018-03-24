@@ -13,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jms.annotation.EnableJms;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.support.converter.MessageConverter;
@@ -55,8 +54,8 @@ public class JmsServiceTest {
 
     @Test
     public void serviceTest() throws InterruptedException {
+        Receiver.count = 0;
         Probe p = settings.getProbes().findFirst().get();
-
         assertThat(service.isReady(), is(false));
         Data in = new Data(100, 10.0);
         service.receive(p, p.getType(), in);
@@ -74,19 +73,6 @@ public class JmsServiceTest {
         Thread.sleep(1000);
         assertThat(service.isReady(), is(false));
         assertThat(Receiver.count, is(3));
-    }
-
-    static class Receiver {
-        public static int count = 0;
-        boolean received;
-
-        @JmsListener(destination = "test")
-        public void receiveMessage(StoreData data) {
-            System.out.println("Received <" + data + ">");
-            count++;
-            received = true;
-        }
-
     }
 
     @TestConfiguration

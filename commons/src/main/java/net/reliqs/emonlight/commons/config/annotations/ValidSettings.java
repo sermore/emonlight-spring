@@ -12,6 +12,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target(TYPE)
 @Constraint(validatedBy = SettingsValidator.class)
 public @interface ValidSettings {
+
     String message() default "Invalid settings";
 
     Class<?>[] groups() default {};

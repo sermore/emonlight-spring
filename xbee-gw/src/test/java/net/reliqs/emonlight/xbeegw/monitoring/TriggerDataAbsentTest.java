@@ -22,6 +22,7 @@ import static org.junit.Assert.assertThat;
 @SpringBootTest(classes = {TestApp.class})
 @EnableScheduling
 @ActiveProfiles("integration,test-settings")
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class TriggerDataAbsentTest {
 
     @Autowired

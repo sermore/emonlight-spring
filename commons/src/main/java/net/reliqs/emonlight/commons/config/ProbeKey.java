@@ -1,9 +1,14 @@
 package net.reliqs.emonlight.commons.config;
 
+import java.io.Serializable;
+
 /**
  * Created by sergio on 25/02/17.
  */
-public class ProbeKey {
+public class ProbeKey implements Serializable {
+
+    static final long serialVersionUID = 1L;
+
     final Probe.Type type;
     final byte port;
 

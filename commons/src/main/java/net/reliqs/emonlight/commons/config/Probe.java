@@ -4,10 +4,13 @@ import net.reliqs.emonlight.commons.config.annotations.ValidProbe;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
+import java.io.Serializable;
 
 @ValidProbe
 @Validated
-public class Probe {
+public class Probe implements Serializable {
+
+    static final long serialVersionUID = 1L;
 
     @NotNull
     @Min(1)
@@ -33,6 +36,9 @@ public class Probe {
     @Min(0)
     private int hardThresholdTimeSec;
     private Node node;
+
+    public Probe() {
+    }
 
     public Integer getId() {
         return id;

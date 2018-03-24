@@ -4,30 +4,27 @@ import net.reliqs.emonlight.commons.config.Node.OpMode;
 import net.reliqs.emonlight.commons.config.annotations.ValidSettings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.validation.annotation.Validated;
-import org.yaml.snakeyaml.Yaml;
 
 import javax.annotation.PostConstruct;
-import javax.validation.*;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Validated
+//@Validated
 @ValidSettings
-public class Settings {
+public class Settings implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
+
+    static final long serialVersionUID = 1L;
 
     @Size(min = 4)
     private String serialPort;
@@ -93,36 +90,6 @@ public class Settings {
         this.servers = servers;
     }
 
-    static Settings load(String pathName) {
-        Path path = Paths.get(pathName);
-        Yaml yaml = new Yaml();
-        try (
-                Reader reader = Files.newBufferedReader(path)
-        ) {
-            Settings s = (Settings) yaml.load(reader);
-//            Map<String, Settings> map = new HashMap<>();
-//            map.put("settings", this);
-            log.debug("loaded Settings from {}", path.toAbsolutePath());
-            return s;
-        } catch (IOException e) {
-            log.error("Error reading settings file from " + path.toAbsolutePath(), e);
-        }
-        return null;
-    }
-
-    static void validate(Settings s) {
-        if (s == null) {
-            throw new ValidationException("Settings null");
-        }
-        ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
-        Validator validator = vf.getValidator();
-        Set<ConstraintViolation<Settings>> res = validator.validate(s);
-        if (!res.isEmpty()) {
-            String msg = res.stream().map(c -> String.format("%s -> %s", c.getPropertyPath(), c.getMessage())).collect(Collectors.joining(", "));
-            throw new ValidationException("Settings invalid: " + msg);
-        }
-    }
-
     public Integer getIdCnt() {
         return idCnt;
     }
@@ -174,22 +141,6 @@ public class Settings {
 
     public Node findNodeByName(String name) {
         return nodeMap.get(name);
-    }
-
-    boolean dump(String pathName) {
-        Path path = Paths.get(pathName);
-        Yaml yaml = new Yaml();
-        try (
-                Writer writer = Files.newBufferedWriter(path)
-        ) {
-//            Map<String, Settings> map = new HashMap<>();
-//            map.put("settings", this);
-            yaml.dump(this, writer);
-            return true;
-        } catch (IOException e) {
-            log.error("Error saving settings file to " + path.toAbsolutePath(), e);
-        }
-        return false;
     }
 
 }

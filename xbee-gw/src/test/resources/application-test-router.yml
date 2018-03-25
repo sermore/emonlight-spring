@@ -12,6 +12,8 @@ dispatcher.rate: 10000
 
 jms.enabled: false
 
+rest.enabled: true
+
 notification:
   url: https://fcm.googleapis.com/fcm/send
   serverKey: #TODO insert your google server key

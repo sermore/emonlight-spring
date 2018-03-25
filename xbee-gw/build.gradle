@@ -57,6 +57,8 @@ task deploy(dependsOn: 'build') {
                     put from: file('conf/install.sh'), into: '/tmp'
                     executeSudo('bash /tmp/install.sh', pty: true)
                 }
+                // copy original file
+                executeSudo 'cp -f /var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar /var/lib/emonlight-xbee-gw/emonlight-xbee-gw.jar.bak', pty: true
                 // deploy executable file
                 put from: jar.archivePath.absolutePath, into: '/tmp'
                 execute 'chmod a+x /tmp/' + jar.archiveName

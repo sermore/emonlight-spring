@@ -37,7 +37,7 @@ public class RestV2ServiceTest {
     @Resource(name = "restV2_test1_asyncService")
     RestV2AsyncService asyncService;
     @Resource(name = "restV2_test1_service")
-    RestV2Service service1;
+    RestV2Service service;
     @Autowired
     Settings settings;
 
@@ -58,38 +58,41 @@ public class RestV2ServiceTest {
         assertThat(s, is(notNullValue()));
         Probe p = settings.getProbes().findFirst().get();
 
-        assertThat(service1, is(notNullValue()));
+        assertThat(service, is(notNullValue()));
         assertThat(asyncService.getUrl(), is(s.getUrl()));
-        service1.setActive(true);
+        service.setActive(true);
 
         mockServer = MockRestServiceServer.createServer(asyncService.getRestTemplate());
-        mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withSuccess("OK", MediaType.TEXT_PLAIN));
-        mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withSuccess("OK", MediaType.TEXT_PLAIN));
+        mockServer.expect(requestTo("http://testserver1:1234/input/read.json"))
+                .andRespond(withSuccess("OK", MediaType.TEXT_PLAIN));
+        mockServer.expect(requestTo("http://testserver1:1234/input/read.json"))
+                .andRespond(withSuccess("OK", MediaType.TEXT_PLAIN));
         mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withBadRequest());
         mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withUnauthorizedRequest());
         mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withNoContent());
         mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withServerError());
-        mockServer.expect(requestTo("http://testserver1:1234/input/read.json")).andRespond(withSuccess("OK", MediaType.TEXT_PLAIN));
+        mockServer.expect(requestTo("http://testserver1:1234/input/read.json"))
+                .andRespond(withSuccess("OK", MediaType.TEXT_PLAIN));
 
-//        assertThat(service.isEmpty(), is(true));
-        assertThat(service1.isReady(), is(false));
+        //        assertThat(service.isEmpty(), is(true));
+        assertThat(service.isReady(), is(false));
         Data in = new Data(100, 10.0);
-        service1.receive(p, p.getType(), in);
-        assertThat(service1.isReady(), is(true));
+        service.receive(p, p.getType(), in);
+        assertThat(service.isReady(), is(true));
         in = new Data(200, 20.0);
-        service1.receive(p, p.getType(), in);
-        //        service.post();
+        service.receive(p, p.getType(), in);
+        service.post();
         Thread.sleep(500);
-        assertThat(service1.isReady(), is(false));
-//        assertThat(service.isEmpty(), is(true));
+        assertThat(service.isReady(), is(false));
+        //        assertThat(service.isEmpty(), is(true));
         in = new Data(300, 30.0);
-        service1.receive(p, p.getType(), in);
-//        service.post();
-//        Thread.sleep(1000);
-//        assertThat(service.isReady(), is(true));
-//        assertThat(service.isReady(), is(false));
+        service.receive(p, p.getType(), in);
+        service.post();
+        //        Thread.sleep(1000);
+        //        assertThat(service.isReady(), is(true));
+        //        assertThat(service.isReady(), is(false));
 
-//        mockServer.verify();
+        //        mockServer.verify();
     }
 
 }

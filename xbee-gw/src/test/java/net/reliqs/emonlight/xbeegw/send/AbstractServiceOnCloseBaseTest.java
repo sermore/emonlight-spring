@@ -31,6 +31,7 @@ public class AbstractServiceOnCloseBaseTest {
 
     @BeforeClass
     public static void beforeClass() throws IOException {
+        Files.deleteIfExists(Paths.get("event-queue-backup.dat"));
         Files.deleteIfExists(Paths.get("TEST_backup.dat"));
     }
 

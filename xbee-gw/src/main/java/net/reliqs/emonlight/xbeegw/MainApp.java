@@ -2,6 +2,7 @@ package net.reliqs.emonlight.xbeegw;
 
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsConfiguration;
+import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.xbeegw.events.EventQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -28,7 +29,7 @@ import java.util.concurrent.Executor;
 
 @Profile({"default", "prod", "dev"})
 @SpringBootApplication
-@Import(SettingsConfiguration.class)
+@Import({SettingsService.class, SettingsConfiguration.class})
 @EnableAutoConfiguration(
         exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class, JmsAutoConfiguration.class,
                 KafkaAutoConfiguration.class, WebMvcAutoConfiguration.class})

@@ -23,7 +23,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.concurrent.Executor;
 
@@ -69,10 +68,6 @@ public class MainApp extends AsyncConfigurerSupport {
         System.out.println("\nServers defined:");
         settings.getServers().forEach(s -> System.out.println(" - " + s.getName()));
         System.out.println("\n\n\n");
-
-        if (ZoneId.systemDefault() != ZoneId.of("UTC")) {
-            throw new GwException("Non UTC timezone detected: " + ZoneId.systemDefault());
-        }
 
         return args -> {
 //            runner().run(0L);

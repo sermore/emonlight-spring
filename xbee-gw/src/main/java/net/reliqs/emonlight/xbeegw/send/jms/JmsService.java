@@ -16,7 +16,7 @@ public class JmsService extends AbstractService<StoreData, JmsAsyncService> {
 
     public JmsService(JmsAsyncService service, boolean enableBackup, String backupPath, int maxBatch, boolean realTime,
             long timeOutOnClose) {
-        super(service, "JMS", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
+        super(service, "JMS", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, true);
     }
 
     @Override

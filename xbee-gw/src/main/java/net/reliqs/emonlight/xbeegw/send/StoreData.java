@@ -9,10 +9,10 @@ import java.util.Objects;
 
 public class StoreData implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    private String node;
-    private String probe;
+    private int node;
+    private int probe;
     private String type;
     private long t;
     private double v;
@@ -22,18 +22,18 @@ public class StoreData implements Serializable {
 
     public StoreData(final Probe probe, final Type type, final Data data) {
         super();
-        this.probe = probe.getName();
-        this.node = probe.getNode().getName();
+        this.probe = probe.getId();
+        this.node = probe.getNode().getId();
         this.type = probe.getType().name();
         this.t = data.t;
         this.v = data.v;
     }
 
-    public String getNode() {
+    public Integer getNode() {
         return node;
     }
 
-    public void setNode(String node) {
+    public void setNode(Integer node) {
         this.node = node;
     }
 
@@ -45,11 +45,11 @@ public class StoreData implements Serializable {
         this.type = type;
     }
 
-    public String getProbe() {
+    public Integer getProbe() {
         return probe;
     }
 
-    public void setProbe(String probe) {
+    public void setProbe(Integer probe) {
         this.probe = probe;
     }
 

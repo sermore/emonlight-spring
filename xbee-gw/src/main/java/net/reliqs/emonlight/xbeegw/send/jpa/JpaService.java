@@ -9,7 +9,7 @@ public class JpaService extends AbstractService<StoreData, JpaAsyncService> {
 
     public JpaService(JpaAsyncService service, boolean enableBackup, String backupPath, int maxBatch, boolean realTime,
             long timeOutOnClose) {
-        super(service, "JPA", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
+        super(service, "JPA", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, true);
     }
 
     @Override

@@ -49,6 +49,7 @@ public class Settings implements Serializable {
     private Integer idCnt;
 
     private Map<String, Node> nodeMap;
+    private Map<Integer, Node> nodeMapId;
 
     public String getSerialPort() {
         return serialPort;
@@ -119,9 +120,11 @@ public class Settings implements Serializable {
             sm.setProbe(p);
         });
         nodeMap = new HashMap<>(nodes.size());
+        nodeMapId = new HashMap<>(nodes.size());
         // fill probe's fields
         getNodes().forEach(n -> {
             nodeMap.put(n.getName(), n);
+            nodeMapId.put(n.getId(), n);
             n.getProbes().forEach(p -> {
                 // init default value for port
                 if (p.getPort() == 0) {
@@ -143,4 +146,7 @@ public class Settings implements Serializable {
         return nodeMap.get(name);
     }
 
+    public Node findNodeById(Integer node) {
+        return nodeMapId.get(node);
+    }
 }

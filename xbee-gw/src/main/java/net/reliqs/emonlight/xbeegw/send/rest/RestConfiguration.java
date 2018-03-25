@@ -6,6 +6,7 @@ import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.Scope;
 
 import javax.annotation.PostConstruct;
 
+@ConditionalOnProperty(name = "rest.enabled")
 @Configuration
 public class RestConfiguration {
     private static final Logger log = LoggerFactory.getLogger(RestConfiguration.class);

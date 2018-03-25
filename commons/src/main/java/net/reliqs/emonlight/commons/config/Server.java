@@ -23,6 +23,8 @@ public class Server implements Serializable {
     @Min(0)
     private int sendRate;
 
+    private boolean active;
+
     @Valid
     private List<ServerMap> maps = new ArrayList<>();
 
@@ -56,6 +58,14 @@ public class Server implements Serializable {
 
     public void setMaps(List<ServerMap> maps) {
         this.maps = maps;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     @Override

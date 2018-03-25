@@ -5,6 +5,7 @@ influxdb:
   enabled: false
 jpa:
   enabled: false
+rest.enabled: true
 
 settings:
   path: src/test/resources/settings-test-router.yml

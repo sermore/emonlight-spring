@@ -46,7 +46,7 @@ public class Dispatcher implements SmartLifecycle {
 
     @Override
     public int getPhase() {
-        return 1000;
+        return 100;
     }
 
     @Override

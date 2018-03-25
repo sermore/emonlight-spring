@@ -4,13 +4,10 @@ import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.time.Instant;
 
 public class JpaAsyncService extends AbstractAsyncService<StoreData> {
-    private static final Logger log = LoggerFactory.getLogger(JpaAsyncService.class);
 
     private Settings settings;
     private JpaNodeRepo nodeRepo;
@@ -19,7 +16,7 @@ public class JpaAsyncService extends AbstractAsyncService<StoreData> {
 
     public JpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo, JpaDataRepo dataRepo,
             int maxRetries) {
-        super(maxRetries);
+        super("JPA", maxRetries);
         this.settings = settings;
         this.nodeRepo = nodeRepo;
         this.probeRepo = probeRepo;
@@ -28,17 +25,18 @@ public class JpaAsyncService extends AbstractAsyncService<StoreData> {
 
     @Override
     protected boolean send(StoreData t) {
-        Node node = settings.findNodeByName(t.getNode());
+        Node node = settings.findNodeById(t.getNode());
         JpaNode jpaNode = nodeRepo.findById(node.getId());
         if (jpaNode == null) {
             log.error("JPA: node not found from {}", t);
             return false;
         }
-        JpaProbe jpaProbe = probeRepo.findById(node.findProbeByName(t.getProbe()).getId());
+        JpaProbe jpaProbe = probeRepo.findById(t.getProbe());
         if (jpaProbe == null) {
             log.error("JPA: no single probe found from {}", t);
             return false;
         }
+        assert jpaProbe.getNode().getId().equals(jpaNode.getId());
         JpaData data = new JpaData(jpaProbe, Instant.ofEpochMilli(t.getT()), Double.valueOf(t.getV()).floatValue());
         dataRepo.save(data);
 //        log.trace("JPA OK {}", t);

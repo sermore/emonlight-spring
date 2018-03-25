@@ -106,6 +106,6 @@ servers:
 - name: test1
   url: http://testserver1:1234/input/read.json
   sendRate: 4000
-#- name: test2
-#  url: http://testserver2:1234/input/read.json
-#  sendRate: 6000
+- name: test2
+  url: http://testserver2:1234/input/read.json
+  sendRate: 0

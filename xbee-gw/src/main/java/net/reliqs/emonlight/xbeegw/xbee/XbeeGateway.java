@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 @Service
@@ -25,14 +26,17 @@ class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleRecei
     private static final Logger log = LoggerFactory.getLogger(XbeeGateway.class);
 
     private XBeeDevice localDevice;
+    private Settings settings;
     private EventQueue queue;
 
     public XbeeGateway(Settings settings, EventQueue queue) throws XBeeException {
+        this.settings = settings;
         this.queue = queue;
-        init(settings);
+        //        init(settings);
     }
 
-    private void init(Settings settings) throws XBeeException {
+    @PostConstruct
+    private void init() throws XBeeException {
         localDevice = new XBeeDevice(settings.getSerialPort(), settings.getBaudRate());
         localDevice.setReceiveTimeout(settings.getReceiveTimeout());
         localDevice.open();

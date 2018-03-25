@@ -26,6 +26,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     private AsyncService service;
     private int inFlightLength;
     private String logId;
+    private boolean active;
     private boolean enableBackup;
     private String backupPath;
     private int maxBatch;
@@ -34,22 +35,26 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     private ListenableFuture<Integer> responseFromAsync;
 
     public AbstractService(AsyncService service, String logId, boolean enableBackup, String backupPath, int maxBatch,
-            boolean realTime, long timeOutOnClose) {
+            boolean realTime, long timeOutOnClose, boolean active) {
+        log = LoggerFactory.getLogger(this.getClass());
+        this.queue = new LinkedList<>();
+        this.inFlight = new LinkedList<>();
+        this.inFlightLength = 0;
         this.logId = logId;
         this.enableBackup = enableBackup;
         this.backupPath = backupPath;
         this.maxBatch = maxBatch;
         this.realTime = realTime;
         this.timeOutOnClose = timeOutOnClose;
-        log = LoggerFactory.getLogger(this.getClass());
         this.service = service;
-        this.queue = new LinkedList<>();
-        this.inFlight = new LinkedList<>();
-        this.inFlightLength = 0;
+        this.active = active;
     }
 
     @Override
     public void post() {
+        if (!active) {
+            return;
+        }
         if (!isRunning()) {
             if (inFlight.isEmpty()) {
                 if (maxBatch > 0 && queue.size() > maxBatch) {
@@ -72,23 +77,27 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
 
     @Override
     public boolean isReady() {
-        log.trace("{}: isReady running={} q={}, inFlight={}", logId, isRunning(), queue.size(), inFlight.size());
-        return !isRunning() && (!inFlight.isEmpty() || !queue.isEmpty());
+        log.trace("{}: isReady running={}, active={}, q={}, inFlight={}", logId, isRunning(), active, queue.size(),
+                inFlight.size());
+        return active && !isRunning() && (!inFlight.isEmpty() || !queue.isEmpty());
     }
 
     @Override
     public boolean isQueueEmpty() {
-        log.trace("{}: isQueueEmpty running={} q={}, inFlight={}", logId, isRunning(), queue.size(), inFlight.size());
-        return !isRunning() && queue.isEmpty() && inFlight.isEmpty();
+        log.trace("{}: isQueueEmpty running={}, active={} q={}, inFlight={}", logId, isRunning(), active, queue.size(),
+                inFlight.size());
+        return !active || !isRunning() && queue.isEmpty() && inFlight.isEmpty();
     }
 
     protected abstract E createData(Probe p, Probe.Type t, Data d);
 
     @Override
     public void receive(Probe p, Probe.Type t, Data d) {
-        queue.add(createData(p, t, d));
-        if (realTime) {
-            post();
+        if (active) {
+            queue.add(createData(p, t, d));
+            if (realTime) {
+                post();
+            }
         }
     }
 
@@ -107,6 +116,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     }
 
     protected void onInit() {
+        log.debug("{}: initialization", logId);
         if (enableBackup) {
             String path = getBackupPath();
             if (Files.exists(Paths.get(path))) {
@@ -118,7 +128,6 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
                 return;
             }
         }
-        log.debug("{}: init", logId);
         assert inFlight.isEmpty() && queue.isEmpty();
     }
 
@@ -177,7 +186,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         return enableBackup;
     }
 
-    void setEnableBackup(boolean enableBackup) {
+    protected void setEnableBackup(boolean enableBackup) {
         this.enableBackup = enableBackup;
     }
 
@@ -185,15 +194,11 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         return backupPath;
     }
 
-    void setBackupPath(String backupPath) {
-        this.backupPath = backupPath;
-    }
-
     public int getMaxBatch() {
         return maxBatch;
     }
 
-    void setMaxBatch(int maxBatch) {
+    protected void setMaxBatch(int maxBatch) {
         this.maxBatch = maxBatch;
     }
 
@@ -201,7 +206,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         return realTime;
     }
 
-    void setRealTime(boolean realTime) {
+    public void setRealTime(boolean realTime) {
         this.realTime = realTime;
     }
 
@@ -209,7 +214,23 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         return timeOutOnClose;
     }
 
-    void setTimeOutOnClose(long timeOutOnClose) {
+    protected void setTimeOutOnClose(long timeOutOnClose) {
         this.timeOutOnClose = timeOutOnClose;
+    }
+
+    public AsyncService getService() {
+        return service;
+    }
+
+    public String getLogId() {
+        return logId;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 }

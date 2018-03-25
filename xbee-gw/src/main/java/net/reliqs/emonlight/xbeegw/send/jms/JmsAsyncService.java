@@ -2,20 +2,17 @@ package net.reliqs.emonlight.xbeegw.send.jms;
 
 import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jms.core.JmsTemplate;
 
 /**
  * Created by sergio on 27/02/17.
  */
 public class JmsAsyncService extends AbstractAsyncService<StoreData> {
-    private static final Logger log = LoggerFactory.getLogger(JmsAsyncService.class);
 
     private JmsTemplate jmsTemplate;
 
     public JmsAsyncService(JmsTemplate jmsTemplate, int maxRetries) {
-        super(maxRetries);
+        super("JMS", maxRetries);
         this.jmsTemplate = jmsTemplate;
     }
 

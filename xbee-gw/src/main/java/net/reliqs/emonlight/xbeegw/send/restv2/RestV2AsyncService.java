@@ -2,7 +2,6 @@ package net.reliqs.emonlight.xbeegw.send.restv2;
 
 import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
 import net.reliqs.emonlight.xbeegw.send.StoreData;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.web.client.RestTemplate;
 
 public class RestV2AsyncService extends AbstractAsyncService<StoreData> {
@@ -10,15 +9,17 @@ public class RestV2AsyncService extends AbstractAsyncService<StoreData> {
     private String url;
     private RestTemplate restTemplate;
 
-    public RestV2AsyncService(RestTemplateBuilder rb, String url, int maxRetries) {
-        super(maxRetries);
-        this.restTemplate = rb.build();
+    public RestV2AsyncService(String logId, int maxRetries, RestTemplate restTemplate, String url) {
+        super(logId, maxRetries);
+        this.restTemplate = restTemplate;
         this.url = url;
     }
 
     @Override
     protected boolean send(StoreData t) {
+        log.trace("{}: post {}", logId, url);
         String res = restTemplate.postForObject(url, t, String.class);
+        log.trace("{}: result {}", logId, res);
         return "OK".equals(res);
     }
 
@@ -29,4 +30,5 @@ public class RestV2AsyncService extends AbstractAsyncService<StoreData> {
     RestTemplate getRestTemplate() {
         return restTemplate;
     }
+
 }

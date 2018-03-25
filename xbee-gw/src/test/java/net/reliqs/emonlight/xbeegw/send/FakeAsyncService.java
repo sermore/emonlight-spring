@@ -1,10 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 class FakeAsyncService extends AbstractAsyncService<StoreData> {
-    private static final Logger log = LoggerFactory.getLogger(FakeAsyncService.class);
 
     private long sleepTime = 0L;
     private int postCount = 0;
@@ -12,13 +8,14 @@ class FakeAsyncService extends AbstractAsyncService<StoreData> {
     private boolean result = true;
 
     FakeAsyncService(int maxRetries) {
-        super(maxRetries);
+        super("TEST", maxRetries);
     }
 
     @Override
     protected boolean send(StoreData t) {
         postCount++;
-        log.debug("send!!! postCount={}, sleep={}, result={}, exc={}", postCount, sleepTime, result, generateException);
+        log.debug("TEST: send!!! postCount={}, sleep={}, result={}, exc={}", postCount, sleepTime, result,
+                generateException);
         try {
             if (sleepTime > 0) {
                 Thread.sleep(sleepTime);

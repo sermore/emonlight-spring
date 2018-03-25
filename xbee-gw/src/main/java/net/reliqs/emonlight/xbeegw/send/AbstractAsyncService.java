@@ -1,5 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,9 +11,13 @@ import java.util.Queue;
 
 public abstract class AbstractAsyncService<E> {
 
+    protected final String logId;
+    protected final Logger log;
     private int maxRetries;
 
-    public AbstractAsyncService(int maxRetries) {
+    public AbstractAsyncService(String logId, int maxRetries) {
+        this.logId = logId;
+        this.log = LoggerFactory.getLogger(this.getClass());
         this.maxRetries = maxRetries;
     }
 
@@ -35,5 +41,10 @@ public abstract class AbstractAsyncService<E> {
         AsyncResult<Integer> res = new AsyncResult<>(cnt);
         return res;
     }
+
+    public int getMaxRetries() {
+        return maxRetries;
+    }
+
 
 }

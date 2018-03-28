@@ -1,26 +1,34 @@
 package net.reliqs.emonlight.web.data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class StoreData implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
-    private String node;
-    private String probe;
+    @NotNull
+    @Min(1)
+    private Integer node;
+    @NotNull
+    @Min(1)
+    private Integer probe;
+    @NotNull
     private String type;
+    @Min(1)
     private long t;
     private double v;
 
     public StoreData() {
     }
 
-    public String getNode() {
+    public Integer getNode() {
         return node;
     }
 
-    public void setNode(String node) {
+    public void setNode(Integer node) {
         this.node = node;
     }
 
@@ -32,11 +40,11 @@ public class StoreData implements Serializable {
         this.type = type;
     }
 
-    public String getProbe() {
+    public Integer getProbe() {
         return probe;
     }
 
-    public void setProbe(String probe) {
+    public void setProbe(Integer probe) {
         this.probe = probe;
     }
 

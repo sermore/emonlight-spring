@@ -1,17 +1,17 @@
-logging:
-  level:
-    root: debug
-    net:
-      reliqs:
-        emonlight: debug
-spring:
-  datasource:
-    url: jdbc:postgresql://lime2:5432/emonlight-db_test
-    username: emonlight
-    password: emonlight
-    platform: postgresql
-    driver-class-name: org.postgresql.Driver
-    initialize: true
+#logging:
+#  level:
+#    root: debug
+#    net:
+#      reliqs:
+#        emonlight: debug
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://lime2:5432/emonlight-db_test
+#    username: emonlight
+#    password: emonlight
+#    platform: postgresql
+#    driver-class-name: org.postgresql.Driver
+#    initialize: true
 
 #spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
 #spring.jpa.properties.javax.persistence.schema-generation.create-source: metadata

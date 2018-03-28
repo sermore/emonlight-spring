@@ -22,7 +22,8 @@
         </thead>
         <tbody>
         <th:block th:each="node, nIter: ${settings.nodes}">
-            <tr th:each="probe, pIter: ${node.probes}">
+            <tr th:each="probe, pIter: ${node.probes}"
+                th:with="pmd=${monitor.get(probe.getId())},pclass=${pmd == null ? 'bg-secondary' : (pmd.getStatus() == 1 ? 'bg-warning' : (pmd.getStatus() == 2 ? 'bg-danger' : ''))}">
                 <th scope="row" th:if="${pIter.first}" th:rowspan="${#lists.size(node.probes)}" th:text="${node.id}">1
                 </th>
                 <td th:if="${pIter.first}" th:rowspan="${#lists.size(node.probes)}">
@@ -31,15 +32,19 @@
                         <span th:text="${node.address}">0013A20041479F96</span>
                     </a>
                 </td>
-                <th scope="row" th:text="${probe.id}">1</th>
-                <td>
+                <th scope="row" th:text="${probe.id}" th:class="${pclass}">1</th>
+                <td th:class="${pclass}">
                     <a th:href="@{/probe(id=${probe.id})}">
                         <span th:text="${probe.name}">Probe 1</span>
                     </a>
                 </td>
-                <td th:text="${probe.type}">DHT22_H</td>
-                <td>11:43</td>
-                <td>345.23</td>
+                <td th:text="${probe.type}" th:class="${pclass}">DHT22_H</td>
+                <td th:class="${pclass}"><span th:if="${monitor.get(probe.getId()) != null}"
+                                               th:text="${#dates.formatISO(monitor.get(probe.getId()).getLastT())}">TTT</span>
+                </td>
+                <td th:class="${pclass}"><span th:if="${monitor.get(probe.getId()) != null}"
+                                               th:text="${monitor.get(probe.getId()).getLastV()}">TTT</span></td>
+                <!--<td>345.23</td>-->
             </tr>
         </th:block>
         </tbody>

@@ -1,0 +1,16 @@
+[Unit]
+Description=Emonlight Web Application
+#After=emonlight-xbee-gw.service
+#Requires=emonlight-xbee-gw.service
+
+[Service]
+User=emonlight-xbee-gw
+#Environment=JAVA_OPTS=-Djava.library.path=/usr/lib/jni
+WorkingDirectory=/var/lib/emonlight-xbee-gw
+ExecStart=/var/lib/emonlight-xbee-gw/emonlight-web.jar --spring.config.location=/etc/emonlight-web.yml
+SuccessExitStatus=143
+#Restart=always
+#RestartSec=30
+
+[Install]
+WantedBy=multi-user.target

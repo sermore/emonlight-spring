@@ -1,11 +1,11 @@
-logging:
-  level:
-    root: info
-    net:
-      reliqs:
-        emonlight: debug
-spring:
-  datasource:
+#logging:
+#  level:
+#    root: info
+#    net:
+#      reliqs:
+#        emonlight: debug
+#spring:
+#  datasource:
 #    url: jdbc:postgresql://lime2:5432/emonlight-db_dev
 #    username: emonlight
 #    password: emonlight
@@ -13,16 +13,16 @@ spring:
 #    driver-class-name: org.postgresql.Driver
 #    url: jdbc:h2:h2db
 #    username: sa
-    initialize: true
-    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
+#    initialize: true
+#    url: jdbc:h2:mem:AZ;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
 
 #spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
 #spring.jpa.properties.javax.persistence.schema-generation.create-source: metadata
 #spring.jpa.properties.javax.persistence.schema-generation.scripts.action: create
 #spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target: schema.sql
 
-server:
-  port: 8090
+#server:
+#  port: 8090

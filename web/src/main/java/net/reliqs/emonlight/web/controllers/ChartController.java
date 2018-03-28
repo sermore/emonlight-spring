@@ -36,10 +36,10 @@ public class ChartController {
         return "live";
     }
 
-    @RequestMapping("/data")
+    @RequestMapping("/chartData")
     public
     @ResponseBody
-    Map<Long, List<Number[]>> data(@RequestParam(value = "id[]", required = true) List<Long> ids,
+    Map<Long, List<Number[]>> chartData(@RequestParam(value = "id[]", required = true) List<Long> ids,
                                    @RequestParam(value = "tstart", required = true, defaultValue = "0") long timeStart,
                                    @RequestParam(value = "tend", required = true, defaultValue = "-1") long timeEnd,
                                    @RequestParam(value = "tzone", required = true, defaultValue = "0") int tzone,

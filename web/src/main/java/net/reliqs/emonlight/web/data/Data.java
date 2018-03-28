@@ -1,12 +1,12 @@
 package net.reliqs.emonlight.web.data;
 
-import java.time.temporal.Temporal;
+import java.time.Instant;
 
 public class Data {
-    public final Temporal t;
+    public final Instant t;
     public final Double v;
 
-    public Data(Temporal t, Double v) {
+    public Data(Instant t, Double v) {
         this.t = t;
         this.v = v;
     }

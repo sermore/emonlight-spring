@@ -74,4 +74,10 @@ public class SettingsService {
         return s;
     }
 
+    public Settings loadAndInitialize() {
+        Settings s = load(path);
+        s.init();
+        return s;
+    }
+
 }

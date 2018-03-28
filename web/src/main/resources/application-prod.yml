@@ -1,18 +1,40 @@
 logging:
   level:
-    root: debug
+    root: info
     net:
       reliqs:
         emonlight: debug
+#    org.springframework.jdbc.core.JdbcTemplate: debug
+#    org.springframework.jdbc.core: debug
+#    org.springframework.web: DEBUG
+
+#spring:
+#  datasource:
+#    initialize: false
+#  jms.isPubSubDomain: true
+#  activemq:
+#    broker-url: tcp://lime2:61616
+
 spring:
+  thymeleaf.cache: false
   datasource:
-    url: jdbc:postgresql://lime2:5432/emonlight-db_prod
+    driver-class-name: org.mariadb.jdbc.Driver
+#    url: jdbc:mariadb://localhost:3306/emonlight_dev?createDatabaseIfNotExist=true&useSSL=false&assureReadOnly=true
+    url: jdbc:mariadb://lime2:3306/emonlight?useSSL=false&assureReadOnly=true
     username: emonlight
     password: emonlight
-    platform: postgresql
-    driver-class-name: org.postgresql.Driver
+#    initialize: false
+#  jpa:
+#    show-sql: true
+#    generate-ddl: false
+#    database-platform: org.hibernate.dialect.MySQLDialect
+#    properties:
+#      hibernate.dialect.storage_engine: myisam
+#      hibernate.dialect: org.hibernate.dialect.MySQLDialect
+#      javax.persistence.schema-generation.create-source: metadata
+#      javax.persistence.schema-generation.scripts.action: create
+#      javax.persistence.schema-generation.scripts.create-target: schema.sql
+#    hibernate:
+#      ddl-auto: none
 
-#spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
-#spring.jpa.properties.javax.persistence.schema-generation.create-source: metadata
-#spring.jpa.properties.javax.persistence.schema-generation.scripts.action: create
-#spring.jpa.properties.javax.persistence.schema-generation.scripts.create-target: schema.sql
+settings.path: settings.yml

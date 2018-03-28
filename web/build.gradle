@@ -7,6 +7,10 @@ jar {
     version = '0.0.1-SNAPSHOT'
 }
 
+springBoot {
+    executable = true
+}
+
 //ext['flyway-url'] = ''
 //ext['flyway-user'] = ''
 //ext['flyway-password'] = ''
@@ -47,6 +51,42 @@ ext['thymeleaf-layout-dialect.version'] = '2.3.0'
 //        }
 //    }
 //}
+
+task deploy(dependsOn: 'build') {
+    doLast {
+        ssh.run {
+            session(remotes.deployHost) {
+                // test if service is already installed
+                if (!execute('id emonlight-xbee-gw', ignoreError: true)) {
+                    put from: file('conf/install.sh'), into: '/tmp'
+                    executeSudo('bash /tmp/install.sh', pty: true)
+                }
+                // copy original file
+                executeSudo 'cp -f /var/lib/emonlight-xbee-gw/emonlight-web.jar /var/lib/emonlight-xbee-gw/emonlight-web.jar.bak', pty: true, ignoreError: true
+                // deploy executable file
+                put from: jar.archivePath.absolutePath, into: '/tmp'
+                execute 'chmod a+x /tmp/' + jar.archiveName
+                executeSudo 'systemctl stop emonlight-web', pty: true
+                executeSudo 'mv -f /tmp/' + jar.archiveName + ' /var/lib/emonlight-xbee-gw/emonlight-web.jar', pty: true
+                executeSudo 'systemctl start emonlight-web', pty: true
+            }
+        }
+    }
+}
+
+task undeploy {
+    doLast {
+        ssh.run {
+            // test if service is already installed
+            session(remotes.lime2) {
+                put from: file('conf/uninstall.sh'), into: '/tmp'
+                executeSudo("bash /tmp/uninstall.sh", pty: true)
+            }
+        }
+    }
+}
+
+
 
 dependencies {
 

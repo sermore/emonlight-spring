@@ -32,10 +32,12 @@ public class RestV2Configuration {
     private Publisher publisher;
     @Value("${restV2.enableBackup:true}")
     private boolean enableBackup;
-    @Value("${restV2.maxBatch:0}")
+    @Value("${restV2.maxBatch:1000}")
     private int maxBatch;
-    @Value("${restV2.maxRetries:1}")
+    @Value("${restV2.maxRetries:0}")
     private int maxRetries;
+    @Value("${restV2.maxQueued:0}")
+    private int maxQueued;
 
     public RestV2Configuration(Publisher publisher, Settings settings) {
         this.publisher = publisher;
@@ -47,10 +49,11 @@ public class RestV2Configuration {
         return restTemplate;
     }
 
-    BeanDefinition createAsyncServiceBeanDefinition(String serverName, String url) {
+    BeanDefinition createAsyncServiceBeanDefinition(String serverName, String url, boolean ignoreErrors) {
         BeanDefinitionBuilder b = BeanDefinitionBuilder.rootBeanDefinition(RestV2AsyncService.class);
         b.addConstructorArgValue(serverName);
         b.addConstructorArgValue(maxRetries);
+        b.addConstructorArgValue(ignoreErrors);
         b.addConstructorArgValue(createRestTemplate());
         b.addConstructorArgValue(url);
         return b.getBeanDefinition();
@@ -65,9 +68,10 @@ public class RestV2Configuration {
         b.addConstructorArgValue(enableBackup);
         b.addConstructorArgValue(server.getName() + "_backup.dat");
         b.addConstructorArgValue(maxBatch);
-        b.addConstructorArgValue(server.getSendRate() == 0);
+        b.addConstructorArgValue(server.isRealTime());
         b.addConstructorArgValue(Math.max(server.getSendRate() / 3, 2000));
         b.addConstructorArgValue(server.isActive());
+        b.addConstructorArgValue(maxQueued);
         return b.getBeanDefinition();
     }
 
@@ -78,7 +82,7 @@ public class RestV2Configuration {
             if (server.getMaps() == null || server.getMaps().isEmpty()) {
                 String serviceName = "restV2_" + server.getName();
                 factory.registerBeanDefinition(serviceName + "_asyncService",
-                        createAsyncServiceBeanDefinition(server.getName(), server.getUrl()));
+                        createAsyncServiceBeanDefinition(server.getName(), server.getUrl(), server.isIgnoreErrors()));
                 RestV2AsyncService asyncService = (RestV2AsyncService) ctx.getBean(serviceName + "_asyncService");
                 assert asyncService != null;
 

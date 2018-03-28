@@ -31,8 +31,9 @@ public class JpaServiceConfiguration {
 
     @Bean
     JpaAsyncService jpaAsyncService(Settings settings, JpaNodeRepo nodeRepo, JpaProbeRepo probeRepo,
-            JpaDataRepo dataRepo, @Value("${jpa.maxRetries:1}") int maxRetries) {
-        return new JpaAsyncService(settings, nodeRepo, probeRepo, dataRepo, maxRetries);
+            JpaDataRepo dataRepo, @Value("${jpa.maxRetries:0}") int maxRetries,
+            @Value("${jpa.ignoreErrors:false}") boolean ignoreErrors) {
+        return new JpaAsyncService(settings, nodeRepo, probeRepo, dataRepo, maxRetries, ignoreErrors);
     }
 
     @Bean(initMethod = "onInit", destroyMethod = "onClose")
@@ -40,8 +41,9 @@ public class JpaServiceConfiguration {
             @Value("${jpa.enableBackup:true}") boolean enableBackup,
             @Value("${jpa.backupPath:jpaServiceBackup.dat}") String backupPath,
             @Value("${jpa.maxBatch:0}") int maxBatch, @Value("${jpa.realTime:false}") boolean realTime,
-            @Value("${jpa.timeOutOnClose:2000}") long timeOutOnClose) {
-        JpaService service = new JpaService(asyncService, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
+            @Value("${jpa.timeOutOnClose:2000}") long timeOutOnClose, @Value("${jpa.maxQueued:0}") int maxQueued) {
+        JpaService service =
+                new JpaService(asyncService, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, maxQueued);
         publisher.addService(service);
         return service;
     }

@@ -11,8 +11,8 @@ public class JmsAsyncService extends AbstractAsyncService<StoreData> {
 
     private JmsTemplate jmsTemplate;
 
-    public JmsAsyncService(JmsTemplate jmsTemplate, int maxRetries) {
-        super("JMS", maxRetries);
+    public JmsAsyncService(JmsTemplate jmsTemplate, int maxRetries, boolean ignoreErrors) {
+        super("JMS", maxRetries, ignoreErrors);
         this.jmsTemplate = jmsTemplate;
     }
 

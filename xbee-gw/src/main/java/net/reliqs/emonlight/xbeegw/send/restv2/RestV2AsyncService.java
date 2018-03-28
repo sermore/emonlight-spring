@@ -9,8 +9,9 @@ public class RestV2AsyncService extends AbstractAsyncService<StoreData> {
     private String url;
     private RestTemplate restTemplate;
 
-    public RestV2AsyncService(String logId, int maxRetries, RestTemplate restTemplate, String url) {
-        super(logId, maxRetries);
+    public RestV2AsyncService(String logId, int maxRetries, boolean ignoreErrors, RestTemplate restTemplate,
+            String url) {
+        super(logId, maxRetries, ignoreErrors);
         this.restTemplate = restTemplate;
         this.url = url;
     }

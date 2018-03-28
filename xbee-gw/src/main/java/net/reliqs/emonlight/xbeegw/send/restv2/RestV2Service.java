@@ -9,8 +9,8 @@ import net.reliqs.emonlight.xbeegw.send.StoreData;
 public class RestV2Service extends AbstractService<StoreData, RestV2AsyncService> {
 
     public RestV2Service(RestV2AsyncService service, String logId, boolean enableBackup, String backupPath,
-            int maxBatch, boolean realTime, long timeOutOnClose, boolean active) {
-        super(service, logId, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, active);
+            int maxBatch, boolean realTime, long timeOutOnClose, boolean active, int maxQueued) {
+        super(service, logId, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, active, maxQueued);
     }
 
     void configure(RestV2AsyncService asyncService, Server server, boolean enableBackup, int maxBatch) {

@@ -8,7 +8,7 @@ class FakeAsyncService extends AbstractAsyncService<StoreData> {
     private boolean result = true;
 
     FakeAsyncService(int maxRetries) {
-        super("TEST", maxRetries);
+        super("TEST", maxRetries, false);
     }
 
     @Override

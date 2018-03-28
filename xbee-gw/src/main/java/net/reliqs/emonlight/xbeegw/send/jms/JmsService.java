@@ -15,8 +15,8 @@ public class JmsService extends AbstractService<StoreData, JmsAsyncService> {
     private static final Logger log = LoggerFactory.getLogger(JmsService.class);
 
     public JmsService(JmsAsyncService service, boolean enableBackup, String backupPath, int maxBatch, boolean realTime,
-            long timeOutOnClose) {
-        super(service, "JMS", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, true);
+            long timeOutOnClose, int maxQueued) {
+        super(service, "JMS", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, true, maxQueued);
     }
 
     @Override

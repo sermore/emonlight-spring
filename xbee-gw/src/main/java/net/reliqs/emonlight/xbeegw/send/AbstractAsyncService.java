@@ -14,9 +14,11 @@ public abstract class AbstractAsyncService<E> {
     protected final String logId;
     protected final Logger log;
     private int maxRetries;
+    private boolean ignoreErrors;
 
-    public AbstractAsyncService(String logId, int maxRetries) {
+    public AbstractAsyncService(String logId, int maxRetries, boolean ignoreErrors) {
         this.logId = logId;
+        this.ignoreErrors = ignoreErrors;
         this.log = LoggerFactory.getLogger(this.getClass());
         this.maxRetries = maxRetries;
     }
@@ -28,9 +30,23 @@ public abstract class AbstractAsyncService<E> {
     public ListenableFuture<Integer> post(Queue<E> inFlight) {
         int cnt = 0;
         int retries = 0;
-        while (!inFlight.isEmpty() && retries < maxRetries) {
+        while (!inFlight.isEmpty() && retries <= maxRetries) {
             E t = inFlight.peek();
-            if (send(t)) {
+            boolean ret = false;
+            try {
+                ret = send(t);
+            } catch (Exception e) {
+                if (ignoreErrors) {
+                    log.warn("error ignored: {}", e.getMessage());
+                } else {
+                    throw e;
+                }
+            } finally {
+                if (ignoreErrors) {
+                    ret = true;
+                }
+            }
+            if (ret) {
                 cnt++;
                 inFlight.poll();
                 retries = 0;
@@ -46,5 +62,15 @@ public abstract class AbstractAsyncService<E> {
         return maxRetries;
     }
 
+    public void setMaxRetries(int maxRetries) {
+        this.maxRetries = maxRetries;
+    }
 
+    public boolean isIgnoreErrors() {
+        return ignoreErrors;
+    }
+
+    public void setIgnoreErrors(boolean ignoreErrors) {
+        this.ignoreErrors = ignoreErrors;
+    }
 }

@@ -12,7 +12,7 @@ class FakeService extends AbstractService<StoreData, FakeAsyncService> {
     private static final Logger log = LoggerFactory.getLogger(DispatcherTest.FakeService.class);
 
     public FakeService(FakeAsyncService service) {
-        super(service, "TEST", true, "TEST_backup.dat", 1, false, 200, true);
+        super(service, "TEST", true, "TEST_backup.dat", 1, false, 200, true, 0);
     }
 
     static void populate(Settings settings, FakeService fakeService) {

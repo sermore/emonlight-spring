@@ -32,10 +32,12 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     private int maxBatch;
     private boolean realTime;
     private long timeOutOnClose;
+    private int maxQueued;
     private ListenableFuture<Integer> responseFromAsync;
+    private boolean lastStatus;
 
     public AbstractService(AsyncService service, String logId, boolean enableBackup, String backupPath, int maxBatch,
-            boolean realTime, long timeOutOnClose, boolean active) {
+            boolean realTime, long timeOutOnClose, boolean active, int maxQueued) {
         log = LoggerFactory.getLogger(this.getClass());
         this.queue = new LinkedList<>();
         this.inFlight = new LinkedList<>();
@@ -48,6 +50,8 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         this.timeOutOnClose = timeOutOnClose;
         this.service = service;
         this.active = active;
+        this.maxQueued = maxQueued;
+        this.lastStatus = true;
     }
 
     @Override
@@ -94,8 +98,11 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     @Override
     public void receive(Probe p, Probe.Type t, Data d) {
         if (active) {
+            if (maxQueued > 0 && queue.size() >= maxQueued) {
+                queue.removeFirst();
+            }
             queue.add(createData(p, t, d));
-            if (realTime) {
+            if (realTime && lastStatus) {
                 post();
             }
         }
@@ -107,12 +114,14 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
         //        inFlightLength = 0;
         assert inFlight.size() + result == inFlightLength;
         inFlightLength = inFlight.size();
+        lastStatus = true;
     }
 
     @Override
     public void onFailure(Throwable ex) {
         log.warn("{}: batch failed q={}, inFlight={}/{}: {}", logId, queue.size(), inFlight.size(), inFlightLength,
                 ex.getMessage());
+        lastStatus = false;
     }
 
     protected void onInit() {

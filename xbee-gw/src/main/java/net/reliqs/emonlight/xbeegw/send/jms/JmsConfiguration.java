@@ -93,16 +93,18 @@ public class JmsConfiguration {
     }
 
     @Bean
-    JmsAsyncService jmsAsyncService(JmsTemplate jmsTemplate, @Value("${jms.maxRetries:1}") int maxRetries) {
-        return new JmsAsyncService(jmsTemplate, maxRetries);
+    JmsAsyncService jmsAsyncService(JmsTemplate jmsTemplate, @Value("${jms.maxRetries:0}") int maxRetries,
+            @Value("${jms.ignoreErrors:false}") boolean ignoreErrors) {
+        return new JmsAsyncService(jmsTemplate, maxRetries, ignoreErrors);
     }
 
     @Bean(initMethod = "onInit", destroyMethod = "onClose")
     JmsService jmsService(JmsAsyncService jmsAsyncService, @Value("${jms.enableBackup:true}") boolean enableBackup,
             @Value("${jms.backupPath:jmsServiceBackup.dat}") String backupPath,
             @Value("${jms.maxBatch:0}") int maxBatch, @Value("${jms.realTime:true}") boolean realTime,
-            @Value("${jms.timeOutOnClose:2000}") long timeOutOnClose) {
-        JmsService s = new JmsService(jmsAsyncService, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose);
+            @Value("${jms.timeOutOnClose:2000}") long timeOutOnClose, @Value("${jms.maxQueued:0}") int maxQueued) {
+        JmsService s = new JmsService(jmsAsyncService, enableBackup, backupPath, maxBatch, realTime, timeOutOnClose,
+                maxQueued);
         publisher.addService(s);
         return s;
     }

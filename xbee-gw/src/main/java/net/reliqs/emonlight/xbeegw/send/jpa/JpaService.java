@@ -8,8 +8,8 @@ import net.reliqs.emonlight.xbeegw.send.StoreData;
 public class JpaService extends AbstractService<StoreData, JpaAsyncService> {
 
     public JpaService(JpaAsyncService service, boolean enableBackup, String backupPath, int maxBatch, boolean realTime,
-            long timeOutOnClose) {
-        super(service, "JPA", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, true);
+            long timeOutOnClose, int maxQueued) {
+        super(service, "JPA", enableBackup, backupPath, maxBatch, realTime, timeOutOnClose, true, maxQueued);
     }
 
     @Override

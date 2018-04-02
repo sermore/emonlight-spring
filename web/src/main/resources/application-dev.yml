@@ -4,10 +4,13 @@ logging:
     net:
       reliqs:
         emonlight: debug
-        
+
+server.error.include-stacktrace: always
+
 spring:
   thymeleaf.cache: false
   resources.cache-period: 0
+
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
 #    url: jdbc:mariadb://localhost:3306/emonlight_dev?createDatabaseIfNotExist=true&useSSL=false&assureReadOnly=true

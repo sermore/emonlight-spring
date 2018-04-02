@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,29 +22,36 @@ public class Node implements Serializable {
     private Integer id;
 
     @Size(min = 1)
+    @NotNull
     private String name;
-    // @Size(min = 10, max = 10)
+    @Size(min = 2, max = 25)
+    @NotNull
     private String address;
     @NotNull
     private OpMode mode;
+    @NotNull
     @Min(1)
-    private int sampleTime;
+    private Integer sampleTime;
+    @NotNull
     private boolean vccFromADC = false;
     @DecimalMin("0")
     @DecimalMax("3.3")
-    private double vccThreshold;
+    @NotNull
+    private Double vccThreshold;
     @Min(255)
     @Max(4095)
-    private int adcRange = 4095;
+    @NotNull
+    private Integer adcRange = 4095;
     @DecimalMin("1.8")
     @DecimalMax("3.3")
-    private double adcVRef = 3.3;
+    @NotNull
+    private Double adcVRef = 3.3;
     @Valid
-    private List<Probe> probes;
+    private List<Probe> probes = new ArrayList<>();
     private Map<ProbeKey, Probe> probeMap;
     private Map<String, Probe> probeNameMap;
 
-    Node() {
+    public Node() {
     }
 
     public Integer getId() {
@@ -78,11 +86,11 @@ public class Node implements Serializable {
         this.mode = mode;
     }
 
-    public int getSampleTime() {
+    public Integer getSampleTime() {
         return sampleTime;
     }
 
-    public void setSampleTime(int sampleTime) {
+    public void setSampleTime(Integer sampleTime) {
         this.sampleTime = sampleTime;
     }
 
@@ -94,27 +102,27 @@ public class Node implements Serializable {
         this.vccFromADC = vccFromADC;
     }
 
-    public double getVccThreshold() {
+    public Double getVccThreshold() {
         return vccThreshold;
     }
 
-    public void setVccThreshold(double vccThreshold) {
+    public void setVccThreshold(Double vccThreshold) {
         this.vccThreshold = vccThreshold;
     }
 
-    public int getAdcRange() {
+    public Integer getAdcRange() {
         return adcRange;
     }
 
-    public void setAdcRange(int adcRange) {
+    public void setAdcRange(Integer adcRange) {
         this.adcRange = adcRange;
     }
 
-    public double getAdcVRef() {
+    public Double getAdcVRef() {
         return adcVRef;
     }
 
-    public void setAdcVRef(double adcVRef) {
+    public void setAdcVRef(Double adcVRef) {
         this.adcVRef = adcVRef;
     }
 

@@ -31,20 +31,16 @@ public class SettingsValidator implements ConstraintValidator<ValidSettings, Set
         if (nodes != null && !nodes.isEmpty()) {
             List<Integer> ids = nodes.stream().map(n -> n.getId()).collect(Collectors.toList());
             if (ids.stream().distinct().count() != ids.size()) {
-                context.buildConstraintViolationWithTemplate("node ids not unique").addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("duplicated node ids exist").addConstraintViolation();
                 valid = false;
             }
             List<String> names = nodes.stream().map(n -> n.getName()).collect(Collectors.toList());
             if (names.stream().distinct().count() != names.size()) {
-                context.buildConstraintViolationWithTemplate("node names not unique").addConstraintViolation();
+                context.buildConstraintViolationWithTemplate("duplicated node names exist").addConstraintViolation();
                 valid = false;
             }
             if (nodes.stream().distinct().count() != nodes.size()) {
                 context.buildConstraintViolationWithTemplate("node addresses not unique").addConstraintViolation();
-                valid = false;
-            }
-            if (nodes.stream().allMatch(n -> n.getProbes().stream().distinct().count() != n.getProbes().size())) {
-                context.buildConstraintViolationWithTemplate("probe names not unique").addConstraintViolation();
                 valid = false;
             }
         } else {
@@ -53,7 +49,7 @@ public class SettingsValidator implements ConstraintValidator<ValidSettings, Set
             valid = false;
         }
 
-        Stream<Probe> probes = settings.getProbes();
+        Stream<Probe> probes = settings.getNodes().stream().flatMap(n -> n.getProbes().stream());
         if (probes != null) {
             List<Integer> ids = probes.map(Probe::getId).collect(Collectors.toList());
             if (ids.stream().distinct().count() != ids.size()) {

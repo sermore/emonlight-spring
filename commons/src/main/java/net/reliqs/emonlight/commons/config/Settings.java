@@ -29,13 +29,15 @@ public class Settings implements Serializable {
     @Size(min = 4)
     private String serialPort;
 
+    @NotNull
     @Min(9600)
     @Max(115200)
-    private int baudRate = 115200;
+    private Integer baudRate = 115200;
 
     @Min(500)
     @Max(28000)
-    private int receiveTimeout = 2000;
+    @NotNull
+    private Integer receiveTimeout = 2000;
 
     @Size(min = 1)
     @Valid
@@ -60,19 +62,19 @@ public class Settings implements Serializable {
         this.serialPort = serialPort;
     }
 
-    public int getBaudRate() {
+    public Integer getBaudRate() {
         return baudRate;
     }
 
-    public void setBaudRate(int baudRate) {
+    public void setBaudRate(Integer baudRate) {
         this.baudRate = baudRate;
     }
 
-    public int getReceiveTimeout() {
+    public Integer getReceiveTimeout() {
         return receiveTimeout;
     }
 
-    public void setReceiveTimeout(int receiveTimeout) {
+    public void setReceiveTimeout(Integer receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
     }
 
@@ -155,5 +157,47 @@ public class Settings implements Serializable {
 
     public Probe findProbeById(Integer probe) {
         return probeMapId.get(probe);
+    }
+
+    public Node addNewNode() {
+        Node node = new Node();
+        node.setId(idCnt++);
+        node.setName("Node " + node.getId());
+        nodes.add(node);
+        return node;
+    }
+
+    public Node removeNode(int nodeIndex) {
+        Node node = nodes.remove(nodeIndex);
+        if (node != null) {
+            log.debug("removed {}", node);
+            if (nodeMap != null) {
+                nodeMap.remove(node.getName());
+            }
+            if (nodeMapId != null) {
+                nodeMapId.remove(node.getId());
+            }
+            if (probeMapId != null) {
+                for (Probe probe : node.getProbes()) {
+                    probeMapId.remove(probe.getId());
+                }
+            }
+        } else {
+            log.warn("fail to remove {} {}", nodeIndex, node);
+        }
+        return node;
+    }
+
+    public Probe addNewProbe(Integer nodeIndex) {
+        Probe p = null;
+        Node n = nodes.get(nodeIndex);
+        if (n != null) {
+            p = new Probe();
+            p.setId(idCnt++);
+            p.setName("Probe " + p.getId());
+            p.setNode(n);
+            n.getProbes().add(p);
+        }
+        return p;
     }
 }

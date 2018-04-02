@@ -18,21 +18,21 @@ public class ProbeValidator implements ConstraintValidator<ValidProbe, Probe>, S
     public boolean isValid(Probe probe, ConstraintValidatorContext context) {
         boolean ret = true;
         context.disableDefaultConstraintViolation();
-//        if (probe.getId() == 0) {
-//            context.buildConstraintViolationWithTemplate("probe id is zero").addConstraintViolation();
-//            ret = false;
-//        }
         if (probe.hasThresholds() && probe.getType() != Type.PULSE) {
             context.buildConstraintViolationWithTemplate("thresholds can be used only with probe of type PULSE")
                     .addConstraintViolation();
             ret = false;
         }
-        if (probe.getSoftThreshold() > 0 && probe.getSoftThresholdTimeSec() == 0) {
-            context.buildConstraintViolationWithTemplate("soft threashold time not present").addConstraintViolation();
+        if (probe.getSoftThreshold() != null && probe.getSoftThreshold() > 0 &&
+                (probe.getSoftThresholdTimeSec() == null || probe.getSoftThresholdTimeSec() == 0)) {
+            context.buildConstraintViolationWithTemplate("soft threashold time not present").addPropertyNode("softThresholdTimeSec")
+                    .addConstraintViolation();
             ret = false;
         }
-        if (probe.getHardThreshold() > 0 && probe.getHardThresholdTimeSec() == 0) {
-            context.buildConstraintViolationWithTemplate("hard threshold time not present").addConstraintViolation();
+        if (probe.getHardThreshold() != null && probe.getHardThreshold() > 0 &&
+                (probe.getHardThresholdTimeSec() == null || probe.getHardThresholdTimeSec() == 0)) {
+            context.buildConstraintViolationWithTemplate("hard threshold time not present").addPropertyNode("hardThresholdTimeSec")
+                    .addConstraintViolation();
         }
         return ret;
     }

@@ -5,6 +5,7 @@ import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
+import java.util.Arrays;
 
 @ValidProbe
 @Validated
@@ -19,22 +20,23 @@ public class Probe implements Serializable {
     private String name;
     @NotNull
     private Type type;
-    private byte port;
+    @NotNull
+    private Byte port;
     @Min(0)
-    private int sampleTime;
+    private Integer sampleTime;
     @DecimalMin("0")
-    private double adcMult = 0.0;
+    private Double adcMult = 0.0;
     @Min(400)
     @Max(1500)
-    private int pulsesPerKilowattHour = 1000;
+    private Integer pulsesPerKilowattHour = 1000;
     @DecimalMin("0")
-    private double softThreshold;
+    private Double softThreshold;
     @Min(0)
-    private int softThresholdTimeSec;
+    private Integer softThresholdTimeSec;
     @DecimalMin("0")
-    private double hardThreshold;
+    private Double hardThreshold;
     @Min(0)
-    private int hardThresholdTimeSec;
+    private Integer hardThresholdTimeSec;
     private Node node;
 
     public Probe() {
@@ -64,67 +66,67 @@ public class Probe implements Serializable {
         this.type = type;
     }
 
-    public byte getPort() {
+    public Byte getPort() {
         return port;
     }
 
-    public void setPort(byte port) {
+    public void setPort(Byte port) {
         this.port = port;
     }
 
-    public int getSampleTime() {
+    public Integer getSampleTime() {
         return sampleTime;
     }
 
-    public void setSampleTime(int sampleTime) {
+    public void setSampleTime(Integer sampleTime) {
         this.sampleTime = sampleTime;
     }
 
-    public double getAdcMult() {
+    public Double getAdcMult() {
         return adcMult;
     }
 
-    public void setAdcMult(double adcMult) {
+    public void setAdcMult(Double adcMult) {
         this.adcMult = adcMult;
     }
 
-    public int getPulsesPerKilowattHour() {
+    public Integer getPulsesPerKilowattHour() {
         return pulsesPerKilowattHour;
     }
 
-    public void setPulsesPerKilowattHour(int pulsesPerKilowattHour) {
+    public void setPulsesPerKilowattHour(Integer pulsesPerKilowattHour) {
         this.pulsesPerKilowattHour = pulsesPerKilowattHour;
     }
 
-    public double getSoftThreshold() {
+    public Double getSoftThreshold() {
         return softThreshold;
     }
 
-    public void setSoftThreshold(double softThreshold) {
+    public void setSoftThreshold(Double softThreshold) {
         this.softThreshold = softThreshold;
     }
 
-    public int getSoftThresholdTimeSec() {
+    public Integer getSoftThresholdTimeSec() {
         return softThresholdTimeSec;
     }
 
-    public void setSoftThresholdTimeSec(int softThresholdTimeSec) {
+    public void setSoftThresholdTimeSec(Integer softThresholdTimeSec) {
         this.softThresholdTimeSec = softThresholdTimeSec;
     }
 
-    public double getHardThreshold() {
+    public Double getHardThreshold() {
         return hardThreshold;
     }
 
-    public void setHardThreshold(double hardThreshold) {
+    public void setHardThreshold(Double hardThreshold) {
         this.hardThreshold = hardThreshold;
     }
 
-    public int getHardThresholdTimeSec() {
+    public Integer getHardThresholdTimeSec() {
         return hardThresholdTimeSec;
     }
 
-    public void setHardThresholdTimeSec(int hardThresholdTimeSec) {
+    public void setHardThresholdTimeSec(Integer hardThresholdTimeSec) {
         this.hardThresholdTimeSec = hardThresholdTimeSec;
     }
 
@@ -137,7 +139,7 @@ public class Probe implements Serializable {
     }
 
     public boolean hasThresholds() {
-        return getSoftThreshold() > 0 || getHardThreshold() > 0;
+        return getSoftThreshold() != null && getSoftThreshold() > 0 || getHardThreshold() != null && getHardThreshold() > 0;
     }
 
     public int getTimeout() {
@@ -176,11 +178,15 @@ public class Probe implements Serializable {
 
     @Override
     public String toString() {
-        return String.format("P[%d, %s, %s, %s]", id, name, type, node.getName());
+        return String.format("P[%d, %s, %s]", id, name, type);
     }
 
     public enum Type {
-        PULSE, DHT22_T, DHT22_H, DS18B20, VCC, THRESOLD_ALARM, DATA_MISSING_ALARM
+        PULSE, DHT22_T, DHT22_H, DS18B20, VCC, THRESOLD_ALARM, DATA_MISSING_ALARM;
+
+        public static Type[] options() {
+            return Arrays.stream(values()).filter(t -> t.ordinal() < THRESOLD_ALARM.ordinal()).toArray(Type[]::new);
+        }
     }
 
 }

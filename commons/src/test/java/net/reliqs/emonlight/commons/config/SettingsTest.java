@@ -19,9 +19,10 @@ import java.io.*;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.sameInstance;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
@@ -50,7 +51,7 @@ public class SettingsTest {
         assertEquals(2, s.getNodes().size());
         Node n = s.getNodes().get(0);
         assertThat(n.getId(), is(1));
-        assertEquals(500, n.getSampleTime());
+        assertThat(n.getSampleTime(), is(500));
         assertThat(n.getVccThreshold(), is(3.1));
         // assertNotNull(n.getState());
         assertEquals(4, n.getProbes().size());
@@ -111,5 +112,10 @@ public class SettingsTest {
         ObjectInputStream is = new ObjectInputStream(in);
         Settings s2 = (Settings) is.readObject();
         assertThat(s2, is(notNullValue()));
+    }
+
+    @Test
+    public void probeOptionsTest() {
+        assertThat(Probe.Type.options(), arrayWithSize(5));
     }
 }

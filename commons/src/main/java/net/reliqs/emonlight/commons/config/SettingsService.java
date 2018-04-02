@@ -26,7 +26,7 @@ public class SettingsService {
     void validate(Settings s) {
         log.debug("validate {}", s);
         if (s == null) {
-            throw new ValidationException("Settings null");
+            throw new ValidationException("Settings are null");
         }
         ValidatorFactory vf = Validation.buildDefaultValidatorFactory();
         Validator validator = vf.getValidator();

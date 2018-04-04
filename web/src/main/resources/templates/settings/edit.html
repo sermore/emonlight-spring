@@ -2,6 +2,18 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{index :: header(~{::title})}">
     <title>Edit Settings</title>
+    <!--<style>-->
+    <!--button.btn.btn-collapse:before {-->
+    <!--content: '-';-->
+    <!--display: block;-->
+    <!--width: 15px;-->
+    <!--}-->
+    <!--button.btn.btn-collapse.collapsed:before {-->
+    <!--content: '+';-->
+    <!--display: block;-->
+    <!--width: 15px;-->
+    <!--}-->
+    <!--</style>-->
 </head>
 <body>
 <nav th:insert="~{index :: navigation}"></nav>
@@ -12,7 +24,10 @@
 
     <form action="#" th:action="@{/settings/edit}" th:object="${settings}" method="post">
         <fieldset class="form-group col-sm border p-4">
-            <h4>Settings</h4>
+            <div class="d-flex justify-content-between bg-light p-2">
+                <h4>Settings</h4>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
 
             <div th:if="${#fields.hasErrors('global')}">
                 <div class="alert alert-danger" th:errors="*{global}"></div>
@@ -60,7 +75,11 @@
             <fieldset class="form-group border p-3">
                 <div class="d-flex justify-content-between bg-light p-2">
                     <h5>Nodes settings</h5>
-                    <button class="btn btn-secondary btn-sm" type="submit" name="addNode" value="addNode">Add New Node</button>
+                    <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                            data-target="div.collapse" aria-controls="div.collapse"
+                            aria-expanded="false">+
+                    </button>
+                    <button class="btn btn-info btn-sm" type="submit" name="addNode" value="addNode">Add Node</button>
                 </div>
                 <th:block th:each="node, nIter: *{nodes}">
                     <fieldset
@@ -68,39 +87,38 @@
 
                         <div class="d-flex justify-content-between bg-light p-2">
                             <h6>Node [[${node.name}]]</h6>
-                            <button class="btn" type="button" data-toggle="collapse"
-                                    th:attr="data-target='#node-content-' + ${node.id}, aria-controls='#node-content-' + ${node.id}"
+                            <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                                    th:attr="data-target='#node-content' + ${node.id}, aria-controls='node-content' + ${node.id}"
                                     aria-expanded="false">+
                             </button>
-                            <button class="btn btn-secondary btn-sm" type="submit" name="removeNode"
-                                    th:value="${nIter.index}">Remove Node [[${node.name}]]
+                            <button class="btn btn-info btn-sm" type="submit" name="removeNode"
+                                    th:value="${nIter.index}">Remove
                             </button>
                         </div>
 
-                        <div class="collapse" th:id="|node-content-${node.id}|">
-
+                        <div class="collapse" th:id="|node-content${node.id}|">
                             <div th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__]}')}">
                                 <div class="alert alert-danger" th:errors="*{nodes[__${nIter.index}__]}"></div>
                             </div>
 
                             <div class="row">
                                 <div class="col-sm-auto">
-                                    <label for="nodeId">Node Id</label>
+                                    <label th:for="|nodeId${node.id}|">Node Id</label>
                                     <input type="number" th:field="*{nodes[__${nIter.index}__].id}"
-                                           id="nodeId" placeholder="Node id"
+                                           th:id="|nodeId${node.id}|" placeholder="Node id"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
                                            readonly>
                                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].id}')}"
                                          th:errors="*{nodes[__${nIter.index}__].id}"></div>
                                 </div>
                                 <div class="col-md-auto">
-                                    <label for="nodeName">Name</label>
+                                    <label th:for="|nodeName${node.id}|">Name</label>
                                     <input type="text" th:field="*{nodes[__${nIter.index}__].name}"
-                                           id="nodeName"
-                                           aria-describedby="nodeNameHelp"
+                                           th:id="|nodeName${node.id}|"
+                                           th:attr="aria-describedby='nodeNameHelp'+${node.id}"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
                                            placeholder="Node name, must be unique">
-                                    <small id="nodeNameHelp" class="form-text text-muted">Node name must be unique between
+                                    <small th:id="|nodeNameHelp${node.id}|" class="form-text text-muted">Node name must be unique between
                                         all
                                         defined nodes.
                                     </small>
@@ -108,259 +126,292 @@
                                          th:errors="*{nodes[__${nIter.index}__].name}"></div>
                                 </div>
                                 <div class="col-sm-auto">
-                                    <label for="nodeAddress">Address</label>
+                                    <label th:for="|nodeAddress${node.id}|">Address</label>
                                     <input type="text" th:field="*{nodes[__${nIter.index}__].address}"
-                                           id="nodeAddress"
-                                           aria-describedby="nodeAddressHelp"
+                                           th:id="|nodeAddress${node.id}|"
+                                           th:attr="aria-describedby='nodeAddressHelp'+${node.id}"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
                                            placeholder="ZigBee device address">
-                                    <small id="nodeAddresseHelp" class="form-text text-muted">ZigBee device address.
+                                    <small th:id="|nodeAddresseHelp${node.id}|" class="form-text text-muted">ZigBee device address.
                                     </small>
                                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].address}')}"
                                          th:errors="*{nodes[__${nIter.index}__].address}"></div>
                                 </div>
                                 <div class="col-sm-auto">
-                                    <label for="nodeMode">Mode</label>
+                                    <label th:for="|nodeMode${node.id}|">Mode</label>
                                     <select th:field="*{nodes[__${nIter.index}__].mode}"
-                                            id="nodeMode"
+                                            th:id="|nodeMode${node.id}|"
                                             class="form-control form-control-sm" th:errorclass="is-invalid"
-                                            aria-describedby="nodeModeHelp"
+                                            th:attr="aria-describedby='nodeModeHelp'+${node.id}|"
                                             placeholder="Xbee Device working mode">
                                         <option th:value="${null}"> --</option>
                                         <option th:each="opt : ${opModes}" th:value="${opt}"
                                                 th:text="${opt}"></option>
                                     </select>
-                                    <small id="nodeModeHelp" class="form-text text-muted">Xbee device working mode.
+                                    <small th:id="|nodeModeHelp${node.id}|" class="form-text text-muted">Xbee device working mode.
                                     </small>
                                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].mode}')}"
                                          th:errors="*{nodes[__${nIter.index}__].mode}"></div>
                                 </div>
                                 <div class="col-sm-auto">
-                                    <label for="nodeSampleTime">Sampling Time</label>
+                                    <label th:for="|nodeSampleTime${node.id}|">Sampling Time</label>
                                     <input type="number" th:field="*{nodes[__${nIter.index}__].sampleTime}"
-                                           id="nodeSampleTime"
+                                           th:id="|nodeSampleTime${node.id}|"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
-                                           aria-describedby="nodeSampleTimeHelp" placeholder="Node sampling time">
-                                    <small id="nodeSampleTimeHelp" class="form-text text-muted">Node sampling time.</small>
-                                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].sampleTime}')}"
+                                           th:attr="aria-describedby='nodeSampleTimeHelp'+${nodeId}" placeholder="Node sampling time">
+                                    <small th:id="|nodeSampleTimeHelp${nodeId}|" class="form-text text-muted">Node sampling time.</small>
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].sampleTime}')}"
                                          th:errors="*{nodes[__${nIter.index}__].sampleTime}"></div>
                                 </div>
                                 <div class="col-md-auto">
                                     <div class="form-check">
                                         <input type="radio" th:field="*{nodes[__${nIter.index}__].vccFromADC}"
-                                               id="nodeVccFromADC1" th:value="true"
+                                               th:id="|nodeVccFromADC1${node.id}|" th:value="true"
                                                class="form-check-input form-control-sm" th:errorclass="is-invalid"
-                                               aria-describedby="nodeVccFromADCHelp1" placeholder="Vcc sampling of ADC output">
-                                        <label class="form-check-label" for="nodeVccFromADC1">ADC sampling</label>
+                                               th:attr="aria-describedby='nodeVccFromADCHelp1'+${node.id}" placeholder="Vcc sampling of ADC output">
+                                        <label class="form-check-label" th:for="|nodeVccFromADC1${node.id}|">ADC sampling</label>
                                     </div>
                                     <div class="form-check">
                                         <input type="radio" th:field="*{nodes[__${nIter.index}__].vccFromADC}"
-                                               id="nodeVccFromADC2" th:value="false"
+                                               th:id="|nodeVccFromADC2${node.id}|" th:value="false"
                                                class="form-check-input form-control-sm" th:errorclass="is-invalid"
-                                               aria-describedby="nodeVccFromADCHelp2" placeholder="Vcc sampling of Xbee's Vcc">
-                                        <label class="form-check-label" for="nodeVccFromADC2">Vcc sampling</label>
+                                               th:attr="aria-describedby='nodeVccFromADCHelp1'+${node.id}" placeholder="Vcc sampling of Xbee's Vcc">
+                                        <label class="form-check-label" th:for="|nodeVccFromADC2${node.id}|">Vcc sampling</label>
                                     </div>
-                                    <small id="nodeVccFromADCHelp1" class="form-text text-muted">Vcc sampling of ADC output
+                                    <small th:id="|nodeVccFromADCHelp1${node.id}|" class="form-text text-muted">Vcc sampling of ADC output
                                         or Xbee power line.
                                     </small>
-                                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].vccFromADC}')}"
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].vccFromADC}')}"
                                          th:errors="*{nodes[__${nIter.index}__].vccFromADC}"></div>
                                 </div>
                                 <div class="col-sm-auto">
-                                    <label for="nodeVccThreshold">Vcc Threshold</label>
+                                    <label th:for="|nodeVccThreshold${node.id}|">Vcc Threshold</label>
                                     <input type="number" step="any" th:field="*{nodes[__${nIter.index}__].vccThreshold}"
-                                           id="nodeVccThreshold"
+                                           th:id="|nodeVccThreshold${node.id}|"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
-                                           aria-describedby="nodeVccThresholdHelp" placeholder="Vcc Threshold">
-                                    <small id="nodeVccThresholdHelp" class="form-text text-muted">Vcc Threshold.</small>
-                                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].vccThreshold}')}"
+                                           th:attr="aria-describedby='nodeVccThresholdHelp'+${node.id}" placeholder="Vcc Threshold">
+                                    <small th:id="|nodeVccThresholdHelp${node.id}|" class="form-text text-muted">Vcc Threshold.</small>
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].vccThreshold}')}"
                                          th:errors="*{nodes[__${nIter.index}__].vccThreshold}"></div>
                                 </div>
                                 <div class="col-sm-auto">
-                                    <label for="nodeAdcRange">ADC Range</label>
+                                    <label th:for="|nodeAdcRange${node.id}|">ADC Range</label>
                                     <input type="number" th:field="*{nodes[__${nIter.index}__].adcRange}"
-                                           id="nodeAdcRange"
+                                           th:id="|nodeAdcRange${node.id}|"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
-                                           aria-describedby="nodeAdcRangeHelp" placeholder="ADC Range">
-                                    <small id="nodeAdcRangeHelp" class="form-text text-muted">ADC Range.</small>
+                                           th:attr="aria-describedby='nodeAdcRangeHelp'+${node.id}" placeholder="ADC Range">
+                                    <small th:id="|nodeAdcRangeHelp${node.id}|" class="form-text text-muted">ADC Range.</small>
                                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].adcRange}')}"
                                          th:errors="*{nodes[__${nIter.index}__].adcRange}"></div>
                                 </div>
                                 <div class="col-sm-auto">
-                                    <label for="nodeAdcVRef">ADC Voltage reference</label>
+                                    <label th:for="|nodeAdcVRef${node.id}|">ADC Voltage reference</label>
                                     <input type="number" step="any" th:field="*{nodes[__${nIter.index}__].adcVRef}"
-                                           id="nodeAdcVRef"
+                                           th:id="|nodeAdcVRef${node.id}|"
                                            class="form-control form-control-sm" th:errorclass="is-invalid"
-                                           aria-describedby="nodeAdcVRefHelp" placeholder="ADC Voltage reference">
-                                    <small id="nodeAdcVRefHelp" class="form-text text-muted">ADC Voltage reference.</small>
+                                           th:attr="aria-describedby='nodeAdcVRefHelp'+${node.id}" placeholder="ADC Voltage reference">
+                                    <small th:id="|nodeAdcVRefHelp${node.id}|" class="form-text text-muted">ADC Voltage reference.</small>
                                     <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].adcVRef}')}"
                                          th:errors="*{nodes[__${nIter.index}__].adcVRef}"></div>
                                 </div>
                             </div>
                             <!--<fieldset class="form-group border p-2">-->
                             <div class="d-flex justify-content-between bg-light p-2">
-                                <h6>Probes Settings for node [[${node.name}]]</h6>
+                                <h6>Probes for node [[${node.name}]]</h6>
+                                <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                                        th:attr="data-target='#probe-list' + ${node.id}, aria-controls='probe-list' + ${node.id}"
+                                        aria-expanded="false">+
+                                </button>
                                 <button class="btn btn-secondary btn-sm" type="submit" name="addProbe"
-                                        th:value="${nIter.index}">Add New Probe
+                                        th:value="${nIter.index}">Add Probe
                                 </button>
                             </div>
-                            <th:block th:each="probe, pIter: ${node.probes}">
-                                <fieldset
-                                        th:class="|form-group border p-1 ${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]*}') ? 'border-danger' : ''}|">
-                                    <div class="d-flex justify-content-between bg-light p-2">
-                                        <h6>Probe [[${probe.name}]]</h6>
-                                        <button class="btn btn-secondary btn-sm" type="submit" name="removeProbe"
-                                                th:value="|${nIter.index},${pIter.index}}|">Remove Probe [[${probe.name}]]
-                                        </button>
-                                    </div>
-                                    <div th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]}')}">
-                                        <div class="alert alert-danger" th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__]}"></div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-sm-auto">
-                                            <label for="probeId">Probe Id</label>
-                                            <input type="number"
-                                                   th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].id}"
-                                                   class="form-control form-control-sm" id="probeId"
-                                                   placeholder="Probe id"
-                                                   readonly>
+                            <div class="collapse" th:id="|probe-list${node.id}|">
+                                <th:block th:each="probe, pIter: ${node.probes}">
+                                    <fieldset
+                                            th:class="|form-group border p-1 ${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]*}') ? 'border-danger' : ''}|">
+                                        <div class="d-flex justify-content-between bg-light p-2">
+                                            <h6>Probe [[${probe.name}]]</h6>
+                                            <button class="btn btn-secondary btn-sm" type="submit" name="removeProbe"
+                                                    th:value="|${nIter.index},${pIter.index}}|">Remove
+                                            </button>
                                         </div>
-                                        <div class="col-md-auto">
-                                            <label for="probeName">Name</label>
-                                            <input type="text"
-                                                   th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].name}"
-                                                   id="probeName"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeNameHelp"
-                                                   placeholder="Probe name">
-                                            <small id="probeNameHelp" class="form-text text-muted">Probe name must be unique inside node.
-                                            </small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].name}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].name}"></div>
+                                        <div th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]}')}">
+                                            <div class="alert alert-danger" th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__]}"></div>
                                         </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeType">Type</label>
-                                            <select th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].type}"
-                                                    id="probeType"
-                                                    class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                    aria-describedby="probeTypeHelp"
-                                                    placeholder="Probe Type">
-                                                <option th:value="${null}"> --</option>
-                                                <option th:each="opt : ${probeTypes}"
-                                                        th:value="${opt}" th:text="${opt}"></option>
-                                            </select>
-                                            <small id="probeTypeHelp" class="form-text text-muted">Probe type.
-                                            </small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].type}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].type}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probePort">Xbee Port</label>
-                                            <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].port}"
-                                                   id="probePort"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probePortHelp" placeholder="Xbee port">
-                                            <small id="probePortHelp" class="form-text text-muted">Probe port.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].port}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].port}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeSampleTime">Sampling Time</label>
-                                            <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].sampleTime}"
-                                                   id="probeSampleTime"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeSampleTimeHelp" placeholder="Sampling time">
-                                            <small id="probeSampleTimeHelp" class="form-text text-muted">Sampling time.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].sampleTime}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].sampleTime}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeAdcMult">ADC Multiplier</label>
-                                            <input type="number" step="any" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].adcMult}"
-                                                   id="probeAdcMult"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeAdcMultHelp" placeholder="ADC Multiplier">
-                                            <small id="probeAdcMultHelp" class="form-text text-muted">ADC multiplier.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].adcMult}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].adcMult}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probePulsesPerKilowattHour">Pulses per KWh</label>
-                                            <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].pulsesPerKilowattHour}"
-                                                   id="probePulsesPerKilowattHour"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probePulsesPerKilowattHourHelp" placeholder="Pulses per Kilowatt/hour">
-                                            <small id="probePulsesPerKilowattHourHelp" class="form-text text-muted">Pulses per Kilowatt/hour.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].pulsesPerKilowattHour}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].pulsesPerKilowattHour}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeSoftThreshold">Soft Threshold</label>
-                                            <input type="number" step="any"
-                                                   th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThreshold}"
-                                                   id="probeSoftThreshold"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeSoftThresholdHelp" placeholder="Soft Threshold">
-                                            <small id="probeSoftThresholdHelp" class="form-text text-muted">Soft Threshold.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThreshold}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThreshold}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeSoftThresholdTimeSec">Soft Threshold Time (sec)</label>
-                                            <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThresholdTimeSec}"
-                                                   id="probeSoftThresholdTimeSec"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeSoftThresholdTimeSecHelp" placeholder="Soft Threshold Time in seconds">
-                                            <small id="probeSoftThresholdTimeSecHelp" class="form-text text-muted">Soft Threshold Time in seconds.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThresholdTimeSec}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThresholdTimeSec}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeHardThreshold">Hard Threshold</label>
-                                            <input type="number" step="any"
-                                                   th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThreshold}"
-                                                   id="probeHardThreshold"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeHardThresholdHelp" placeholder="Hard Threshold">
-                                            <small id="probeHardThresholdHelp" class="form-text text-muted">Hard Threshold.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThreshold}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThreshold}"></div>
-                                        </div>
-                                        <div class="col-sm-auto">
-                                            <label for="probeHardThresholdTimeSec">Hard Threshold Time (sec)</label>
-                                            <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThresholdTimeSec}"
-                                                   id="probeHardThresholdTimeSec"
-                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
-                                                   aria-describedby="probeHardThresholdTimeSecHelp" placeholder="Hard Threshold Time in seconds">
-                                            <small id="probeHardThresholdTimeSecHelp" class="form-text text-muted">Hard Threshold Time in seconds.</small>
-                                            <div class="alert alert-danger" role="alert"
-                                                 th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThresholdTimeSec}')}"
-                                                 th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThresholdTimeSec}"></div>
-                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeId${probe.id}|">Probe Id</label>
+                                                <input type="number"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].id}"
+                                                       class="form-control form-control-sm"
+                                                       th:id="|probeId${probe.id}|"
+                                                       placeholder="Probe id"
+                                                       readonly>
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <label th:for="|probeName${probe.id}|">Name</label>
+                                                <input type="text"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].name}"
+                                                       th:id="|probeName${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeNameHelp'+${probe.id}"
+                                                       placeholder="Probe name">
+                                                <small th:id="|probeNameHelp${probe.id}|" class="form-text text-muted">Probe name must be unique
+                                                    inside
+                                                    node.
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].name}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].name}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="probeType">Type</label>
+                                                <select th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].type}"
+                                                        th:id="|probeType${probe.id}|"
+                                                        class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                        th:attr="aria-describedby='probeTypeHelp'+${probe.id}|"
+                                                        placeholder="Probe Type">
+                                                    <option th:value="${null}"> --</option>
+                                                    <option th:each="opt : ${probeTypes}"
+                                                            th:value="${opt}" th:text="${opt}"></option>
+                                                </select>
+                                                <small th:id="|probeTypeHelp${probe.id}|" class="form-text text-muted">Probe type.
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].type}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].type}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probePort${probe.id}|">Xbee Port</label>
+                                                <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].port}"
+                                                       th:id="|probePort${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probePortHelp'+${probe.id}" placeholder="Xbee port">
+                                                <small th:id="|probePortHelp${probe.id}|" class="form-text text-muted">Probe port.</small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].port}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].port}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeSampleTime${node.id}|">Sampling Time</label>
+                                                <input type="number" th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].sampleTime}"
+                                                       th:id="|probeSampleTime${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeSampleTimeHelp'+${probe.id}|" placeholder="Sampling time">
+                                                <small th:id="|probeSampleTimeHelp${probe.id}|" class="form-text text-muted">Sampling time.</small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].sampleTime}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].sampleTime}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeAdcMult${probe.id}|">ADC Multiplier</label>
+                                                <input type="number" step="any"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].adcMult}"
+                                                       th:id="|probeAdcMult${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeAdcMultHelp'+${probe.id}" placeholder="ADC Multiplier">
+                                                <small th:id="|probeAdcMultHelp${probe.id}|" class="form-text text-muted">ADC multiplier.</small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].adcMult}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].adcMult}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probePulsesPerKilowattHour${probe.id}|">Pulses per KWh</label>
+                                                <input type="number"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].pulsesPerKilowattHour}"
+                                                       th:id="|probePulsesPerKilowattHour${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probePulsesPerKilowattHourHelp'+${probe.id}|"
+                                                       placeholder="Pulses per Kilowatt/hour">
+                                                <small th:id="|probePulsesPerKilowattHourHelp${probe.id}|" class="form-text text-muted">Pulses per
+                                                    Kilowatt/hour
+                                                    .
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].pulsesPerKilowattHour}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].pulsesPerKilowattHour}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeSoftThreshold${probe.id}|">Soft Threshold</label>
+                                                <input type="number" step="any"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThreshold}"
+                                                       th:id="|probeSoftThreshold${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeSoftThresholdHelp'+${probe.id}" placeholder="Soft Threshold">
+                                                <small th:id="|probeSoftThresholdHelp${probe.id}|" class="form-text text-muted">Soft Threshold.
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThreshold}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThreshold}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeSoftThresholdTimeSec${probe.id}|">Soft Threshold Time (sec)</label>
+                                                <input type="number"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThresholdTimeSec}"
+                                                       th:id="|probeSoftThresholdTimeSec${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeSoftThresholdTimeSecHelp'+${probe.id}"
+                                                       placeholder="Soft Threshold Time in seconds">
+                                                <small th:id="|probeSoftThresholdTimeSecHelp${probe.id}|" class="form-text text-muted">Soft Threshold
+                                                    Time in seconds
+                                                    .
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThresholdTimeSec}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].softThresholdTimeSec}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeHardThreshold${probe.id}|">Hard Threshold</label>
+                                                <input type="number" step="any"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThreshold}"
+                                                       th:id="|probeHardThreshold${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeHardThresholdHelp'+${probe.id}" placeholder="Hard Threshold">
+                                                <small th:id="|probeHardThresholdHelp${probe.id}|" class="form-text text-muted">Hard Threshold.
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThreshold}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThreshold}"></div>
+                                            </div>
+                                            <div class="col-sm-auto">
+                                                <label th:for="|probeHardThresholdTimeSec${probe.id}|">Hard Threshold Time (sec)</label>
+                                                <input type="number"
+                                                       th:field="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThresholdTimeSec}"
+                                                       th:id="|probeHardThresholdTimeSec${probe.id}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='probeHardThresholdTimeSecHelp'+${probe.id}"
+                                                       placeholder="Hard Threshold Time in seconds">
+                                                <small th:id="|probeHardThresholdTimeSecHelp${probe.id}|" class="form-text text-muted">Hard Threshold
+                                                    Time in seconds
+                                                    .
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThresholdTimeSec}')}"
+                                                     th:errors="*{nodes[__${nIter.index}__].probes[__${pIter.index}__].hardThresholdTimeSec}"></div>
+                                            </div>
 
-                                    </div>
-                                </fieldset>
-                            </th:block>
+                                        </div>
+                                    </fieldset>
+                                </th:block>
+                            </div>
                             <!--</fieldset>-->
                         </div>
                     </fieldset>
                 </th:block>
             </fieldset>
-            <button type="submit" class="btn btn-primary">Save</button>
+            <div class="d-flex justify-content-end bg-light p-2">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
         </fieldset>
     </form>
 
 </div>
 
 <th:block th:insert="~{index :: bootstrapjs}"></th:block>
+
 </body>
 </html>

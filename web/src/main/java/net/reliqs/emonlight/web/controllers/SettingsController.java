@@ -41,6 +41,7 @@ public class SettingsController {
         }
         attrs.addFlashAttribute("message", "Settings saved.");
         attrs.addFlashAttribute("messageClass", "alert-success");
+
         return "redirect:edit";
     }
 

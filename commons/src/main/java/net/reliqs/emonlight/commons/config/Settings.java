@@ -197,6 +197,7 @@ public class Settings implements Serializable {
             p.setName("Probe " + p.getId());
             p.setNode(n);
             n.getProbes().add(p);
+            probeMapId.put(p.getId(), p);
         }
         return p;
     }
@@ -207,6 +208,7 @@ public class Settings implements Serializable {
             if (node != null) {
                 Probe probe = node.getProbes().remove(probeIndex.intValue());
                 if (probe != null) {
+                    probeMapId.remove(probe.getId());
                     return probe;
                 }
             }

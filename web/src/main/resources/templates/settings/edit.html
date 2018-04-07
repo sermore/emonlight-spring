@@ -72,14 +72,14 @@
                 </div>
             </fieldset>
 
-            <fieldset class="form-group border p-3">
+            <fieldset id="nodes-fieldset" class="form-group border p-3">
                 <div class="d-flex justify-content-between bg-light p-2">
                     <h5>Nodes settings</h5>
                     <button class="btn btn-collapse" type="button" data-toggle="collapse"
-                            data-target="div.collapse" aria-controls="div.collapse"
+                            data-target="fieldset#nodes-fieldset div.collapse" aria-controls="div.collapse"
                             aria-expanded="false">+
                     </button>
-                    <button class="btn btn-info btn-sm" type="submit" name="addNode" value="addNode">Add Node</button>
+                    <button class="btn btn-dark btn-sm" type="submit" name="addNode" value="addNode">Add Node</button>
                 </div>
                 <th:block th:each="node, nIter: *{nodes}">
                     <fieldset
@@ -91,7 +91,7 @@
                                     th:attr="data-target='#node-content' + ${node.id}, aria-controls='node-content' + ${node.id}"
                                     aria-expanded="false">+
                             </button>
-                            <button class="btn btn-info btn-sm" type="submit" name="removeNode"
+                            <button class="btn btn-dark btn-sm" type="submit" name="removeNode"
                                     th:value="${nIter.index}">Remove
                             </button>
                         </div>
@@ -236,7 +236,7 @@
                                         <div class="d-flex justify-content-between bg-light p-2">
                                             <h6>Probe [[${probe.name}]]</h6>
                                             <button class="btn btn-secondary btn-sm" type="submit" name="removeProbe"
-                                                    th:value="|${nIter.index},${pIter.index}}|">Remove
+                                                    th:value="|${nIter.index},${pIter.index}|">Remove
                                             </button>
                                         </div>
                                         <div th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]}')}">
@@ -403,6 +403,201 @@
                     </fieldset>
                 </th:block>
             </fieldset>
+
+            <fieldset id="servers-fieldset" class="form-group border p-3">
+                <div class="d-flex justify-content-between bg-light p-2">
+                    <h5>REST endpoints</h5>
+                    <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                            data-target="fieldset#servers-fieldset div.collapse" aria-controls="div.collapse"
+                            aria-expanded="false">+
+                    </button>
+                    <button class="btn btn-dark btn-sm" type="submit" name="addServer" value="addServer">Add Server</button>
+                </div>
+                <th:block th:each="server, sIter: *{servers}">
+                    <fieldset
+                            th:class="|form-group border p-1 ${#fields.hasErrors('*{servers[__${sIter.index}__]*}') ? 'border-danger' : ''}|">
+
+                        <div class="d-flex justify-content-between bg-light p-2">
+                            <h6>REST endpoint [[${server.name}]]</h6>
+                            <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                                    th:attr="data-target='#server-content' + ${sIter.index}, aria-controls='server-content' + ${sIter.index}"
+                                    aria-expanded="false">+
+                            </button>
+                            <button class="btn btn-dark btn-sm" type="submit" name="removeServer"
+                                    th:value="${sIter.index}">Remove
+                            </button>
+                        </div>
+
+                        <div class="collapse" th:id="|server-content${sIter.index}|">
+                            <div th:if="${#fields.hasErrors('*{servers[__${sIter.index}__]}')}">
+                                <div class="alert alert-danger" th:errors="*{servers[__${sIter.index}__]}"></div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-auto">
+                                    <label th:for="|serverName${sIter.index}|">Name</label>
+                                    <input type="text" th:field="*{servers[__${sIter.index}__].name}"
+                                           th:id="|serverName${sIter.index}|"
+                                           th:attr="aria-describedby='serverNameHelp'+${sIter.index}"
+                                           class="form-control form-control-sm" th:errorclass="is-invalid"
+                                           placeholder="Server name, must be unique">
+                                    <small th:id="|serverNameHelp${sIter.index}|" class="form-text text-muted">Server name, must be unique.
+                                    </small>
+                                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].name}')}"
+                                         th:errors="*{servers[__${sIter.index}__].name}"></div>
+                                </div>
+                                <div class="col-md-auto">
+                                    <label th:for="|serverUrl${sIter.index}|">Url</label>
+                                    <input type="url" th:field="*{servers[__${sIter.index}__].url}"
+                                           th:id="|serverUrl${sIter.index}|"
+                                           th:attr="aria-describedby='serverUrlHelp'+${sIter.index}"
+                                           class="form-control form-control-sm" th:errorclass="is-invalid"
+                                           placeholder="Endpoint's Url">
+                                    <small th:id="|serverUrlHelp${sIter.index}|" class="form-text text-muted">Endpoint's Url.
+                                    </small>
+                                    <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].url}')}"
+                                         th:errors="*{servers[__${sIter.index}__].url}"></div>
+                                </div>
+                                <div class="col-sm-auto">
+                                    <label th:for="|serverSendRate${sIter.index}|">Send Rate</label>
+                                    <input type="number" th:field="*{servers[__${sIter.index}__].sendRate}"
+                                           th:id="|serverSendRate${sIter.index}|"
+                                           th:attr="aria-describedby='serverSendRateHelp'+${sIter.index}"
+                                           class="form-control form-control-sm" th:errorclass="is-invalid"
+                                           placeholder="Send Rate in milliseconds">
+                                    <small th:id="|serverSendRateHelp${sIter.index}|" class="form-text text-muted">Send Rate in milliseconds.
+                                    </small>
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].sendRate}')}"
+                                         th:errors="*{servers[__${sIter.index}__].sendRate}"></div>
+                                </div>
+                                <div class="col-sm-auto">
+                                    <div class="form-check">
+                                        <input type="checkbox" th:field="*{servers[__${sIter.index}__].realTime}"
+                                               th:id="|serverRealTime${sIter.index}|"
+                                               th:attr="aria-describedby='serverRealTimeHelp'+${sIter.index}"
+                                               class="form-check-input form-control-sm" th:errorclass="is-invalid"
+                                               placeholder="Real time response">
+                                        <label th:for="|serverRealTime${sIter.index}|">Real Time</label>
+                                    </div>
+                                    <small th:id="|serverRealTimeHelp${sIter.index}|" class="form-text text-muted">Real time response.
+                                    </small>
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].realTime}')}"
+                                         th:errors="*{servers[__${sIter.index}__].realTime}"></div>
+                                </div>
+                                <div class="col-sm-auto">
+                                    <div class="form-check">
+                                        <input type="checkbox" th:field="*{servers[__${sIter.index}__].active}"
+                                               th:id="|serverActive${sIter.index}|"
+                                               th:attr="aria-describedby='serverActiveHelp'+${sIter.index}"
+                                               class="form-check-input form-control-sm" th:errorclass="is-invalid"
+                                               placeholder="Active or paused">
+                                        <label th:for="|serverActive${sIter.index}|">Active</label>
+                                    </div>
+                                    <small th:id="|serverActiveHelp${sIter.index}|" class="form-text text-muted">Active or paused.
+                                    </small>
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].active}')}"
+                                         th:errors="*{servers[__${sIter.index}__].active}"></div>
+                                </div>
+                                <div class="col-sm-auto">
+                                    <div class="form-check">
+                                        <input type="checkbox" th:field="*{servers[__${sIter.index}__].ignoreErrors}"
+                                               th:id="|serverIgnoreErrors${sIter.index}|"
+                                               th:attr="aria-describedby='serverIgnoreErrorsHelp'+${sIter.index}"
+                                               class="form-check-input form-control-sm" th:errorclass="is-invalid"
+                                               placeholder="Ignore all errors">
+                                        <label th:for="|serverIgnoreErrors${sIter.index}|">Ignore Errors</label>
+                                    </div>
+                                    <small th:id="|serverIgnoreErrorsHelp${sIter.index}|" class="form-text text-muted">Ignore all errors.
+                                    </small>
+                                    <div class="alert alert-danger" role="alert"
+                                         th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].ignoreErrors}')}"
+                                         th:errors="*{servers[__${sIter.index}__].ignoreErrors}"></div>
+                                </div>
+
+                            </div>
+                            <!-- server map -->
+                            <div class="d-flex justify-content-between bg-light p-2">
+                                <h6>Mappings for server [[${server.name}]]</h6>
+                                <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                                        th:attr="data-target='#serverMap' + ${sIter.index}, aria-controls='serverMap' + ${sIter.index}"
+                                        aria-expanded="false">+
+                                </button>
+                                <button class="btn btn-secondary btn-sm" type="submit" name="addServerMap"
+                                        th:value="${sIter.index}">Add Mapping
+                                </button>
+                            </div>
+                            <div class="collapse" th:id="|serverMap${sIter.index}|">
+                                <th:block th:each="map, mIter: ${server.maps}">
+                                    <fieldset
+                                            th:class="|form-group border p-1 ${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__]*}') ? 'border-danger' : ''}|">
+                                        <div class="d-flex justify-content-between bg-light p-2">
+                                            <h6>Mapping [[${mIter.index}]]</h6>
+                                            <button class="btn btn-secondary btn-sm" type="submit" name="removeServerMap"
+                                                    th:value="|${sIter.index},${mIter.index}|">Remove
+                                            </button>
+                                        </div>
+                                        <div th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__]}')}">
+                                            <div class="alert alert-danger" th:errors="*{servers[__${sIter.index}__].maps[__${mIter.index}__]}"></div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-auto">
+                                                <label th:for="mapProbe">Probe</label>
+                                                <select th:field="*{servers[__${sIter.index}__].maps[__${mIter.index}__].probe}"
+                                                        th:id="|mapProbe${mIter.index}|"
+                                                        class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                        th:attr="aria-describedby='mapProbeHelp'+${mIter.index}|"
+                                                        placeholder="Probe">
+                                                    <option th:value="${null}"> --</option>
+                                                    <option th:each="opt : ${probeList}"
+                                                            th:value="${opt}" th:text="${opt}"></option>
+                                                </select>
+                                                <small th:id="|mapProbeHelp${mIter.index}|" class="form-text text-muted">Probe source to publish.
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__].probe}')}"
+                                                     th:errors="*{servers[__${sIter.index}__].maps[__${mIter.index}__].probe}"></div>
+                                            </div>
+                                            <div class="col-md-auto">
+                                                <label th:for="|mapNodeId${mIter.index}|">Destination's Node Id</label>
+                                                <input type="number"
+                                                       th:field="*{servers[__${sIter.index}__].maps[__${mIter.index}__].nodeId}"
+                                                       th:id="|mapNodeId${mIter.index}|"
+                                                       class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                       th:attr="aria-describedby='mapNodeIdHelp'+${mIter.index}"
+                                                       placeholder="Destination's Node Id">
+                                                <small th:id="|mapNodeIdHelp${mIter.index}|" class="form-text text-muted">Destination's Node Id
+                                                    to use.
+                                                </small>
+                                                <div class="alert alert-danger" role="alert"
+                                                     th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__].nodeId}')}"
+                                                     th:errors="*{servers[__${sIter.index}__].maps[__${mIter.index}__].nodeId}"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-auto">
+                                            <label th:for="|mapApiKey${mIter.index}|">API Key</label>
+                                            <input type="text"
+                                                   th:field="*{servers[__${sIter.index}__].maps[__${mIter.index}__].apiKey}"
+                                                   th:id="|mapApiKey${mIter.index}|"
+                                                   class="form-control form-control-sm" th:errorclass="is-invalid"
+                                                   th:attr="aria-describedby='mapApiKeyHelp'+${mIter.index}"
+                                                   placeholder="Destination's API Key">
+                                            <small th:id="|mapApiKeyHelp${mIter.index}|" class="form-text text-muted">Destination's API Key.
+                                            </small>
+                                            <div class="alert alert-danger" role="alert"
+                                                 th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__].apiKey}')}"
+                                                 th:errors="*{servers[__${sIter.index}__].maps[__${mIter.index}__].apiKey}"></div>
+                                        </div>
+                                    </fieldset>
+                                </th:block>
+                            </div>
+                        </div>
+                    </fieldset>
+                </th:block>
+            </fieldset>
+
             <div class="d-flex justify-content-end bg-light p-2">
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>

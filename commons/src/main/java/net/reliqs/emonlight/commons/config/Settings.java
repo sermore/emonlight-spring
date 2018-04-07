@@ -200,4 +200,48 @@ public class Settings implements Serializable {
         }
         return p;
     }
+
+    public Probe removeProbe(Integer nodeIndex, Integer probeIndex) {
+        if (nodeIndex != null && probeIndex != null) {
+            Node node = nodes.get(nodeIndex);
+            if (node != null) {
+                Probe probe = node.getProbes().remove(probeIndex.intValue());
+                if (probe != null) {
+                    return probe;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Server addNewServer() {
+        Server s = new Server();
+        s.setName("Server " + getServers().size() + 1);
+        servers.add(s);
+        return s;
+    }
+
+    public ServerMap addNewServerMap(Integer serverIndex) {
+        ServerMap sm = null;
+        Server s = servers.get(serverIndex);
+        if (s != null) {
+            sm = new ServerMap();
+            s.getMaps().add(sm);
+        }
+        return sm;
+    }
+
+    public Server removeServer(Integer serverIndex) {
+        Server s = servers.remove(serverIndex.intValue());
+        return s;
+    }
+
+    public ServerMap removeServerMap(Integer serverIndex, Integer serverMapIndex) {
+        ServerMap sm = null;
+        Server s = servers.get(serverIndex);
+        if (s != null) {
+            sm = s.getMaps().remove(serverMapIndex.intValue());
+        }
+        return sm;
+    }
 }

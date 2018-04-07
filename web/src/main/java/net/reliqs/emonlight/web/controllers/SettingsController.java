@@ -10,27 +10,41 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/settings/*")
+//@SessionAttributes("settings")
 public class SettingsController {
     private static final Logger log = LoggerFactory.getLogger(SettingsController.class);
 
     @Autowired
-    private Settings settings;
+    private SettingsService settingsService;
+
+    private Settings loadSettings(HttpSession session) {
+        Settings settings = (Settings) session.getAttribute("settings");
+        if (settings == null) {
+            settings = settingsService.loadAndInitialize();
+            session.setAttribute("settings", settings);
+        }
+        return settings;
+    }
 
     @GetMapping("edit")
-    public String edit(Model model) {
+    public String edit(Model model, HttpSession session) {
         log.debug("edit {}", model);
+        //        Settings settings = (Settings) session.getAttribute("settings");
+        Settings settings = loadSettings(session);
         model.addAttribute("settings", settings);
         return "settings/edit";
     }
 
     @PostMapping(value = "edit")
-    public String save(@Valid Settings settings, BindingResult bindingResult, final RedirectAttributes attrs, Model model) {
+    public String save(@ModelAttribute @Valid Settings settings, BindingResult bindingResult, final RedirectAttributes attrs, Model model,
+            HttpSession session) {
         //        model.addAttribute("settings", settings);
         log.debug("save settings {}", settings);
         if (bindingResult.hasErrors()) {
@@ -39,14 +53,16 @@ public class SettingsController {
             model.addAttribute("messageClass", "alert-danger");
             return "settings/edit";
         }
+        settings.init();
         attrs.addFlashAttribute("message", "Settings saved.");
         attrs.addFlashAttribute("messageClass", "alert-success");
+        session.setAttribute("settings", settings);
 
         return "redirect:edit";
     }
 
     @PostMapping(value = "edit", params = "addNode")
-    public String addNode(@Valid Settings settings, BindingResult bindingResult, Model model) {
+    public String addNode(@ModelAttribute @Valid Settings settings, BindingResult bindingResult, Model model) {
         Node node = settings.addNewNode();
         log.debug("add new node {}", node);
         model.addAttribute("message", String.format("Added new node '%s'", node.getName()));
@@ -63,6 +79,7 @@ public class SettingsController {
             if (node != null) {
                 model.addAttribute("message", String.format("Removed node '%s'", node.getName()));
                 model.addAttribute("messageClass", "alert-info");
+                return "settings/edit";
             }
         }
         log.warn("node not found: nodeIndex {}", nodeIndex);
@@ -78,6 +95,7 @@ public class SettingsController {
             if (probe != null) {
                 model.addAttribute("message", String.format("Added probe '%s' to node '%s'", probe.getName(), probe.getNode().getName()));
                 model.addAttribute("messageClass", "alert-info");
+                return "settings/edit";
             }
         }
         log.warn("node not found: nodeIndex {}", nodeIndex);
@@ -181,7 +199,9 @@ public class SettingsController {
     }
 
     @ModelAttribute("probeList")
-    public List<Probe> populateProbeList() {
+    public List<Probe> populateProbeList(HttpSession session) {
+        Settings settings = loadSettings(session);
+        //        Settings settings = (Settings) session.getAttribute("settings");
         return settings.getProbes().collect(Collectors.toList());
     }
 

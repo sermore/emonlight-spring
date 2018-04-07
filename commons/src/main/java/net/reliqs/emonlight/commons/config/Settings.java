@@ -26,6 +26,7 @@ public class Settings implements Serializable {
 
     static final long serialVersionUID = 1L;
 
+    @NotNull
     @Size(min = 4)
     private String serialPort;
 
@@ -34,9 +35,9 @@ public class Settings implements Serializable {
     @Max(115200)
     private Integer baudRate = 115200;
 
+    @NotNull
     @Min(500)
     @Max(28000)
-    @NotNull
     private Integer receiveTimeout = 2000;
 
     @Size(min = 1)
@@ -115,7 +116,7 @@ public class Settings implements Serializable {
     }
 
     @PostConstruct
-    void init() {
+    public void init() {
         // connect probes to references inside ServerMap items
         getServers().stream().flatMap(srv -> srv.getMaps().stream()).forEach(sm -> {
             Probe p = getNodes().stream().flatMap(nn -> nn.getProbes().stream())

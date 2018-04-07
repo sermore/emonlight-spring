@@ -614,7 +614,7 @@
                                                         placeholder="Probe">
                                                     <option th:value="${null}"> --</option>
                                                     <option th:each="opt : ${probeList}"
-                                                            th:value="${opt.id}" th:text="${opt.name}"></option>
+                                                            th:value="${opt.id}" th:text="|${opt.node.name} - ${opt.name}|"></option>
                                                 </select>
                                                 <small th:id="|mapProbeHelp${mIter.index}|"
                                                        class="form-text text-muted">Probe source to publish.

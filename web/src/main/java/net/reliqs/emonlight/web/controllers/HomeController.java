@@ -26,7 +26,6 @@ public class HomeController {
 
     @ModelAttribute("settings")
     public Settings getSettings() {
-        //        return beanFactory.getBean(Settings.class);
         return settingsService.loadAndInitialize();
     }
 

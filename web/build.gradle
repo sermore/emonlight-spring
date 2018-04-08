@@ -102,6 +102,8 @@ dependencies {
 //    compile("org.springframework:spring-jdbc")
 //    compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
     compile("org.springframework.boot:spring-boot-starter-activemq")
+    compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.11.0.201803080745-r'
+
 //    compile("org.springframework.boot:spring-boot-devtools")
 
     compile group: 'org.webjars', name: 'webjars-locator'

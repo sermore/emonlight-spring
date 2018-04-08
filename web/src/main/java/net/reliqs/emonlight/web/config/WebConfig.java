@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.web.config;
 
+import net.reliqs.emonlight.commons.config.ISettings;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.web.services.ProbeMonitor;
@@ -27,7 +28,7 @@ public class WebConfig {
 
     @Bean
     @SessionScope
-    public Settings settings() {
+    public ISettings settings() {
         Settings s = settingsService.load();
         return s;
     }

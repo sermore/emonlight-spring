@@ -11,7 +11,6 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +20,7 @@ import java.util.stream.Stream;
 
 //@Validated
 @ValidSettings
-public class Settings implements Serializable {
+public class Settings implements ISettings {
     private static final Logger log = LoggerFactory.getLogger(Settings.class);
 
     static final long serialVersionUID = 1L;
@@ -55,66 +54,79 @@ public class Settings implements Serializable {
     private Map<Integer, Node> nodeMapId;
     private Map<Integer, Probe> probeMapId;
 
+    @Override
     public String getSerialPort() {
         return serialPort;
     }
 
+    @Override
     public void setSerialPort(String serialPort) {
         this.serialPort = serialPort;
     }
 
+    @Override
     public Integer getBaudRate() {
         return baudRate;
     }
 
+    @Override
     public void setBaudRate(Integer baudRate) {
         this.baudRate = baudRate;
     }
 
+    @Override
     public Integer getReceiveTimeout() {
         return receiveTimeout;
     }
 
+    @Override
     public void setReceiveTimeout(Integer receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
     }
 
+    @Override
     public List<Node> getNodes() {
         return nodes;
     }
 
+    @Override
     public void setNodes(List<Node> nodes) {
         this.nodes = nodes;
     }
 
+    @Override
     public List<Server> getServers() {
         return servers;
     }
 
+    @Override
     public void setServers(List<Server> servers) {
         this.servers = servers;
     }
 
+    @Override
     public Integer getIdCnt() {
         return idCnt;
     }
 
-    public int findMaxSampleTime() {
-        int sampleTime = getNodes().stream()
-                .mapToInt(n -> Math.max(n.getSampleTime(),
-                        n.getMode() == OpMode.DHT22 ? 0 : n.getProbes().stream().mapToInt(p -> p.getSampleTime()).filter(s -> s > 0).min().orElse(0)))
-                .max().getAsInt();
-        return sampleTime;
-    }
-
-    public Stream<Probe> getProbes() {
-        return getNodes().stream().flatMap(n -> n.getProbes().stream());
-    }
-
+    @Override
     public void setIdCnt(Integer idCnt) {
         this.idCnt = idCnt;
     }
 
+    @Override
+    public int findMaxSampleTime() {
+        int sampleTime = getNodes().stream().mapToInt(n -> Math.max(n.getSampleTime(),
+                n.getMode() == OpMode.DHT22 ? 0 : n.getProbes().stream().mapToInt(p -> p.getSampleTime()).filter(s -> s > 0).min().orElse(0))).max().getAsInt();
+        return sampleTime;
+    }
+
+    @Override
+    public Stream<Probe> getProbes() {
+        return getNodes().stream().flatMap(n -> n.getProbes().stream());
+    }
+
+    @Override
     @PostConstruct
     public void init() {
         // connect probes to references inside ServerMap items
@@ -148,18 +160,22 @@ public class Settings implements Serializable {
         log.debug("initialized nodes={}, servers={}", getNodes().size(), getServers().size());
     }
 
+    @Override
     public Node findNodeByName(String name) {
         return nodeMap.get(name);
     }
 
+    @Override
     public Node findNodeById(Integer node) {
         return nodeMapId.get(node);
     }
 
+    @Override
     public Probe findProbeById(Integer probe) {
         return probeMapId.get(probe);
     }
 
+    @Override
     public Node addNewNode() {
         Node node = new Node();
         node.setId(idCnt++);
@@ -168,6 +184,7 @@ public class Settings implements Serializable {
         return node;
     }
 
+    @Override
     public Node removeNode(int nodeIndex) {
         Node node = nodes.remove(nodeIndex);
         if (node != null) {
@@ -189,6 +206,7 @@ public class Settings implements Serializable {
         return node;
     }
 
+    @Override
     public Probe addNewProbe(Integer nodeIndex) {
         Probe p = null;
         Node n = nodes.get(nodeIndex);
@@ -203,6 +221,7 @@ public class Settings implements Serializable {
         return p;
     }
 
+    @Override
     public Probe removeProbe(Integer nodeIndex, Integer probeIndex) {
         if (nodeIndex != null && probeIndex != null) {
             Node node = nodes.get(nodeIndex);
@@ -217,6 +236,7 @@ public class Settings implements Serializable {
         return null;
     }
 
+    @Override
     public Server addNewServer() {
         Server s = new Server();
         s.setName("Server " + getServers().size() + 1);
@@ -224,6 +244,7 @@ public class Settings implements Serializable {
         return s;
     }
 
+    @Override
     public ServerMap addNewServerMap(Integer serverIndex) {
         ServerMap sm = null;
         Server s = servers.get(serverIndex);
@@ -234,11 +255,13 @@ public class Settings implements Serializable {
         return sm;
     }
 
+    @Override
     public Server removeServer(Integer serverIndex) {
         Server s = servers.remove(serverIndex.intValue());
         return s;
     }
 
+    @Override
     public ServerMap removeServerMap(Integer serverIndex, Integer serverMapIndex) {
         ServerMap sm = null;
         Server s = servers.get(serverIndex);

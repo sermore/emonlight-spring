@@ -111,6 +111,7 @@ dependencies {
     compile 'org.webjars:popper.js:1.12.9-1'
     compile 'org.webjars:bootstrap:4.0.0-2'
     compile 'org.webjars:highcharts:6.0.7'
+    compile 'org.webjars:material-design-icons:3.0.1'
 
 //    testCompile("com.h2database:h2")
 

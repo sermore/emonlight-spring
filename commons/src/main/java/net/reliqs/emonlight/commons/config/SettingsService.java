@@ -80,6 +80,10 @@ public class SettingsService {
         return s;
     }
 
+    public boolean save(Settings settings) {
+        return dump(settings, path);
+    }
+
     public String getPath() {
         return path;
     }

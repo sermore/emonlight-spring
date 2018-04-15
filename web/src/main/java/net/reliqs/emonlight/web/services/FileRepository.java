@@ -3,8 +3,12 @@ package net.reliqs.emonlight.web.services;
 import org.eclipse.jgit.revwalk.RevCommit;
 
 public interface FileRepository {
-    //    void initRepo();
+    String diff();
     boolean commit(String message);
 
-    Iterable<RevCommit> getHistory();
+    String commitWithDiff(String message);
+
+    Iterable<RevCommit> history(int skip, int maxCount);
+
+    boolean checkoutAndCommit(String refName);
 }

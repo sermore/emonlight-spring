@@ -3,8 +3,11 @@ package net.reliqs.emonlight.web.config;
 import net.reliqs.emonlight.commons.config.ISettings;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsService;
+import net.reliqs.emonlight.web.git.FileRepositoryImpl;
+import net.reliqs.emonlight.web.services.FileRepository;
 import net.reliqs.emonlight.web.services.ProbeMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.annotation.SessionScope;
@@ -31,6 +34,11 @@ public class WebConfig {
     public ISettings settings() {
         Settings s = settingsService.load();
         return s;
+    }
+
+    @Bean(initMethod = "initRepo")
+    public FileRepository fileRepository(@Value("${settings.path:settings.yml}") String path) {
+        return new FileRepositoryImpl(path);
     }
 
     //    @Bean

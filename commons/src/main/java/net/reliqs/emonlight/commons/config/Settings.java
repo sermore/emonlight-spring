@@ -216,7 +216,9 @@ public class Settings implements ISettings {
             p.setName("Probe " + p.getId());
             p.setNode(n);
             n.getProbes().add(p);
-            probeMapId.put(p.getId(), p);
+            if (probeMapId != null) {
+                probeMapId.put(p.getId(), p);
+            }
         }
         return p;
     }
@@ -228,7 +230,9 @@ public class Settings implements ISettings {
             if (node != null) {
                 Probe probe = node.getProbes().remove(probeIndex.intValue());
                 if (probe != null) {
-                    probeMapId.remove(probe.getId());
+                    if (probeMapId != null) {
+                        probeMapId.remove(probe.getId());
+                    }
                     return probe;
                 }
             }

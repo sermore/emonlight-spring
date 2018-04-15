@@ -1,0 +1,76 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{index :: header(~{::title})}">
+    <title>Settings History</title>
+</head>
+<body>
+<nav th:insert="~{index :: navigation}"></nav>
+
+<div class="table-responsive">
+
+    <table class="table table-sm table-bordered table-striped">
+        <thead>
+        <tr>
+            <th scope="col-md">Settings version details</th>
+            <!--<th scope="col-sm">Actions</th>-->
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="commit, cIter: ${list}">
+            <td>
+                <div class="d-flex justify-content-between p-2">
+                    <div>
+                        <p>
+                            <strong>Name:</strong> <span th:text="${commit.name}"></span>
+                        </p>
+                        <p>
+                            <strong>Date:</strong> <span th:text="${#dates.formatISO(commit.commitTime)}"></span>
+                        </p>
+                    </div>
+                    <div>
+                        <button th:unless="${cIter.first}" type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModalCenter"
+                                th:onclick="'urlToGo=\'' + @{/settings/restore(name=${commit.name})} + '\''">
+                            <span class="p-1">Restore</span> <i class="material-icons align-text-bottom">restore</i>
+                        </button>
+                        <button th:if="${cIter.first}" disabled type="button" class="btn btn-primary">Current Version</button>
+                    </div>
+                </div>
+                <pre th:text="${commit.fullMessage}">
+                </pre>
+            </td>
+            <!--<td>-->
+            <!--</td>-->
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Confirm restore</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to proceed?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="window.location.href = urlToGo">Restore version</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var urlToGo = '';
+</script>
+
+<th:block th:insert="~{index :: bootstrapjs}"></th:block>
+</body>
+</html>

@@ -31,7 +31,7 @@ spring:
 #    hibernate:
 #      ddl-auto: none
 
-settings.path: src/test/resources/settings.yml
+settings.path: out/settings.yml
 
 #spring.jpa.properties.javax.persistence.schema-generation.database.action: drop-and-create
 #spring.jpa.properties.javax.persistence.schema-generation.create-source: metadata

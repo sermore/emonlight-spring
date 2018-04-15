@@ -1,6 +1,8 @@
 package net.reliqs.emonlight.web.controllers;
 
 import net.reliqs.emonlight.commons.config.*;
+import net.reliqs.emonlight.web.services.FileRepository;
+import net.reliqs.emonlight.web.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,20 +19,27 @@ import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/settings/*")
-//@SessionAttributes("settings")
 public class SettingsController {
     private static final Logger log = LoggerFactory.getLogger(SettingsController.class);
 
     @Autowired
     private SettingsService settingsService;
 
+    @Autowired
+    private FileRepository repo;
+
     private Settings loadSettings(HttpSession session) {
-        Settings settings = (Settings) session.getAttribute("settings");
-        if (settings == null) {
-            settings = settingsService.loadAndInitialize();
-            session.setAttribute("settings", settings);
-        }
-        return settings;
+        return WebUtils.loadSettings(settingsService, session);
+    }
+
+    @GetMapping(value = "restore", params = "name")
+    public String restore(String name, Model model, HttpSession session, final RedirectAttributes attrs) {
+        log.debug("restore {}", name);
+        repo.checkoutAndCommit(name);
+        session.removeAttribute("settings");
+        attrs.addFlashAttribute("message", String.format("Successfully restored version %s.", name));
+        attrs.addFlashAttribute("messageClass", "alert-success");
+        return "redirect:edit";
     }
 
     @GetMapping("edit")
@@ -39,43 +48,62 @@ public class SettingsController {
         //        Settings settings = (Settings) session.getAttribute("settings");
         Settings settings = loadSettings(session);
         model.addAttribute("settings", settings);
+        model.addAttribute("commitMessage", "");
         return "settings/edit";
     }
 
+    @PostMapping(value = "edit", params = "reset")
+    public String reset(@ModelAttribute("commitMessage") String commitMessage, final RedirectAttributes attrs, Model model, HttpSession session) {
+        log.debug("reset {}", model);
+        attrs.addFlashAttribute("message", "Changes discarded.");
+        attrs.addFlashAttribute("messageClass", "alert-info");
+        return "redirect:edit";
+    }
+
     @PostMapping(value = "edit")
-    public String save(@ModelAttribute @Valid Settings settings, BindingResult bindingResult, final RedirectAttributes attrs, Model model,
-            HttpSession session) {
+    public String save(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
+            final RedirectAttributes attrs, Model model, HttpSession session) {
         //        model.addAttribute("settings", settings);
-        log.debug("save settings {}", settings);
+        log.debug("save settings {}, {}", settings, model);
         if (bindingResult.hasErrors()) {
             log.debug("errors {}", bindingResult.getAllErrors());
+            //            model.addAttribute("commitMessage", commitMessage);
             model.addAttribute("message", "Unable to save Settings due to presence of validation failures.");
             model.addAttribute("messageClass", "alert-danger");
             return "settings/edit";
         }
         settings.init();
-        attrs.addFlashAttribute("message", "Settings saved.");
-        attrs.addFlashAttribute("messageClass", "alert-success");
-        session.setAttribute("settings", settings);
-
-        return "redirect:edit";
+        settingsService.save(settings);
+        String commitMsg = repo.commitWithDiff(commitMessage);
+        if (commitMsg != null) {
+            attrs.addFlashAttribute("message", "Settings saved.\n" + commitMessage);
+            attrs.addFlashAttribute("messageClass", "alert-success");
+            session.setAttribute("settings", settings);
+            return "redirect:edit";
+        } else {
+            //            model.addAttribute("commitMessage", commitMessage);
+            model.addAttribute("message", "No changes identified.");
+            model.addAttribute("messageClass", "alert-info");
+            return "settings/edit";
+        }
     }
 
     @PostMapping(value = "edit", params = "addNode")
-    public String addNode(@ModelAttribute @Valid Settings settings, BindingResult bindingResult, Model model) {
+    public String addNode(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage, Model model) {
         Node node = settings.addNewNode();
-        log.debug("add new node {}", node);
+        log.debug("add new node {}, {}", node, model);
         model.addAttribute("message", String.format("Added new node '%s'", node.getName()));
         model.addAttribute("messageClass", "alert-info");
         return "settings/edit";
     }
 
     @PostMapping(value = "edit", params = "removeNode")
-    public String removeNode(@Valid Settings settings, BindingResult bindingResult,
+    public String removeNode(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
             @RequestParam(value = "removeNode", required = true) Integer nodeIndex, Model model) {
         if (nodeIndex != null) {
             log.debug("remove nodeIndex {}", nodeIndex);
             Node node = settings.removeNode(nodeIndex);
+            // FIXME find the way to remove validation messages for the removed items
             if (node != null) {
                 model.addAttribute("message", String.format("Removed node '%s'", node.getName()));
                 model.addAttribute("messageClass", "alert-info");
@@ -87,7 +115,7 @@ public class SettingsController {
     }
 
     @PostMapping(value = "edit", params = "addProbe")
-    public String addProbe(@Valid Settings settings, BindingResult bindingResult,
+    public String addProbe(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
             @RequestParam(value = "addProbe", required = true) Integer nodeIndex, Model model) {
         if (nodeIndex != null) {
             log.debug("add probe to nodeIndex {}", nodeIndex);
@@ -103,13 +131,14 @@ public class SettingsController {
     }
 
     @PostMapping(value = "edit", params = "removeProbe")
-    public String removeProbe(@Valid Settings settings, BindingResult bindingResult,
+    public String removeProbe(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
             @RequestParam(value = "removeProbe", required = true) String nodeProbeIndex, Model model) {
         if (nodeProbeIndex != null && !nodeProbeIndex.isEmpty()) {
             String[] split = nodeProbeIndex.split(",");
             Integer nodeIndex = Integer.valueOf(split[0]);
             Integer probeIndex = Integer.valueOf(split[1]);
-            log.debug("remove nodeIndex {}, probeIndex {}", nodeIndex, probeIndex);
+            log.debug("remove nodeIndex {}, probeIndex {}, {}", nodeIndex, probeIndex, bindingResult);
+            // FIXME find the way to remove validation messages for the removed items
             if (nodeIndex != null && probeIndex != null) {
                 Probe probe = settings.removeProbe(nodeIndex, probeIndex);
                 if (probe != null) {
@@ -125,7 +154,8 @@ public class SettingsController {
     }
 
     @PostMapping(value = "edit", params = "addServer")
-    public String addServer(@Valid Settings settings, BindingResult bindingResult, Model model) {
+    public String addServer(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
+            Model model) {
         Server s = settings.addNewServer();
         log.debug("add new server {}", s);
         model.addAttribute("message", String.format("Added new REST endpoint '%s'", s.getName()));
@@ -134,7 +164,7 @@ public class SettingsController {
     }
 
     @PostMapping(value = "edit", params = "removeServer")
-    public String removeServer(@Valid Settings settings, BindingResult bindingResult,
+    public String removeServer(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
             @RequestParam(value = "removeServer", required = true) Integer serverIndex, Model model) {
         if (serverIndex != null) {
             log.debug("remove serverIndex {}", serverIndex);
@@ -150,7 +180,7 @@ public class SettingsController {
     }
 
     @PostMapping(value = "edit", params = "addServerMap")
-    public String addServerMap(@Valid Settings settings, BindingResult bindingResult,
+    public String addServerMap(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
             @RequestParam(value = "addServerMap", required = true) Integer serverIndex, Model model) {
         if (serverIndex != null) {
             log.debug("add serverMap to serverIndex {}", serverIndex);
@@ -167,7 +197,7 @@ public class SettingsController {
     }
 
     @PostMapping(value = "edit", params = "removeServerMap")
-    public String removeServerMap(@Valid Settings settings, BindingResult bindingResult,
+    public String removeServerMap(@Valid Settings settings, BindingResult bindingResult, @ModelAttribute("commitMessage") String commitMessage,
             @RequestParam(value = "removeServerMap", required = true) String serverMapIndex, Model model) {
         if (serverMapIndex != null && !serverMapIndex.isEmpty()) {
             String[] split = serverMapIndex.split(",");
@@ -201,7 +231,6 @@ public class SettingsController {
     @ModelAttribute("probeList")
     public List<Probe> populateProbeList(HttpSession session) {
         Settings settings = loadSettings(session);
-        //        Settings settings = (Settings) session.getAttribute("settings");
         return settings.getProbes().collect(Collectors.toList());
     }
 

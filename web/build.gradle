@@ -57,17 +57,18 @@ task deploy(dependsOn: 'build') {
         ssh.run {
             session(remotes.deployHost) {
                 // test if service is already installed
-                if (!execute('id emonlight-xbee-gw', ignoreError: true)) {
+                if (!execute('id emonlight', ignoreError: true)) {
                     put from: file('conf/install.sh'), into: '/tmp'
                     executeSudo('bash /tmp/install.sh', pty: true)
                 }
                 // copy original file
-                executeSudo 'cp -f /var/lib/emonlight-xbee-gw/emonlight-web.jar /var/lib/emonlight-xbee-gw/emonlight-web.jar.bak', pty: true, ignoreError: true
+                executeSudo 'cp -f /mnt/var/lib/emonlight/emonlight-web.jar /mnt/var/lib/emonlight/emonlight-web.jar.bak', pty: true,
+                        ignoreError: true
                 // deploy executable file
                 put from: jar.archivePath.absolutePath, into: '/tmp'
                 execute 'chmod a+x /tmp/' + jar.archiveName
                 executeSudo 'systemctl stop emonlight-web', pty: true
-                executeSudo 'mv -f /tmp/' + jar.archiveName + ' /var/lib/emonlight-xbee-gw/emonlight-web.jar', pty: true
+                executeSudo 'mv -f /tmp/' + jar.archiveName + ' /mnt/var/lib/emonlight/emonlight-web.jar', pty: true
                 executeSudo 'systemctl start emonlight-web', pty: true
             }
         }
@@ -78,7 +79,7 @@ task undeploy {
     doLast {
         ssh.run {
             // test if service is already installed
-            session(remotes.lime2) {
+            session(remotes.deployHost) {
                 put from: file('conf/uninstall.sh'), into: '/tmp'
                 executeSudo("bash /tmp/uninstall.sh", pty: true)
             }

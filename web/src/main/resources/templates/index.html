@@ -24,6 +24,9 @@
             <li class="nav-item active">
                 <a class="nav-link" th:href="@{/}">Home <span class="sr-only">(current)</span></a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/list}">List</a>
+            </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" th:href="@{/list}" id="navbarDropdown" role="button"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -40,17 +43,16 @@
                     </th:block>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/list}">List</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/settings/edit}">Settings</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/settings/history/1}">History</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link disabled" href="#">Disabled</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" th:href="@{/settings/edit}" id="navbarSettingsDropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Settings
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarSettingsDropdown">
+                    <a class="nav-link" th:href="@{/settings/edit}">Settings</a>
+                    <a class="nav-link" th:href="@{/settings/history/1}">History</a>
+                    <a class="nav-link" th:href="@{/settings/status}">Status</a>
+                </div>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -61,11 +63,11 @@
 </nav>
 
 <th:block th:fragment="bootstrapjs">
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script th:src="@{/webjars/jquery/jquery.js}"></script>
-<script th:src="@{/webjars/popper.js/umd/popper.js}"></script>
-<script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script th:src="@{/webjars/jquery/jquery.js}"></script>
+    <script th:src="@{/webjars/popper.js/umd/popper.js}"></script>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
 </th:block>
 </body>
 </html>

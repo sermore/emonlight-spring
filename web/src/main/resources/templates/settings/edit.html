@@ -2,18 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="~{index :: header(~{::title})}">
     <title>Edit Settings</title>
-    <!--<style>-->
-    <!--button.btn.btn-collapse:before {-->
-    <!--content: '-';-->
-    <!--display: block;-->
-    <!--width: 15px;-->
-    <!--}-->
-    <!--button.btn.btn-collapse.collapsed:before {-->
-    <!--content: '+';-->
-    <!--display: block;-->
-    <!--width: 15px;-->
-    <!--}-->
-    <!--</style>-->
 </head>
 <body>
 <nav th:insert="~{index :: navigation}"></nav>
@@ -28,10 +16,13 @@
 
             <div class="d-flex justify-content-between bg-light p-2">
                 <h4>Settings</h4>
-                <div class="btn-group" role="group">
-                    <button type="submit" name="reset" class="btn btn-secondary">Reset</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
-                </div>
+                <!--<div class="btn-group" role="group">-->
+                <!--<button type="submit" name="reset"-->
+                <!--class="btn btn-secondary"><span class="p-1 align-middle">Reset</span><i class="material-icons align-middle p-0">-->
+                <!--undo</i></button>-->
+                <!--<button type="submit"-->
+                <!--class="btn btn-primary"><span class="p-1 align-middle">Save</span><i class="material-icons align-middle p-0">save</i></button>-->
+                <!--</div>-->
             </div>
 
             <div th:if="${#fields.hasErrors('global')}">
@@ -80,25 +71,27 @@
 
             <fieldset id="nodes-fieldset" class="form-group border p-3">
                 <div class="d-flex justify-content-between bg-light p-2">
-                    <h5>Nodes settings</h5>
-                    <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                    <h5>Nodes</h5>
+                    <button class="btn btn-collapse btn-sm p-1" type="button" data-toggle="collapse"
                             data-target="fieldset#nodes-fieldset div.collapse" aria-controls="div.collapse"
-                            aria-expanded="false">+
+                            aria-expanded="false"><i class="material-icons align-middle p-0">swap_vert</i>
                     </button>
-                    <button class="btn btn-dark btn-sm" type="submit" name="addNode" value="addNode">Add Node</button>
+                    <button class="btn btn-secondary btn-sm p-1" type="submit" name="addNode" value="addNode"><i
+                            class="material-icons align-middle p-0">add</i>
+                    </button>
                 </div>
                 <th:block th:each="node, nIter: *{nodes}">
                     <fieldset
-                            th:class="|form-group border p-1 ${#fields.hasErrors('*{nodes[__${nIter.index}__]*}') ? 'border-danger' : ''}|">
+                            th:class="|form-group border border-info p-1 ${#fields.hasErrors('*{nodes[__${nIter.index}__]*}') ? 'border-danger' : ''}|">
 
                         <div class="d-flex justify-content-between bg-light p-2">
                             <h6>Node [[${node.name}]]</h6>
-                            <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                            <button class="btn btn-collapse btn-sm p-1" type="button" data-toggle="collapse"
                                     th:attr="data-target='div#node-content' + ${node.id} + ', div#node-content' + ${node.id} + ' div.collapse', aria-controls='node-content' + ${node.id}"
-                                    aria-expanded="false">+
+                                    aria-expanded="false"><i class="material-icons align-middle p-0">swap_vert</i>
                             </button>
-                            <button class="btn btn-dark btn-sm" type="submit" name="removeNode"
-                                    th:value="${nIter.index}">Remove
+                            <button class="btn btn-secondary btn-sm p-1" type="submit" name="removeNode"
+                                    th:value="${nIter.index}"><i class="material-icons align-middle p-0">remove</i>
                             </button>
                         </div>
 
@@ -253,22 +246,23 @@
                             <!--<fieldset class="form-group border p-2">-->
                             <div class="d-flex justify-content-between bg-light p-2">
                                 <h6>Probes for node [[${node.name}]]</h6>
-                                <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                                <button class="btn btn-collapse btn-sm p-1" type="button" data-toggle="collapse"
                                         th:attr="data-target='#probe-list' + ${node.id}, aria-controls='probe-list' + ${node.id}"
-                                        aria-expanded="false">+
+                                        aria-expanded="false"><i class="material-icons p-0 align-middle">swap_vert</i>
                                 </button>
-                                <button class="btn btn-secondary btn-sm" type="submit" name="addProbe"
-                                        th:value="${nIter.index}">Add Probe
+                                <button class="btn btn-dark btn-sm p-1" type="submit" name="addProbe"
+                                        th:value="${nIter.index}"><i class="material-icons align-middle p-0">
+                                    add</i>
                                 </button>
                             </div>
                             <div class="collapse" th:id="|probe-list${node.id}|">
                                 <th:block th:each="probe, pIter: ${node.probes}">
                                     <fieldset
-                                            th:class="|form-group border p-1 ${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]*}') ? 'border-danger' : ''}|">
+                                            th:class="|form-group border p-1 border-dark ${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]*}') ? 'border-danger' : ''}|">
                                         <div class="d-flex justify-content-between bg-light p-2">
                                             <h6>Probe [[${probe.name}]]</h6>
-                                            <button class="btn btn-secondary btn-sm" type="submit" name="removeProbe"
-                                                    th:value="|${nIter.index},${pIter.index}|">Remove
+                                            <button class="btn btn-dark btn-sm p-1" type="submit" name="removeProbe"
+                                                    th:value="|${nIter.index},${pIter.index}|"><i class="material-icons align-middle p-0">remove</i>
                                             </button>
                                         </div>
                                         <div th:if="${#fields.hasErrors('*{nodes[__${nIter.index}__].probes[__${pIter.index}__]}')}">
@@ -463,25 +457,26 @@
             <fieldset id="servers-fieldset" class="form-group border p-3">
                 <div class="d-flex justify-content-between bg-light p-2">
                     <h5>REST endpoints</h5>
-                    <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                    <button class="btn btn-collapse btn-sm p-1" type="button" data-toggle="collapse"
                             data-target="fieldset#servers-fieldset div.collapse" aria-controls="div.collapse"
-                            aria-expanded="false">+
+                            aria-expanded="false"><i class="material-icons p-0 align-middle">swap_vert</i>
                     </button>
-                    <button class="btn btn-dark btn-sm" type="submit" name="addServer" value="addServer">Add Server
+                    <button class="btn btn-secondary btn-sm p-1" type="submit" name="addServer" value="addServer"><i
+                            class="material-icons align-middle p-0">add</i>
                     </button>
                 </div>
                 <th:block th:each="server, sIter: *{servers}">
                     <fieldset
-                            th:class="|form-group border p-1 ${#fields.hasErrors('*{servers[__${sIter.index}__]*}') ? 'border-danger' : ''}|">
+                            th:class="|form-group border border-info p-1 ${#fields.hasErrors('*{servers[__${sIter.index}__]*}') ? 'border-danger' : ''}|">
 
                         <div class="d-flex justify-content-between bg-light p-2">
                             <h6>REST endpoint [[${server.name}]]</h6>
-                            <button class="btn btn-collapse" type="button" data-toggle="collapse"
-                                    th:attr="data-target='#server-content' + ${sIter.index}, aria-controls='server-content' + ${sIter.index}"
-                                    aria-expanded="false">+
+                            <button class="btn btn-collapse btn-sm p-1" type="button" data-toggle="collapse"
+                                    th:attr="data-target='div#server-content' + ${sIter.index} + ', div#server-content' + ${sIter.index} + ' div.collapse', aria-controls='server-content' + ${sIter.index}"
+                                    aria-expanded="false"><i class="material-icons p-0 align-middle">swap_vert</i>
                             </button>
-                            <button class="btn btn-dark btn-sm" type="submit" name="removeServer"
-                                    th:value="${sIter.index}">Remove
+                            <button class="btn btn-secondary btn-sm p-1" type="submit" name="removeServer"
+                                    th:value="${sIter.index}"><i class="material-icons align-middle p-0">remove</i>
                             </button>
                         </div>
 
@@ -586,23 +581,23 @@
                             <!-- server map -->
                             <div class="d-flex justify-content-between bg-light p-2">
                                 <h6>Mappings for server [[${server.name}]]</h6>
-                                <button class="btn btn-collapse" type="button" data-toggle="collapse"
+                                <button class="btn btn-collapse btn-sm p-1" type="button" data-toggle="collapse"
                                         th:attr="data-target='#serverMap' + ${sIter.index}, aria-controls='serverMap' + ${sIter.index}"
-                                        aria-expanded="false">+
+                                        aria-expanded="false"><i class="material-icons p-0 align-middle">swap_vert</i>
                                 </button>
-                                <button class="btn btn-secondary btn-sm" type="submit" name="addServerMap"
-                                        th:value="${sIter.index}">Add Mapping
+                                <button class="btn btn-dark btn-sm p-1" type="submit" name="addServerMap"
+                                        th:value="${sIter.index}"><i class="material-icons align-middle p-0">add</i>
                                 </button>
                             </div>
                             <div class="collapse" th:id="|serverMap${sIter.index}|">
                                 <th:block th:each="map, mIter: ${server.maps}">
                                     <fieldset
-                                            th:class="|form-group border p-1 ${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__]*}') ? 'border-danger' : ''}|">
+                                            th:class="|form-group border border-dark p-1 ${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__]*}') ? 'border-danger' : ''}|">
                                         <div class="d-flex justify-content-between bg-light p-2">
                                             <h6>Mapping [[${mIter.index}]]</h6>
-                                            <button class="btn btn-secondary btn-sm" type="submit"
+                                            <button class="btn btn-dark btn-sm p-1" type="submit"
                                                     name="removeServerMap"
-                                                    th:value="|${sIter.index},${mIter.index}|">Remove
+                                                    th:value="|${sIter.index},${mIter.index}|"><i class="material-icons align-middle p-0">remove</i>
                                             </button>
                                         </div>
                                         <div th:if="${#fields.hasErrors('*{servers[__${sIter.index}__].maps[__${mIter.index}__]}')}">
@@ -677,13 +672,40 @@
                 </div>
             </fieldset>
 
-            <div class="d-flex justify-content-end bg-light p-2">
-                <div class="btn-group" role="group">
-                    <button type="submit" name="reset" class="btn btn-secondary">Reset</button>
-                    <button type="submit" class="btn btn-primary">Save</button>
+            <div class="d-flex justify-content-between bg-light p-2">
+                <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#confirmModalCenter"><span
+                        class="align-middle p-1">Application Restart</span><i
+                        class="material-icons align-middle">send</i></button>
+                <div>
+                    <button type="submit" name="reset" class="btn btn-secondary"><span class="align-middle p-1">Reset</span><i
+                            class="material-icons align-middle">undo</i></button>
+                    <button type="submit"
+                            class="btn btn-primary"><span class="align-middle p-1">Save</span><i class="material-icons align-middle">save</i></button>
                 </div>
             </div>
         </fieldset>
+
+        <!-- Modal -->
+        <div class="modal fade" id="confirmModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Confirm application restart</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to proceed?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" name="restart">Restart</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </form>
 
 </div>

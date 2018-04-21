@@ -48,16 +48,33 @@ public class SettingsController {
         //        Settings settings = (Settings) session.getAttribute("settings");
         Settings settings = loadSettings(session);
         model.addAttribute("settings", settings);
-        model.addAttribute("commitMessage", "");
+        //        model.addAttribute("commitMessage", "");
         return "settings/edit";
     }
 
     @PostMapping(value = "edit", params = "reset")
-    public String reset(@ModelAttribute("commitMessage") String commitMessage, final RedirectAttributes attrs, Model model, HttpSession session) {
-        log.debug("reset {}", model);
+    public String reset(@ModelAttribute("commitMessage") String commitMessage, final RedirectAttributes attrs) {
+        log.debug("reset {}");
+        attrs.addFlashAttribute("commitMessage", commitMessage);
         attrs.addFlashAttribute("message", "Changes discarded.");
         attrs.addFlashAttribute("messageClass", "alert-info");
         return "redirect:edit";
+    }
+
+    @PostMapping(value = "edit", params = "restart")
+    public String restartApplication(@Valid Settings settings, BindingResult bindingResult, String restart,
+            @ModelAttribute("commitMessage") String commitMessage, final RedirectAttributes attrs, Model model) {
+        log.debug("restart application");
+        if (WebUtils.restartApplication()) {
+            attrs.addFlashAttribute("commitMessage", commitMessage);
+            attrs.addFlashAttribute("message", "Application restarted.");
+            attrs.addFlashAttribute("messageClass", "alert-success");
+            return "redirect:edit";
+        } else {
+            model.addAttribute("message", String.format("Application restart failed."));
+            model.addAttribute("messageClass", "alert-danger");
+            return "settings/edit";
+        }
     }
 
     @PostMapping(value = "edit")

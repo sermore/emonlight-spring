@@ -1,10 +1,7 @@
 package net.reliqs.emonlight.web.controllers;
 
-import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.web.data.CommitMessage;
 import net.reliqs.emonlight.web.services.FileRepository;
-import net.reliqs.emonlight.web.utils.WebUtils;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +26,7 @@ public class HistoryController {
     @Autowired
     private FileRepository repo;
 
-    @Autowired
-    private SettingsService settingsService;
-
     private int pageSize = 10;
-
-    private Settings loadSettings(HttpSession session) {
-        return WebUtils.loadSettings(settingsService, session);
-    }
 
     List<CommitMessage> convertHistory(Iterable<RevCommit> history) {
         List<CommitMessage> list = StreamSupport.stream(history.spliterator(), false).map(CommitMessage::new).collect(Collectors.toList());
@@ -47,8 +37,8 @@ public class HistoryController {
     public String list(@PathVariable @Min(1) Integer page, Model model, HttpSession session) {
         log.debug("list {}", model);
         //        Settings settings = (Settings) session.getAttribute("settings");
-        Settings settings = loadSettings(session);
-        model.addAttribute("settings", settings);
+        //        Settings settings = loadSettings(session);
+        //        model.addAttribute("settings", settings);
 
         Iterable<RevCommit> res = repo.history((page - 1) * pageSize, pageSize);
         model.addAttribute("list", convertHistory(res));

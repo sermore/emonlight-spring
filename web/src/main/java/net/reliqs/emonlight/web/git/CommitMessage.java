@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.web.data;
+package net.reliqs.emonlight.web.git;
 
 import org.eclipse.jgit.revwalk.RevCommit;
 

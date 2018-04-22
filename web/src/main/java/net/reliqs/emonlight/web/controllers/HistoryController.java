@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.web.controllers;
 
-import net.reliqs.emonlight.web.data.CommitMessage;
+import net.reliqs.emonlight.web.git.CommitMessage;
 import net.reliqs.emonlight.web.services.FileRepository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.slf4j.Logger;

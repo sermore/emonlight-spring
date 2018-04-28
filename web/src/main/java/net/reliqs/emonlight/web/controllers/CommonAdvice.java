@@ -9,7 +9,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import javax.servlet.http.HttpSession;
 
-@ControllerAdvice(assignableTypes = {ChartController.class, HistoryController.class, HomeController.class, StatusController.class})
+@ControllerAdvice(
+        assignableTypes = {ChartController.class, HistoryController.class, HomeController.class, StatusController.class, ChartController.class})
 public class CommonAdvice {
 
     @Autowired

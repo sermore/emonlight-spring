@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 @Service
+@Transactional(readOnly = true)
 public class JdbcDataRepo implements DataRepo {
     private static final Logger log = LoggerFactory.getLogger(JdbcDataRepo.class);
 
@@ -28,16 +29,16 @@ public class JdbcDataRepo implements DataRepo {
     }
 
     @Override
-    public Map<Long, List<Number[]>> getData(Iterable<Long> probeIds, long timeStart, long timeEnd, int tzone) {
-        HashMap<Long, List<Number[]>> result = new HashMap<>();
+    public Map<Long, List<Number[]>> getData(Iterable<Long> probeIds, long timeStart, long timeEnd) {
+        Map<Long, List<Number[]>> result = new HashMap<>();
 //        final Calendar cal = Calendar.getInstance();
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put("tstart", new Timestamp(timeStart));
         paramMap.put("tend", new Timestamp(timeEnd));
         paramMap.put("ids", probeIds);
         paramMap.put("limit", limit);
-        final ZoneOffset offset = ZoneOffset.ofTotalSeconds(tzone * 60);
         final AtomicLong size = new AtomicLong();
+        //        TimeZone.setDefault(TimeZone.getDefault().getTimeZone("GMT"));
         jdbcOperations.query(DATA_QUERY, paramMap, rch -> {
             Long pid = rch.getLong("probe_id");
             List<Number[]> list = result.get(pid);
@@ -45,7 +46,7 @@ public class JdbcDataRepo implements DataRepo {
                 list = new ArrayList<>();
                 result.put(pid, list);
             }
-            list.add(new Number[]{rch.getTimestamp("time").toInstant().atOffset(offset).toInstant().toEpochMilli(), rch.getDouble("value")});
+            list.add(new Number[]{rch.getTimestamp("time").getTime(), rch.getDouble("value")});
             size.incrementAndGet();
         });
         log.trace("result size = {}", size);

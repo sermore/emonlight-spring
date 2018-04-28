@@ -14,7 +14,7 @@ spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
 #    url: jdbc:mariadb://localhost:3306/emonlight_dev?createDatabaseIfNotExist=true&useSSL=false&assureReadOnly=true
-    url: jdbc:mariadb://lime2:3306/emonlight?useSSL=false&assureReadOnly=true
+    url: jdbc:mariadb://xu4:3306/emonlight?useSSL=false&assureReadOnly=true&serverTimezone=UTC&sessionVariables=time_zone='+00:00'&useLegacyDatetimeCode=false
     username: emonlight
     password: emonlight
 #    initialize: false

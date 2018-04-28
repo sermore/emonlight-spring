@@ -54,6 +54,9 @@
                     <a class="nav-link" th:href="@{/settings/status}">Status</a>
                 </div>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/live(id='6',id='9',id='11')}">Live</a>
+            </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
             <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"/>
@@ -67,6 +70,7 @@
     <script th:src="@{/webjars/popper.js/umd/popper.js}"></script>
     <script th:src="@{/webjars/bootstrap/js/bootstrap.js}"></script>
     <script th:src="@{/webjars/momentjs/moment.js}"></script>
+    <script th:src="@{/webjars/moment-timezone/moment-timezone-with-data.js}"></script>
 </th:block>
 </body>
 </html>

@@ -96,6 +96,8 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-thymeleaf') {
         exclude module: 'spring-boot-starter-tomcat'
     }
+    compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version: '3.0.1.RELEASE'
+
     compile("org.springframework.boot:spring-boot-starter-jetty")
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
@@ -114,6 +116,7 @@ dependencies {
     compile 'org.webjars:highcharts:6.0.7'
     compile 'org.webjars:material-design-icons:3.0.1'
     compile group: 'org.webjars', name: 'momentjs', version: '2.21.0'
+    compile 'org.webjars:moment-timezone:0.5.5'
 
 
 //    testCompile("com.h2database:h2")

@@ -1,45 +1,44 @@
-<!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>Getting Started: Serving Web Content</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-    <!--<link href="../static/css/dc.css" th:href="@{css/dc.css}"-->
-    <!--rel="stylesheet" media="screen"/>-->
-    <script th:src="@{/webjars/jquery/jquery.js}"></script>
-    <script th:src="@{/webjars/highcharts/highstock.js}"></script>
-    <!--<script src="../static/js/themes/gray.js" th:src="@{js/themes/gray.js}"></script>-->
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{index :: header(~{::title})}">
+    <title>Node and probe List</title>
 </head>
 <body>
+<nav th:insert="~{index :: navigation}"></nav>
+
 <p th:inline="text"> Parameters: [[${#numbers.listFormatInteger(ids, 0)}]] </p>
+
+last time
+<time th:datetime="${#temporals.formatISO(lastTime)}" data-format="LLLL"></time>
 
 <div id="container" style="width:100%; height:400px;"></div>
 
+<th:block th:insert="~{index :: bootstrapjs}"></th:block>
+<script th:src="@{/webjars/highcharts/highstock.js}"></script>
 <script th:inline="javascript">
     /*<![CDATA[*/
 
     var param_id = /*[[${ids}]]*/ [0];
-    var now = new Date();
-    var timeMax = now.getTime() - 6 * 3600000;
-    var timezoneOffset = now.getTimezoneOffset();
 
     /**
      * Request data from the server, add it to the graph and set a timeout
      * to request again
      */
     function requestData() {
-        $.ajax({
-            url: '/data?id[]=' + param_id + '&tstart=' + timeMax + '&tend=' + new Date().getTime() + '&tzone=' + timezoneOffset,
-            success: function (data) {
 
+        $.ajax({
+            url: '/chartData?id[]=' + ids + '&tstart=' + timeStart + '&tend=' + moment().valueOf(),
+            success: function (data) {
                 for (var s = 0; s < chart.series.length; s += 1) {
                     var series = chart.series[s],
                         shift = series.data.length > 200; // shift if the series is longer than 20
                     var points = data[series.options.key];
                     if (points) {
-                        // add the points
+                        timeStart = timeStart > points[points.length - 1][0] ? timeStart : points[points.length - 1][0];
                         var i = 0;
+                        // add the points
                         for (i; i < points.length; i += 1) {
-                            timeMax = timeMax > points[i][0] ? timeMax : points[i][0];
+                            // console.info(points[i][0]);
                             series.addPoint(points[i], false, shift);
                         }
                     }
@@ -53,11 +52,18 @@
     }
 
     $(document).ready(function () {
+        timeStart = moment() - (6 * 3600000) //now.subtract(6, 'hours').valueOf();
+        tz = moment.tz.guess();
         Highcharts.setOptions({
             time: {
-                timezoneOffset: timezoneOffset
+                getTimezoneOffset: function (timestamp) {
+                    var timezoneOffset = -moment.tz(timestamp, tz).utcOffset();
+
+                    return timezoneOffset;
+                }
             }
         });
+        ids = [6, 9, 11];
         chart = new Highcharts.StockChart({
             chart: {
                 renderTo: 'container',
@@ -83,17 +89,31 @@
                 }
             },
             series: [{
-                name: 'Random data',
+                name: 'data 6',
                 data: [],
                 key: '6'
             }, {
-                name: 'Random data',
+                name: 'data 9',
                 data: [],
                 key: '9'
+            }, {
+                name: 'data 11',
+                data: [],
+                key: '11'
             }]
         });
     });
+
+    $(function () {
+        $("time[data-format]").each(function () {
+            var el = $(this);
+            var dt = moment(el.attr("datetime"));
+            el.text(dt.format(el.data("format")));
+        });
+    })
+
     /*]]>*/
 </script>
+
 </body>
 </html>

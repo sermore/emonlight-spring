@@ -72,6 +72,9 @@
 <script>
     var urlToGo = '';
 
+    moment.tz.guess();
+    console.info(moment.tz());
+
     $(function () {
         $("time[data-format]").each(function () {
             var el = $(this);

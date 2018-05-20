@@ -1,0 +1,158 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{index :: header(~{::title})}">
+    <title>Nodes dashboard</title>
+</head>
+<body>
+<nav th:insert="~{index :: navigation}"></nav>
+
+<div th:insert="~{node :: navButtons('time', 720)}"></div>
+<div id="time_container" style="width:100%; height:400px;"></div>
+
+<div th:insert="~{node :: navButtons('vcc', 21600)}"></div>
+<div id="vcc_container" style="width:100%; height:400px;"></div>
+
+
+<th:block th:insert="~{index :: bootstrapjs}"></th:block>
+<script th:src="@{/webjars/highcharts/highstock.js}"></script>
+<script th:src="@{/js/stats.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).ready(function () {
+
+        var tz = [[${timezone}]];
+        moment.tz.setDefault(tz);
+        var timeData = /*[(${timeData})]*/ null;
+        var vccData = /*[(${vccData})]*/ null;
+
+        Highcharts.setOptions({
+            time: {
+                getTimezoneOffset: function (timestamp) {
+                    var timezoneOffset = -moment.tz(timestamp, tz).utcOffset();
+                    return timezoneOffset;
+                }
+            }
+        });
+
+        var timeChart = new Chart('/timeData?id[]=' + timeData.ids, 'time', 10000);
+
+        Highcharts.stockChart({
+            chart: {
+                renderTo: 'time_container',
+                // defaultSeriesType: 'spline',
+                zoomType: 'x',
+                events: {
+                    load: function () {
+                        timeChart.chart = this;
+                        timeChart.requestLiveData();
+                    }
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                enabled: true
+            },
+            // navigation: {
+            //     buttonOptions: {
+            //         enabled: false
+            //     }
+            // },
+            navigator: {
+                enabled: false
+            },
+            rangeSelector: {
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            title: {
+                text: 'Response time for nodes'
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'datetime'
+                // tickPixelInterval: 150,
+            },
+            yAxis: {
+                labels: {
+                    align: "right",
+                    x: 15
+                },
+                title: {
+                    text: 'Time (sec)',
+                    margin: 20
+                }
+            },
+            series: timeData.series
+        });
+
+        var vccChart = new Chart('/chartData?id[]=' + vccData.ids, 'vcc', 10000);
+
+        Highcharts.stockChart({
+            chart: {
+                renderTo: 'vcc_container',
+                // defaultSeriesType: 'spline',
+                zoomType: 'x',
+                events: {
+                    load: function () {
+                        vccChart.chart = this;
+                        vccChart.requestLiveData();
+                    }
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                enabled: true
+            },
+            // navigation: {
+            //     buttonOptions: {
+            //         enabled: false
+            //     }
+            // },
+            navigator: {
+                enabled: false
+            },
+            rangeSelector: {
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            title: {
+                text: 'Vcc data for nodes'
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'datetime'
+                // tickPixelInterval: 150,
+            },
+            yAxis: {
+                labels: {
+                    align: "right",
+                    x: 15
+                },
+                title: {
+                    text: 'Vcc (V)',
+                    margin: 20
+                }
+            },
+            series: vccData.series
+        });
+
+    });
+
+    /*]]>*/
+</script>
+
+</body>
+</html>

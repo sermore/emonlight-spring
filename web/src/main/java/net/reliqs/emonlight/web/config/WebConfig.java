@@ -4,6 +4,7 @@ import net.reliqs.emonlight.commons.config.ISettings;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.web.git.FileRepositoryImpl;
+import net.reliqs.emonlight.web.services.DataRepo;
 import net.reliqs.emonlight.web.services.FileRepository;
 import net.reliqs.emonlight.web.services.ProbeMonitor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,9 @@ public class WebConfig {
     //    }
 
     @Bean
-    public ProbeMonitor monitor() {
+    public ProbeMonitor monitor(DataRepo dataRepo, @Value("${historyDays:20}") int historyDays) {
         Settings s = settingsService.loadAndInitialize();
-        return new ProbeMonitor(s);
+        return new ProbeMonitor(s, dataRepo, historyDays);
     }
 
     @Bean

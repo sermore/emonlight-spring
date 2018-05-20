@@ -18,3 +18,5 @@ ALTER TABLE data
   ADD CONSTRAINT FKadlf587q1pfo283tqx4jylta4 FOREIGN KEY (probe_id) REFERENCES probe (id);
 ALTER TABLE probe
   ADD CONSTRAINT FKpnvpfnkq2x6b8m4mh5m3lqgje FOREIGN KEY (node_id) REFERENCES node (id);
+CREATE INDEX data_probe_id_time
+  ON data (probe_id, time);

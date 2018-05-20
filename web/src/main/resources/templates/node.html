@@ -1,0 +1,139 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{index :: header(~{::title})}">
+    <title>Node and probe List</title>
+</head>
+<body>
+
+<nav th:insert="~{index :: navigation}"></nav>
+
+<div th:with="chartId='live', intervalSelected=720" th:fragment="charts" class="container-fluid">
+
+    <div th:fragment="navButtons(chartId, intervalSelected)" class="d-flex justify-content-md-end bg-light">
+        <!--<div class="col-md">-->
+        <button class="btn btn-primary btn-sm m-1" th:id="|${chartId}_back|" type="button">
+            <i class="material-icons align-middle">chevron_left</i>
+        </button>
+        <form class="form-inline p-1">
+            <select th:id="|${chartId}_interval|" class="form-control form-control-sm align-middle">
+                <option value="15" th:selected="${15 == intervalSelected}">15 minutes</option>
+                <option value="30" th:selected="${30 == intervalSelected}">30 minutes</option>
+                <option value="60" th:selected="${60 == intervalSelected}">1 hour</option>
+                <option value="120" th:selected="${120 == intervalSelected}">2 hour</option>
+                <option value="360" th:selected="${360 == intervalSelected}">6 hours</option>
+                <option value="720" th:selected="${720 == intervalSelected}">12 hours</option>
+                <option value="1440" th:selected="${1440 == intervalSelected}">1 day</option>
+                <option value="2880" th:selected="${2880 == intervalSelected}">2 days</option>
+                <option value="10080" th:selected="${10080 == intervalSelected}">7 days</option>
+                <option value="21600" th:selected="${21600 == intervalSelected}">15 days</option>
+                <option value="43200" th:selected="${43200 == intervalSelected}">30 days</option>
+                <option value="86400" th:selected="${86400 == intervalSelected}">60 days</option>
+            </select>
+        </form>
+        <button class="btn btn-primary btn-sm m-1" th:id="|${chartId}_forward|" type="button">
+            <i class="material-icons align-middle">chevron_right</i>
+        </button>
+        <button class="btn btn-primary btn-sm m-1" th:id="|${chartId}_live|" type="button">
+            <i class="material-icons align-middle">last_page</i>
+        </button>
+        <!--</div>-->
+    </div>
+
+    <div id="containerLive" style="width:100%; height:400px;"></div>
+
+    <div id="containerHourly" style="width:100%; height:400px;"></div>
+
+    <div id="containerWeekly" style="width:100%; height:400px;"></div>
+
+    <div id="containerMonthly" style="width:100%; height:400px;"></div>
+
+</div>
+
+
+<th:block th:insert="~{index :: bootstrapjs}"></th:block>
+<script th:src="@{/webjars/highcharts/highstock.js}"></script>
+<script th:src="@{/js/stats.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).ready(function () {
+
+        var id = [[${id}]];
+        var nodeData = /*[(${nodeData})]*/ null;
+        tz = [[${timezone}]];
+        moment.tz.setDefault(tz);
+
+        Highcharts.setOptions({
+            time: {
+                getTimezoneOffset: function (timestamp) {
+                    var timezoneOffset = -moment.tz(timestamp, tz).utcOffset();
+
+                    return timezoneOffset;
+                }
+            }
+        });
+
+        var liveChart = new Chart('/timeData?id[]=' + nodeData.ids, 'live', 10000);
+
+        Highcharts.stockChart({
+            chart: {
+                renderTo: 'containerLive',
+                // defaultSeriesType: 'spline',
+                zoomType: 'x',
+                events: {
+                    load: function () {
+                        liveChart.chart = this;
+                        liveChart.requestLiveData();
+                    }
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            legend: {
+                enabled: true
+            },
+            // navigation: {
+            //     buttonOptions: {
+            //         enabled: false
+            //     }
+            // },
+            navigator: {
+                enabled: false
+            },
+            rangeSelector: {
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            title: {
+                text: 'Live data for node ' + nodeData.name
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'datetime'
+                // tickPixelInterval: 150,
+            },
+            yAxis: {
+                labels: {
+                    align: "right",
+                    x: 15
+                },
+                title: {
+                    text: 'Time (sec)',
+                    margin: 20
+                }
+            },
+            series: nodeData.probes
+        });
+
+    });
+
+    /*]]>*/
+</script>
+
+</body>
+</html>

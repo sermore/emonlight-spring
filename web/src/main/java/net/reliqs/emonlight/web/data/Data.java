@@ -10,4 +10,9 @@ public class Data {
         this.t = t;
         this.v = v;
     }
+
+    @Override
+    public String toString() {
+        return "Data{" + "t=" + t + ", v=" + v + '}';
+    }
 }

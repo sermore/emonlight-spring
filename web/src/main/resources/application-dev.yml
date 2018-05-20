@@ -3,7 +3,7 @@ logging:
     root: info
     net:
       reliqs:
-        emonlight: debug
+        emonlight: trace
 
 server.error.include-stacktrace: always
 
@@ -30,6 +30,8 @@ spring:
 #      javax.persistence.schema-generation.scripts.create-target: schema.sql
 #    hibernate:
 #      ddl-auto: none
+
+historyDays: 5
 
 settings.path: out/settings.yml
 

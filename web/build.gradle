@@ -106,6 +106,8 @@ dependencies {
 //    compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
     compile("org.springframework.boot:spring-boot-starter-activemq")
     compile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.11.0.201803080745-r'
+    compile group: 'javax.json', name: 'javax.json-api', version: '1.1.2'
+    compile group: 'org.glassfish', name: 'javax.json', version: '1.1.2'
 
 //    compile("org.springframework.boot:spring-boot-devtools")
 

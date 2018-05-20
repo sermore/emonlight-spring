@@ -20,7 +20,7 @@ public class DataGeneration {
 //            Node n = new Node();
 //            n.setTitle("Node " + i);
 //            n.setAuthenticationToken("XXN" + i);
-//            n.setTimeZone("GMT+" + i);
+    //            n.setTzone("GMT+" + i);
 //            l.add(n);
 //        }
 //        return l;

@@ -18,6 +18,10 @@ public interface ISettings extends Serializable {
 
     void setReceiveTimeout(Integer receiveTimeout);
 
+    String getTzone();
+
+    void setTzone(String tzone);
+
     List<Node> getNodes();
 
     void setNodes(List<Node> nodes);

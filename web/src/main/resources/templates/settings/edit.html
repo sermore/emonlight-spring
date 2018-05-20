@@ -65,6 +65,24 @@
                         <div class="alert alert-danger" role="alert" th:if="${#fields.hasErrors('receiveTimeout')}"
                              th:errors="*{receiveTimeout}"></div>
                     </div>
+                    <div class="col-sm-auto">
+                        <label th:for="tzone">Time Zone</label>
+                        <select th:field="*{tzone}"
+                                id="tzone"
+                                class="form-control form-control-sm" th:errorclass="is-invalid"
+                                aria-describedby="tzoneHelp"
+                                placeholder="Time Zone">
+                            <option th:value="${null}"> --</option>
+                            <option th:each="opt : ${timezones}"
+                                    th:value="${opt}" th:text="${opt}"></option>
+                        </select>
+                        <small id="tzoneHelp" class="form-text text-muted">
+                            Time Zone.
+                        </small>
+                        <div class="alert alert-danger" role="alert"
+                             th:if="${#fields.hasErrors('*{tzone}')}"
+                             th:errors="*{tzone}"></div>
+                    </div>
                     <input type="hidden" th:field="*{idCnt}">
                 </div>
             </fieldset>

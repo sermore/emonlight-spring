@@ -39,6 +39,8 @@ public class Settings implements ISettings {
     @Max(28000)
     private Integer receiveTimeout = 2000;
 
+    private String tzone;
+
     @Size(min = 1)
     @Valid
     private List<Node> nodes = new ArrayList<>();
@@ -82,6 +84,16 @@ public class Settings implements ISettings {
     @Override
     public void setReceiveTimeout(Integer receiveTimeout) {
         this.receiveTimeout = receiveTimeout;
+    }
+
+    @Override
+    public String getTzone() {
+        return tzone;
+    }
+
+    @Override
+    public void setTzone(String tzone) {
+        this.tzone = tzone;
     }
 
     @Override

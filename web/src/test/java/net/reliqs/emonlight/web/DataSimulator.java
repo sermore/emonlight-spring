@@ -26,7 +26,7 @@ public class DataSimulator {
 //            node = new Node();
 //            node.setTitle("Node " + id);
 //            node.setAuthenticationToken("XXN" + id);
-//            node.setTimeZone("Europe/Rome");
+    //            node.setTzone("Europe/Rome");
 //            node = nodeRepo.save(node);
 //        }
 //        return node;

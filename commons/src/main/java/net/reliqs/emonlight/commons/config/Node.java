@@ -167,6 +167,10 @@ public class Node implements Serializable {
         }
     }
 
+    public boolean isEndDevice() {
+        return getMode() == OpMode.DHT22 || getMode() == OpMode.DS18B20;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;

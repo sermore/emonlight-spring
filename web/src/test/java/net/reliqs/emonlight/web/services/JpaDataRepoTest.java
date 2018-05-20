@@ -25,7 +25,7 @@ public class JpaDataRepoTest {
     @Test
     public void test() throws Exception {
 //        Node n = new Node();
-//        n.setTimeZone("UTC");
+        //        n.setTzone("UTC");
 //        n.setTitle("N1");
 //        n.setAuthenticationToken("YYN1");
 //        n = dataRepo.saveNode(n);

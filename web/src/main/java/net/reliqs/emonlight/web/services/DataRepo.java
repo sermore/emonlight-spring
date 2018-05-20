@@ -5,6 +5,7 @@ import java.util.Map;
 
 public interface DataRepo {
 
-    Map<Long, List<Number[]>> getData(Iterable<Long> probeIds, long timeStart, long timeEnd);
+    Map<Integer, List<Number[]>> getData(Iterable<Integer> probeIds, long timeStart, long timeEnd);
 
+    Map<Integer, List<Number[]>> getResponseTime(Iterable<Integer> probeIds, long timeStart, long timeEnd);
 }

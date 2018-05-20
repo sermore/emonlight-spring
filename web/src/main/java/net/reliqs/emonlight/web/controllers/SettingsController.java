@@ -15,6 +15,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Controller
@@ -249,6 +250,11 @@ public class SettingsController {
     public List<Probe> populateProbeList(HttpSession session) {
         Settings settings = loadSettings(session);
         return settings.getProbes().collect(Collectors.toList());
+    }
+
+    @ModelAttribute("timezones")
+    public String[] populateTimezones() {
+        return TimeZone.getAvailableIDs();
     }
 
 }

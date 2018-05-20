@@ -1,0 +1,195 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{index :: header(~{::title})}">
+    <title>Node and probe List</title>
+</head>
+<body>
+<nav th:insert="~{index :: navigation}"></nav>
+
+<div th:insert="~{node :: charts}"></div>
+
+<th:block th:insert="~{index :: bootstrapjs}"></th:block>
+<script th:src="@{/webjars/highcharts/highstock.js}"></script>
+<script th:src="@{/js/stats.js}"></script>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    $(document).ready(function () {
+
+        var id = [[${id}]];
+        var ptype = /*[[${probe.type}]]*/ null;
+        var ids = [ /*[[${id}]]*/ ];
+        tz = [[${timezone}]];
+        moment.tz.setDefault(tz);
+
+        Highcharts.setOptions({
+            time: {
+                getTimezoneOffset: function (timestamp) {
+                    var timezoneOffset = -moment.tz(timestamp, tz).utcOffset();
+                    return timezoneOffset;
+                }
+            }
+        });
+
+        var hourlyChart = new Chart('/statsData?id[]=' + ids + '&statType[]=' + ['HOUR', 'O_HOUR'], null, null);
+
+        Highcharts.chart('containerHourly', {
+            chart: {
+                type: ptype == 'PULSE' ? 'column' : 'line',
+                events: {
+                    load: function () {
+                        hourlyChart.chart = this;
+                        hourlyChart.requestData();
+                    }
+                }
+            },
+            title: {
+                text: 'Hourly data for probe [[${probe.name}]]'
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: [[${yTitle}]]
+            },
+            series: [{
+                id: id + '_HOUR',
+                name: 'Hourly'
+            }, {
+                id: id + '_O_HOUR',
+                name: 'Hourly overall'
+            }]
+        });
+
+        var weeklyChart = new Chart('/statsData?id[]=' + ids + '&statType[]=' + ['DAY_OF_WEEK', 'O_DAY_OF_WEEK'], null, null);
+
+        Highcharts.chart('containerWeekly', {
+            chart: {
+                type: ptype == 'PULSE' ? 'column' : 'line',
+                events: {
+                    load: function () {
+                        weeklyChart.chart = this;
+                        weeklyChart.requestData();
+                    }
+                }
+            },
+            title: {
+                text: 'Weekly data for probe [[${probe.name}]]'
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: [[${yTitle}]]
+            },
+            series: [{
+                id: id + '_DAY_OF_WEEK',
+                name: 'Weekly'
+            }, {
+                id: id + '_O_DAY_OF_WEEK',
+                name: 'Weekly overall'
+            }]
+        });
+
+        var monthlyChart = new Chart('/statsData?id[]=' + ids + '&statType[]=' + ['DAY_OF_MONTH', 'O_DAY_OF_MONTH'], null, null);
+
+        Highcharts.chart('containerMonthly', {
+            chart: {
+                type: ptype == 'PULSE' ? 'column' : 'line',
+                events: {
+                    load: function () {
+                        monthlyChart.chart = this;
+                        monthlyChart.requestData();
+                    }
+                }
+            },
+            title: {
+                text: 'Monthly data for probe [[${probe.name}]]'
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'category'
+            },
+            yAxis: {
+                title: [[${yTitle}]]
+            },
+            series: [{
+                id: id + '_DAY_OF_MONTH',
+                name: 'Monthly'
+            }, {
+                id: id + '_O_DAY_OF_MONTH',
+                name: 'Monthly overall'
+            }]
+        });
+
+        var liveChart = new Chart('/chartData?id[]=' + ids, 'live', 10000);
+
+        Highcharts.stockChart({
+            chart: {
+                renderTo: 'containerLive',
+                // defaultSeriesType: 'spline',
+                events: {
+                    load: function () {
+                        liveChart.chart = this;
+                        liveChart.requestLiveData();
+                    }
+                }
+            },
+            exporting: {
+                enabled: false
+            },
+            navigation: {
+                buttonOptions: {
+                    enabled: false
+                }
+            },
+            navigator: {
+                enabled: false
+            },
+            rangeSelector: {
+                enabled: false
+            },
+            scrollbar: {
+                enabled: false
+            },
+            title: {
+                text: 'Live data for probe [[${probe.name}]]'
+            },
+            tooltip: {
+                valueDecimals: 2
+            },
+            xAxis: {
+                type: 'datetime'
+                // tickPixelInterval: 150,
+            },
+            yAxis: {
+                labels: {
+                    align: "right",
+                    x: 15
+                },
+                title: {
+                    text: [[${yTitle}]],
+                    margin: 20
+                }
+            },
+            series: [{
+                id: '' + id,
+                name: [[${probe.name}]]
+            }]
+        });
+
+    });
+
+    /*]]>*/
+</script>
+
+</body>
+</html>

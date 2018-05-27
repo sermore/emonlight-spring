@@ -66,7 +66,7 @@ public class JmsConfiguration {
             jmsTemplate.setDefaultDestinationName(template.getDefaultDestination());
         }
         if (template.getDeliveryDelay() != null) {
-            jmsTemplate.setDeliveryDelay(template.getDeliveryDelay());
+            jmsTemplate.setDeliveryDelay(template.getDeliveryDelay().toMillis());
         }
         jmsTemplate.setExplicitQosEnabled(template.determineQosEnabled());
         if (template.getDeliveryMode() != null) {
@@ -76,10 +76,10 @@ public class JmsConfiguration {
             jmsTemplate.setPriority(template.getPriority());
         }
         if (template.getTimeToLive() != null) {
-            jmsTemplate.setTimeToLive(template.getTimeToLive());
+            jmsTemplate.setTimeToLive(template.getTimeToLive().toMillis());
         }
         if (template.getReceiveTimeout() != null) {
-            jmsTemplate.setReceiveTimeout(template.getReceiveTimeout());
+            jmsTemplate.setReceiveTimeout(template.getReceiveTimeout().toMillis());
         }
         return jmsTemplate;
     }

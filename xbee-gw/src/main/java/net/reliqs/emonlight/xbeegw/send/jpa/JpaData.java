@@ -8,7 +8,7 @@ import java.time.Instant;
 @Table(name = "data")
 public class JpaData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     // FIXME datetime is mysql specific!
     @Column(nullable = false, length = 3, columnDefinition = "datetime(3)")

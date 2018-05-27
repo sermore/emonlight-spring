@@ -1,12 +1,17 @@
 package net.reliqs.emonlight.xbeegw.send;
 
 import net.reliqs.emonlight.xbeegw.TestApp;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -16,6 +21,11 @@ import static org.hamcrest.Matchers.is;
 @ActiveProfiles("integration,test-queue")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AbstractServiceCloseWithinDispatcherTimeoutTest extends AbstractServiceOnCloseBaseTest {
+
+    @BeforeClass
+    public static void beforeClass() throws IOException {
+        Files.deleteIfExists(Paths.get("TEST_backup.dat"));
+    }
 
     @Test
     public void testCloseWithinDispatcherTimeout() {

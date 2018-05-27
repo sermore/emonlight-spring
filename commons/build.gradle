@@ -13,10 +13,11 @@
 //}
 
 jar {
+    enabled = true
     baseName = 'emonlight-commons'
 }
 
-bootRepackage {
+bootJar {
     enabled = false
 }
 

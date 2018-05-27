@@ -5,6 +5,10 @@ logging:
     com.digi.xbee: INFO
     net.reliqs.emonlight: TRACE
 
+spring:
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+
 jms:
   enabled: false
 influxdb:

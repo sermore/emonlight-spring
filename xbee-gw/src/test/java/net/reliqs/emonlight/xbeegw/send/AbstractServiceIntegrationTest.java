@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -21,6 +22,7 @@ import static org.hamcrest.Matchers.is;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {TestApp.class, Config.class})
 @ActiveProfiles("integration,test-queue")
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 public class AbstractServiceIntegrationTest {
 
     @Autowired
@@ -39,6 +41,7 @@ public class AbstractServiceIntegrationTest {
     public void testPost() throws InterruptedException {
         fakeService.getQueue().clear();
         fakeService.getInFlight().clear();
+        fakeService.setEnableBackup(false);
         fakeAsyncService.setPostCount(0);
         fakeAsyncService.setResult(true);
         fakeAsyncService.setSleepTime(300);
@@ -76,6 +79,7 @@ public class AbstractServiceIntegrationTest {
         fakeAsyncService.setPostCount(0);
         fakeAsyncService.setResult(false);
         fakeAsyncService.setSleepTime(300);
+        fakeService.setEnableBackup(false);
         fakeService.setMaxBatch(2);
         fakeService.setRealTime(false);
         FakeService.populate(settings, fakeService);
@@ -88,7 +92,7 @@ public class AbstractServiceIntegrationTest {
         Thread.sleep(200);
         fakeService.post();
         Thread.sleep(200);
-        assertThat(fakeService.isRunning(), is(false));
+        assertThat(fakeService.isRunning(), is(true));
         assertThat(fakeService.getQueue(), hasSize(1));
         assertThat(fakeService.getInFlight(), hasSize(2));
         fakeService.post();
@@ -101,7 +105,7 @@ public class AbstractServiceIntegrationTest {
         Thread.sleep(400);
         assertThat(fakeService.getQueue(), hasSize(1));
         assertThat(fakeService.getInFlight(), hasSize(2));
-        assertThat(fakeAsyncService.getPostCount(), is(3));
+        assertThat(fakeAsyncService.getPostCount(), is(4));
         assertThat(fakeService.isQueueEmpty(), is(false));
     }
 
@@ -114,6 +118,7 @@ public class AbstractServiceIntegrationTest {
         fakeAsyncService.setResult(true);
         fakeAsyncService.setGenerateException(true);
         fakeAsyncService.setSleepTime(300);
+        fakeService.setEnableBackup(false);
         fakeService.setMaxBatch(2);
         fakeService.setRealTime(false);
         FakeService.populate(settings, fakeService);

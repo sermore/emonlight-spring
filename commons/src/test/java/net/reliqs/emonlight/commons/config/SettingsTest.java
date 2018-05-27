@@ -94,7 +94,7 @@ public class SettingsTest {
                 containsInAnyOrder("serialPort -> size must be between 4 and 2147483647",
                         "nodes[0].sampleTime -> must be greater than or equal to 1",
                         "nodes[0].id -> must be greater than or equal to 1",
-                        "nodes[0].probes[0].id -> may not be null"));
+                        "nodes[0].probes[0].id -> must not be null"));
     }
 
     @Test

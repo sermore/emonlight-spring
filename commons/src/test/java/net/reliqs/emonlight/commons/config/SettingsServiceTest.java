@@ -56,7 +56,7 @@ public class SettingsServiceTest {
     public void testForValidate() {
         Settings s = settingsService.load("src/test/resources/settings.yml.bak");
         thrown.expect(ValidationException.class);
-        thrown.expectMessage("Settings invalid: nodes[0].id -> may not be null");
+        thrown.expectMessage("Settings invalid: nodes[0].id -> must not be null");
         s.getNodes().get(0).setId(null);
         settingsService.validate(s);
     }

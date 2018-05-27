@@ -146,11 +146,11 @@ public class AbstractServiceTest {
         s.post();
         assertThat(s.getQueue(), hasSize(0));
         assertThat(s.getInFlight(), hasSize(3));
-        assertThat(as.getPostCount(), is(1));
+        assertThat(as.getPostCount(), is(2));
         s.post();
         assertThat(s.getQueue(), hasSize(0));
         assertThat(s.getInFlight(), hasSize(3));
-        assertThat(as.getPostCount(), is(2));
+        assertThat(as.getPostCount(), is(4));
 
         as.setPostCount(0);
         as.setResult(true);

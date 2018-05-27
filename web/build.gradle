@@ -7,8 +7,8 @@ jar {
     version = '0.0.1-SNAPSHOT'
 }
 
-springBoot {
-    executable = true
+bootJar {
+    enabled = true
 }
 
 //ext['flyway-url'] = ''
@@ -93,6 +93,9 @@ dependencies {
 
     compile project(':commons')
 
+    compile('org.springframework.boot:spring-boot-starter-web') {
+        exclude module: 'spring-boot-starter-tomcat'
+    }
     compile('org.springframework.boot:spring-boot-starter-thymeleaf') {
         exclude module: 'spring-boot-starter-tomcat'
     }
@@ -111,7 +114,7 @@ dependencies {
 
 //    compile("org.springframework.boot:spring-boot-devtools")
 
-    compile group: 'org.webjars', name: 'webjars-locator'
+    compile group: 'org.webjars', name: 'webjars-locator', version: '0.34'
     compile 'org.webjars:jquery:3.3.1-1'
     compile 'org.webjars:popper.js:1.12.9-1'
     compile 'org.webjars:bootstrap:4.0.0-2'

@@ -18,11 +18,14 @@ repositories {
 //}
 
 jar {
+    enabled = false
     baseName = 'emonlight-xbee-gw'
 }
 
-springBoot {
-    executable = true
+bootJar {
+    baseName = 'emonlight-xbee-gw'
+    enabled = true
+    launchScript()
 }
 
 test {
@@ -89,12 +92,13 @@ dependencies {
     }
 
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa'
+//    compile group: 'com.zaxxer', name: 'HikariCP', version: '3.1.0'
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache'
     compile group: 'org.mariadb.jdbc', name: 'mariadb-java-client'
 
     compile("org.springframework:spring-web")
     compile("org.springframework.boot:spring-boot-starter-activemq")
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5+'
 
 
     compile group: 'org.rxtx', name: 'rxtx', version: '2.1.7'
@@ -108,7 +112,7 @@ dependencies {
         exclude(module: 'android-sdk-addon')
     }
 
-    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8.5'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.8+'
 
     compile group: 'org.influxdb', name: 'influxdb-java', version: '2.5+'
 

@@ -29,10 +29,18 @@ class DS18B20Processor extends MessageProcessor {
         }
         short d = in.getShort();
         double t = (int) (d / 100) + (d % 100) / 100.0;
-        log.debug("{}: DS18B20 T={}, D={}, @{}", node, t, d, time);
+        log.info("{}: DS18B20 T={}, D={}, @{}", node, t, d, time);
         verifyTime(node, time);
         Data data = new Data(time.toEpochMilli(), t);
-        publish(node.findProbeByType(Type.DS18B20), Type.DS18B20, data);
+        if (temperatureInRange(t)) {
+            publish(node.findProbeByType(Type.DS18B20), Type.DS18B20, data);
+        } else {
+            log.warn("{}: DS18B20 T {} discarded as out of range", node, t);
+        }
+    }
+
+    private boolean temperatureInRange(double t) {
+        return t >= -60 && t <= 130;
     }
 
 }

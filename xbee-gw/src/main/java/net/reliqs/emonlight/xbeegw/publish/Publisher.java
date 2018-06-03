@@ -26,12 +26,12 @@ public class Publisher {
     }
 
     public void addService(DeliveryService s) {
-        log.debug("register service: {}", s);
+        log.info("register service: {}", s);
         services.add(s);
     }
 
     public void addSubscriber(Subscriber s) {
-        log.debug("register subscriber: {}", s);
+        log.info("register subscriber: {}", s);
         subscribers.add(s);
     }
 

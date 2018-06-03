@@ -1,5 +1,6 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
+import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Subscriber;
@@ -31,6 +32,12 @@ abstract class Trigger implements Subscriber {
     void triggerChanged(Probe probe, Probe.Type type, int oldTriggerState, int newTriggerState) {
         for (TriggerHandler h : handlers) {
             h.triggerChanged(probe, type, oldTriggerState, newTriggerState);
+        }
+    }
+
+    void triggerDataAbsentChanged(Node node, Probe.Type type, int oldTriggerState, int newTriggerState) {
+        for (TriggerHandler h : handlers) {
+            h.triggerDataAbsentChanged(node, type, oldTriggerState, newTriggerState);
         }
     }
 

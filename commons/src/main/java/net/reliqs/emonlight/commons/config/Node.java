@@ -6,10 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @ValidNode
 @Validated
@@ -169,6 +166,10 @@ public class Node implements Serializable {
 
     public boolean isEndDevice() {
         return getMode() == OpMode.DHT22 || getMode() == OpMode.DS18B20;
+    }
+
+    public int getTimeout() {
+        return getProbes().stream().max(Comparator.comparingInt(Probe::getTimeout)).get().getTimeout();
     }
 
     @Override

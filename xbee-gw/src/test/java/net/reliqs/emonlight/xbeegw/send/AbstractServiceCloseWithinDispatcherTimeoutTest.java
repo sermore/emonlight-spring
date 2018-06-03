@@ -28,7 +28,7 @@ public class AbstractServiceCloseWithinDispatcherTimeoutTest extends AbstractSer
     }
 
     @Test
-    public void testCloseWithinDispatcherTimeout() {
+    public void testCloseWithinDispatcherTimeout() throws InterruptedException {
         dispatcher.setTimeOut(2000);
         testRunner = () -> this.testExpectedResults(false, 0, 0);
         fakeAsyncService.setResult(true);
@@ -38,6 +38,7 @@ public class AbstractServiceCloseWithinDispatcherTimeoutTest extends AbstractSer
         FakeService.populate(settings, fakeService);
         fakeService.post();
         assertThat(fakeService.isQueueEmpty(), is(false));
+        Thread.sleep(100);
     }
 
 }

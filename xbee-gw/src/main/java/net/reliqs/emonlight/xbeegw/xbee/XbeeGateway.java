@@ -12,31 +12,31 @@ import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
 import com.digi.xbee.api.utils.ByteUtils;
 import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.GwException;
-import net.reliqs.emonlight.xbeegw.events.EventQueue;
+import net.reliqs.emonlight.xbeegw.events.EventProcessorFacade;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
 @Service
+@Order
 class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleReceiveListener {
     private static final Logger log = LoggerFactory.getLogger(XbeeGateway.class);
 
     private XBeeDevice localDevice;
     private Settings settings;
-    private EventQueue queue;
+    private EventProcessorFacade eventProcessorFacade;
 
-    public XbeeGateway(Settings settings, EventQueue queue) throws XBeeException {
+    public XbeeGateway(Settings settings, EventProcessorFacade eventProcessorFacade) throws XBeeException {
         this.settings = settings;
-        this.queue = queue;
-        //        init(settings);
+        this.eventProcessorFacade = eventProcessorFacade;
+        init();
     }
 
-    @PostConstruct
     private void init() throws XBeeException {
+        log.info("xbee local device initialization");
         localDevice = new XBeeDevice(settings.getSerialPort(), settings.getBaudRate());
         localDevice.setReceiveTimeout(settings.getReceiveTimeout());
         localDevice.open();
@@ -55,7 +55,7 @@ class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleRecei
         short st = 1;
         log.debug("sampleTime: {} => set sleep parameters SN={}, SO={}, SP={}, ST={}", sampleTime, sn, so, sp, st);
         localDevice.setParameter("SN", ByteUtils.shortToByteArray(sn));
-//		localDevice.setParameter("SO", new byte[] { so });
+        //		localDevice.setParameter("SO", new byte[] { so });
         localDevice.setParameter("SP", ByteUtils.shortToByteArray(sp));
         localDevice.setParameter("ST", ByteUtils.shortToByteArray(st));
     }
@@ -63,7 +63,7 @@ class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleRecei
     @PreDestroy
     void cleanup() {
         localDevice.close();
-        log.debug("close");
+        log.info("xbee local device closed");
     }
 
     @Override
@@ -85,7 +85,25 @@ class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleRecei
         try {
             localDevice.sendDataAsync(device, data);
         } catch (XBeeException e) {
-            throw new GwException(e);
+            log.error("sendDataAsync failed device={}, data={}", device, data, e);
+        }
+    }
+
+    @Override
+    public void resetLocalDevice() {
+        try {
+            localDevice.reset();
+        } catch (XBeeException e) {
+            log.error("reset failed", e);
+        }
+    }
+
+    @Override
+    public void resetRemoteDevice(RemoteXBeeDevice device) {
+        try {
+            device.reset();
+        } catch (XBeeException e) {
+            log.error("remote reset of {} failed", device, e);
         }
     }
 
@@ -96,7 +114,7 @@ class XbeeGateway implements XbeeProcessor, IDataReceiveListener, IIOSampleRecei
 
     @Override
     public void dataReceived(XBeeMessage msg) {
-        queue.offerDataMessage(new DataMessage(msg));
+        eventProcessorFacade.queueMessage(new DataMessage(msg), 0L);
     }
 
 }

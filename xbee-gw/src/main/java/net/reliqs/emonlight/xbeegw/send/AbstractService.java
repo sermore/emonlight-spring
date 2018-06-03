@@ -125,7 +125,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     }
 
     protected void onInit() {
-        log.debug("{}: initialization", logId);
+        log.info("{}: initialization", logId);
         if (enableBackup) {
             String path = getBackupPath();
             if (Files.exists(Paths.get(path))) {
@@ -133,7 +133,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
                 List<LinkedList<E>> res = store.read();
                 queue = res.get(0);
                 inFlight = res.get(1);
-                log.debug("{}: state {}/{} restored from {}", logId, queue.size(), inFlight.size(), path);
+                log.info("{}: state {}/{} restored from {}", logId, queue.size(), inFlight.size(), path);
                 return;
             }
         }
@@ -141,7 +141,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
     }
 
     protected void onClose() {
-        log.debug("{}: starting close phase", logId);
+        log.info("{}: starting close phase", logId);
         if (responseFromAsync != null && !responseFromAsync.isDone()) {
             log.warn("{}: async service is still running,  waiting {} ms for completion", logId, timeOutOnClose);
             try {
@@ -168,7 +168,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
                     store.add(new LinkedList<>());
                 }
                 if (!store.isEmpty()) {
-                    log.debug("{}: save state {}/{} to {}", logId, queue.size(), inFlight.size(), path);
+                    log.info("{}: save state {}/{} to {}", logId, queue.size(), inFlight.size(), path);
                     if (!store.write()) {
                         log.error("{}: error saving state {}/{} saved to {}", logId, queue.size(), inFlight.size(),
                                 path);
@@ -176,7 +176,7 @@ public abstract class AbstractService<E extends Serializable, AsyncService exten
                 }
             }
         }
-        log.debug("{}: close phase completed", logId);
+        log.info("{}: close phase completed", logId);
     }
 
     LinkedList<E> getQueue() {

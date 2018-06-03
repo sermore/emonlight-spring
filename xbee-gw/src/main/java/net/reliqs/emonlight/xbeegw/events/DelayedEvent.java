@@ -1,60 +1,48 @@
 package net.reliqs.emonlight.xbeegw.events;
 
-import net.reliqs.emonlight.xbeegw.xbee.DataMessage;
-
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
-class DelayedEvent implements Delayed, Serializable {
+abstract class DelayedEvent implements Delayed, Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    enum EventType {Message, Dispatcher, Stop}
-
-    private long startTime;
-    private EventType eventType;
-    private DataMessage msg;
+    private long expireTime;
+    private long delay;
 
     protected DelayedEvent(long delay) {
-        this.startTime = System.currentTimeMillis() + delay;
+        this.delay = delay;
+        this.expireTime = System.currentTimeMillis() + delay;
     }
 
-    DelayedEvent(DataMessage msg, long delay) {
-        this(delay);
-        this.msg = msg;
-        this.eventType = EventType.Message;
+    public boolean isScheduled() {
+        return false;
     }
 
-    DelayedEvent(EventType eventType, long delay) {
-        this(delay);
-        this.eventType = eventType;
+    public abstract boolean process();
+
+    long getDelay() {
+        return delay;
     }
 
-    public EventType getEventType() {
-        return eventType;
-    }
-
-    public DataMessage getMsg() {
-        return msg;
+    void reset() {
+        this.expireTime = System.currentTimeMillis() + getDelay();
     }
 
     @Override
     public long getDelay(TimeUnit unit) {
-        return unit.convert(startTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
+        return unit.convert(expireTime - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
     }
 
     @Override
     public int compareTo(Delayed o) {
-        return Long.compare(startTime, ((DelayedEvent) o).startTime);
+        return Long.compare(expireTime, ((DelayedEvent) o).expireTime);
     }
 
     @Override
     public String toString() {
-        return "E{" +
-                "t=" + startTime +
-                ", e=" + eventType +
-                (msg != null ? ", msg=" + msg : "") +
-                '}';
+        return "t=" + Instant.ofEpochMilli(expireTime) + ", d=" + getDelay() + ", sc=" + isScheduled();
     }
 }

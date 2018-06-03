@@ -49,14 +49,6 @@ abstract class MessageProcessor {
         }
     }
 
-    void sendBuzzerAlarmLevel(NodeState ns, int level) {
-        ByteBuffer b = ByteBuffer.allocate(3);
-        b.put((byte) 'S');
-        b.put((byte) 'B');
-        b.put((byte) level);
-        processor.sendData(ns, b.array());
-    }
-
     void publish(Probe probe, Type type, Data data) {
         processor.publish(probe, type, data);
     }

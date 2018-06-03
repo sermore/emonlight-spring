@@ -144,10 +144,10 @@ public class Probe implements Serializable {
 
     public int getTimeout() {
         if (type == Type.PULSE) {
-            return 300_000;
+            return 500_000;
         } else {
-            int t = sampleTime > 0 ? sampleTime : getNode() != null ? getNode().getSampleTime() : 300_000;
-            return t * 3;
+            int t = sampleTime > 0 ? sampleTime : getNode() != null ? getNode().getSampleTime() : 100_000;
+            return t * 5;
         }
     }
 

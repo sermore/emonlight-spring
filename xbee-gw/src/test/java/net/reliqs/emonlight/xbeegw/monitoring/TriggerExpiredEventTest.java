@@ -1,6 +1,7 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.Node;
+import net.reliqs.emonlight.xbeegw.events.TriggerExpiredEvent;
 import org.junit.Test;
 
 import java.util.concurrent.DelayQueue;
@@ -9,18 +10,18 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
-public class DelayProbeTest {
+public class TriggerExpiredEventTest {
 
     @Test
     public void test() throws InterruptedException {
-        DelayQueue<DelayProbe> q = new DelayQueue<>();
-        Probe p = new Probe();
-        p.setSampleTime(200);
-        DelayProbe dp = new DelayProbe(p);
+        DelayQueue<TriggerExpiredEvent> q = new DelayQueue<>();
+        Node n = new Node();
+        n.setSampleTime(200);
+        TriggerExpiredEvent dp = new TriggerExpiredEvent(null, n);
         q.add(dp);
-        p = new Probe();
-        p.setSampleTime(300);
-        DelayProbe dp1 = new DelayProbe(p);
+        n = new Node();
+        n.setSampleTime(300);
+        TriggerExpiredEvent dp1 = new TriggerExpiredEvent(null, n);
         q.add(dp1);
 
         assertThat(q.poll(), is(nullValue()));

@@ -15,7 +15,7 @@ nodes:
     hardThreshold: 4000.0
     hardThresholdTimeSec: 240
     id: 2
-    name: P1
+    name: P2
     node: *id001
     port: 3
     pulsesPerKilowattHour: 1000
@@ -27,7 +27,7 @@ nodes:
     hardThreshold: 0.0
     hardThresholdTimeSec: 0
     id: 3
-    name: P2
+    name: P3
     node: *id001
     port: 10
     pulsesPerKilowattHour: 1000
@@ -39,7 +39,7 @@ nodes:
     hardThreshold: 0.0
     hardThresholdTimeSec: 0
     id: 4
-    name: P3
+    name: P4
     node: *id001
     port: 10
     pulsesPerKilowattHour: 1000
@@ -74,7 +74,7 @@ nodes:
     hardThreshold: 0.0
     hardThresholdTimeSec: 0
     id: 7
-    name: P4
+    name: P7
     node: *id002
     port: 10
     pulsesPerKilowattHour: 1000
@@ -86,7 +86,7 @@ nodes:
     hardThreshold: 0.0
     hardThresholdTimeSec: 0
     id: 8
-    name: P5
+    name: P8
     node: *id002
     port: 10
     pulsesPerKilowattHour: 1000

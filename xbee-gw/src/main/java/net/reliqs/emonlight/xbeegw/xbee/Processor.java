@@ -5,7 +5,7 @@ import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
 import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.monitoring.TriggerManager;
+import net.reliqs.emonlight.xbeegw.events.EventProcessorFacade;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.state.GlobalState;
@@ -36,8 +36,9 @@ public class Processor {
     private final GlobalState globalState;
     private final Publisher publisher;
 
-    public Processor(final Settings settings, final XbeeProcessor gateway, final GlobalState globalState,
-                     final Publisher publisher, final TriggerManager triggerManager) {
+    public Processor(final Settings settings, final XbeeProcessor gateway, final GlobalState globalState, final Publisher publisher,
+            EventProcessorFacade eventProcessorFacade) {
+        log.info("processor configuration");
         this.gateway = gateway;
         this.globalState = globalState;
         this.publisher = publisher;
@@ -51,27 +52,46 @@ public class Processor {
         procs.put((byte) 'H', procs.get((byte) 'J'));
         procs.put((byte) 'W', procs.get((byte) 'V'));
         procs.put((byte) 'B', procs.get((byte) 'S'));
-        settings.getNodes().forEach(n -> registerNode(triggerManager, n));
-//        triggerManager.registerTriggerDataAbsent(handler);
+        settings.getNodes().forEach(n -> registerNode(n));
         log.debug("processor configuration complete");
+        eventProcessorFacade.setProcessor(this);
     }
 
-    private void registerNode(TriggerManager triggerManager, Node n) {
-        log.debug("setup node {}", n);
+    private void registerNode(Node n) {
+        log.info("register node {}", n);
         String addr = n.getAddress();
         NodeState ns = globalState.getNodeState(addr);
         ns.setDevice(gateway.addDevice(addr));
-        n.getProbes().forEach(p -> {
-            if (p.hasThresholds()) {
-                PulseProcessor pp = (PulseProcessor) procs.get((byte) 'P');
-                triggerManager.createTriggerLevel(ns, p, pp);
-            }
-        });
     }
 
     void sendData(NodeState ns, byte[] data) {
         log.debug("{}: send {}", ns.getNode(), HexUtils.byteArrayToHexString(data));
         gateway.sendDataAsync(ns.getDevice(), data);
+    }
+
+    void sendBuzzerAlarmLevel(NodeState ns, int level) {
+        ByteBuffer b = ByteBuffer.allocate(3);
+        b.put((byte) 'S');
+        b.put((byte) 'B');
+        b.put((byte) level);
+        sendData(ns, b.array());
+    }
+
+    public void resetLocalDevice() {
+        log.warn("try to reset local Xbee device");
+        gateway.resetLocalDevice();
+        log.info("reset local Xbee device completed");
+    }
+
+    public void sendBuzzerCmd(Probe probe, int level) {
+        log.info("{}: {} Buzzer level {}", probe.getNode(), probe.getName(), level);
+        sendBuzzerAlarmLevel(globalState.getNodeState(probe.getNode().getAddress()), level);
+    }
+
+    public void sendRemoteReset(Node node) {
+        log.warn("try to reset remote Xbee device {}", node);
+        gateway.resetRemoteDevice(globalState.getNodeState(node.getAddress()).getDevice());
+        log.info("reset remote Xbee device {} completed", node);
     }
 
     public void processDataMessage(DataMessage m) {

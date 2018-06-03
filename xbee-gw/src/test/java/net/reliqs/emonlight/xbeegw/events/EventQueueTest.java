@@ -35,13 +35,15 @@ public class EventQueueTest {
     };
 
     @Autowired
-    EventQueue queue;
+    private EventQueue queue;
+    @Autowired
+    private EventProcessorFacade eventProcessorFacade;
 
     private void populate() {
 
         for (int i = 0; i < q.length; i++) {
             DataMessage msg = new DataMessage(Instant.now().plus(i * 500L, ChronoUnit.MILLIS), q[i][0], HexUtils.hexStringToByteArray(q[i][1]));
-            queue.offerDataMessage(msg, i * 500L);
+            eventProcessorFacade.queueMessage(msg, i * 500L);
         }
     }
 
@@ -53,25 +55,25 @@ public class EventQueueTest {
 
     @Test(timeout = 600L)
     public void testStopEvent() {
-        queue.offerStopEvent(500L);
-        assertThat(queue.run(1000L), is(0));
+        eventProcessorFacade.queueStopEvent(500L);
+        assertThat(queue.run(), is(0));
     }
 
     @Test
     public void testEventQueue() {
         populate();
-        queue.run(5_000L);
+        eventProcessorFacade.run(5_000L);
     }
 
     @Test
     public void testBackup() {
-        queue.setBackupEnabled(true);
+        eventProcessorFacade.setBackupEnabled(true);
         populate();
-        assertThat(queue.size(), is(Integer.toUnsignedLong(q.length)));
-        queue.close();
+        assertThat(queue.size(), is(q.length));
+        eventProcessorFacade.close();
         queue.clear();
-        queue.init();
-        assertThat(queue.size(), is(Integer.toUnsignedLong(q.length)));
+        eventProcessorFacade.init();
+        assertThat(queue.size(), is(q.length + 1));
     }
 
 }

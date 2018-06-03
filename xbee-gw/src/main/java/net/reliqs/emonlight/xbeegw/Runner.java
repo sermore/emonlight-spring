@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw;
 
 import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.events.EventQueue;
+import net.reliqs.emonlight.xbeegw.events.EventProcessorFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class Runner {
@@ -13,7 +13,7 @@ public class Runner {
 //    @Autowired
 //    Dispatcher dispatcher;
     @Autowired
-    EventQueue queue;
+    EventProcessorFacade eventProcessorFacade;
 
     public Runner() {
     }
@@ -25,7 +25,7 @@ public class Runner {
         settings.getServers().forEach(s -> System.out.println(" - " + s.getName()));
         System.out.println("\n\n\n");
 
-        queue.run(timeOut);
+        eventProcessorFacade.run(timeOut);
     }
 
 }

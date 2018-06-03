@@ -27,7 +27,7 @@ class ConfigurationProcessor extends MessageProcessor {
     @Override
     public void process(DataMessage m, NodeState ns, byte selector, ByteBuffer in) {
         Node node = ns.getNode();
-        log.debug("{}: process Configuration", node);
+        log.info("{}: process Configuration", node);
         if (!ns.acceptConfigurationMessage(m.getTime()))
             throw new GwException(String.format("too much device configurations for %s, give up.", this));
         DeviceConfig deviceCfg = new DeviceConfig(in);
@@ -37,7 +37,7 @@ class ConfigurationProcessor extends MessageProcessor {
         } else {
             sendOK(ns);
         }
-        log.debug("{}: process Configuration complete", node);
+        log.info("{}: process Configuration complete", node);
     }
 
 }

@@ -1,10 +1,7 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.config.*;
 import net.reliqs.emonlight.commons.config.Probe.Type;
-import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.commons.config.SettingsConfiguration;
-import net.reliqs.emonlight.commons.config.SettingsService;
 import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +39,11 @@ public class TriggerLevelTest {
             public void triggerChanged(Probe probe, Type type, int oldValue, int newValue) {
                 level = newValue;
                 levelChangeCnt++;
+            }
+
+            @Override
+            public void triggerDataAbsentChanged(Node node, Type type, int oldValue, int newValue) {
+
             }
         });
 

@@ -30,15 +30,31 @@ class DHT22Processor extends MessageProcessor {
             }
             double hv = d.humidity();
             double tv = d.temperature();
-            log.debug("{}: DHT22 P={}, T={}, H={} @{}", node, d.port, tv, hv, time);
+            log.info("{}: DHT22 P={}, T={}, H={} @{}", node, d.port, tv, hv, time);
             verifyTime(node, time);
             Data dataH = new Data(time.toEpochMilli(), hv);
             Data dataT = new Data(time.toEpochMilli(), tv);
-            publish(node.findProbeByTypeAndPort(Type.DHT22_H, d.port), Type.DHT22_H, dataH);
-            publish(node.findProbeByTypeAndPort(Type.DHT22_T, d.port), Type.DHT22_T, dataT);
+            if (temperatureInRange(tv)) {
+                publish(node.findProbeByTypeAndPort(Type.DHT22_H, d.port), Type.DHT22_H, dataH);
+            } else {
+                log.warn("{}: DHT22 T {} discarded as out of range", node, tv);
+            }
+            if (humidityInRange(hv)) {
+                publish(node.findProbeByTypeAndPort(Type.DHT22_T, d.port), Type.DHT22_T, dataT);
+            } else {
+                log.warn("{}: DHT22 H {} discarded as out of range", node, hv);
+            }
         } else {
             log.warn("{}: error reading DHT22 data", node);
         }
+    }
+
+    private boolean humidityInRange(double hv) {
+        return hv >= 0 && hv <= 100;
+    }
+
+    private boolean temperatureInRange(double tv) {
+        return tv >= -50 && tv <= 90;
     }
 
 }

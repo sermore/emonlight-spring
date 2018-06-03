@@ -31,13 +31,21 @@ class VCCProcessor extends MessageProcessor {
         short v = in.getShort();
         double vcc = node.isVccFromADC() ? node.getAdcVRef() / node.getAdcRange() * v * p.getAdcMult()
                 : 0.0 + v / 1000.0;
-        log.debug("{}: Vcc = {} @{}", node, vcc, time);
+        log.info("{}: Vcc = {} @{}", node, vcc, time);
         verifyTime(node, time);
         Data data = new Data(time.toEpochMilli(), vcc);
-        publish(p, Type.VCC, data);
+        if (vccInRange(vcc)) {
+            publish(p, Type.VCC, data);
+        } else {
+            log.warn("{}: Vcc {} discarded as out of range", node, vcc);
+        }
     }
 
-//	@Override
+    private boolean vccInRange(double vcc) {
+        return vcc > 0 && vcc < 24D;
+    }
+
+    //	@Override
 //	public void triggerChanged(NodeState ns, Probe p, int oldState, int newState) {
 //		// TODO implements Voltage trigger
 //	}

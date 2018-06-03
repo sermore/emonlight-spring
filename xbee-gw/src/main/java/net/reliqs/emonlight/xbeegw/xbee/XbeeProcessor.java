@@ -6,4 +6,8 @@ public interface XbeeProcessor {
     RemoteXBeeDevice addDevice(String address);
 
     void sendDataAsync(RemoteXBeeDevice device, byte[] data);
+
+    void resetLocalDevice();
+
+    void resetRemoteDevice(RemoteXBeeDevice device);
 }

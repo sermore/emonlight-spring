@@ -16,7 +16,7 @@ public class MissingAlarmEvent extends DelayedEvent {
 
     @Override
     public boolean process() {
-        processor.sendRemoteReset(node);
+        //        processor.sendRemoteReset(node);
         return false;
     }
 

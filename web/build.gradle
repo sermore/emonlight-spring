@@ -5,10 +5,13 @@
 jar {
     baseName = 'emonlight-web'
     version = '0.0.1-SNAPSHOT'
+    enabled = false
 }
 
 bootJar {
     enabled = true
+    baseName = 'emonlight-web'
+    launchScript()
 }
 
 //ext['flyway-url'] = ''

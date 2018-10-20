@@ -38,7 +38,7 @@
             }
         });
 
-        var powerChart = new Chart('/chartData?id[]=' + powerData.ids, 'power', 10000);
+        var powerChart = new Chart('[(@{/chartData})]?id[]=' + powerData.ids, 'power', 10000);
 
         Highcharts.stockChart({
             chart: {
@@ -95,7 +95,7 @@
             series: powerData.series
         });
 
-        var tempChart = new Chart('/chartData?id[]=' + tempData.ids, 'temp', 10000);
+        var tempChart = new Chart('[(@{/chartData})]?id[]=' + tempData.ids, 'temp', 10000);
 
         Highcharts.stockChart({
             chart: {
@@ -152,7 +152,7 @@
             series: tempData.series
         });
 
-        var humChart = new Chart('/chartData?id[]=' + humData.ids, 'hum', 10000);
+        var humChart = new Chart('[(@{/chartData})]?id[]=' + humData.ids, 'hum', 10000);
 
         Highcharts.stockChart({
             chart: {

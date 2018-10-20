@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.data.jpa.JpaRepositoriesAutoConfig
 import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
@@ -22,7 +23,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 //@EnableWebMvc
 @Import({SettingsService.class})
 @EnableAutoConfiguration(exclude = {JpaRepositoriesAutoConfiguration.class, HibernateJpaAutoConfiguration.class,
-        JmsAutoConfiguration.class, KafkaAutoConfiguration.class})
+        JmsAutoConfiguration.class, KafkaAutoConfiguration.class, ThymeleafAutoConfiguration.class})
 //@EnableJpaRepositories(basePackages = "net.reliqs.emonlight.web.entities")
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 //@ActiveProfiles({ "dev", "prod" })

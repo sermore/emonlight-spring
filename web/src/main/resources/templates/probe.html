@@ -31,7 +31,7 @@
             }
         });
 
-        var hourlyChart = new Chart('/statsData?id[]=' + ids + '&statType[]=' + ['HOUR', 'O_HOUR'], null, null);
+        var hourlyChart = new Chart('[(@{/statsData})]?id[]=' + ids + '&statType[]=' + ['HOUR', 'O_HOUR'], null, null);
 
         Highcharts.chart('containerHourly', {
             chart: {
@@ -64,7 +64,7 @@
             }]
         });
 
-        var weeklyChart = new Chart('/statsData?id[]=' + ids + '&statType[]=' + ['DAY_OF_WEEK', 'O_DAY_OF_WEEK'], null, null);
+        var weeklyChart = new Chart('[(@{/statsData})]?id[]=' + ids + '&statType[]=' + ['DAY_OF_WEEK', 'O_DAY_OF_WEEK'], null, null);
 
         Highcharts.chart('containerWeekly', {
             chart: {
@@ -97,7 +97,7 @@
             }]
         });
 
-        var monthlyChart = new Chart('/statsData?id[]=' + ids + '&statType[]=' + ['DAY_OF_MONTH', 'O_DAY_OF_MONTH'], null, null);
+        var monthlyChart = new Chart('[(@{/statsData})]?id[]=' + ids + '&statType[]=' + ['DAY_OF_MONTH', 'O_DAY_OF_MONTH'], null, null);
 
         Highcharts.chart('containerMonthly', {
             chart: {
@@ -130,7 +130,7 @@
             }]
         });
 
-        var liveChart = new Chart('/chartData?id[]=' + ids, 'live', 10000);
+        var liveChart = new Chart('[(@{/chartData})]?id[]=' + ids, 'live', 10000);
 
         Highcharts.stockChart({
             chart: {

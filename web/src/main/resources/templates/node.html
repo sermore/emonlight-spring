@@ -73,7 +73,7 @@
             }
         });
 
-        var liveChart = new Chart('/timeData?id[]=' + nodeData.ids, 'live', 10000);
+        var liveChart = new Chart('[(@{/timeData})]?id[]=' + nodeData.ids, 'live', 10000);
 
         Highcharts.stockChart({
             chart: {

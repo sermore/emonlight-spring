@@ -35,7 +35,7 @@
             }
         });
 
-        var timeChart = new Chart('/timeData?id[]=' + timeData.ids, 'time', 10000);
+        var timeChart = new Chart('[(@{/timeData})]?id[]=' + timeData.ids, 'time', 10000);
 
         Highcharts.stockChart({
             chart: {
@@ -92,7 +92,7 @@
             series: timeData.series
         });
 
-        var vccChart = new Chart('/chartData?id[]=' + vccData.ids, 'vcc', 10000);
+        var vccChart = new Chart('[(@{/chartData})]?id[]=' + vccData.ids, 'vcc', 10000);
 
         Highcharts.stockChart({
             chart: {

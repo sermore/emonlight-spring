@@ -5,11 +5,13 @@ logging:
       reliqs:
         emonlight: trace
 
-server.error.include-stacktrace: always
+server:
+  error.include-stacktrace: always
+  servlet.context-path: /emonlight
 
 spring:
   thymeleaf.cache: false
-  resources.cache-period: 0
+#  resources.cache-period: 0
 
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver

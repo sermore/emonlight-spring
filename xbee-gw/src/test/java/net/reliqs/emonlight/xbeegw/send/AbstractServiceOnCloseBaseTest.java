@@ -1,7 +1,8 @@
 package net.reliqs.emonlight.xbeegw.send;
 
 import net.reliqs.emonlight.commons.config.Settings;
-import net.reliqs.emonlight.xbeegw.state.ObjStoreToFile;
+import net.reliqs.emonlight.commons.data.StoreData;
+import net.reliqs.emonlight.commons.utils.ObjStoreToFile;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;

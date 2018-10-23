@@ -2,8 +2,8 @@ package net.reliqs.emonlight.xbeegw.events;
 
 import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.commons.utils.CollectionStoreToFile;
 import net.reliqs.emonlight.xbeegw.send.Dispatcher;
-import net.reliqs.emonlight.xbeegw.state.CollectionStoreToFile;
 import net.reliqs.emonlight.xbeegw.xbee.DataMessage;
 import net.reliqs.emonlight.xbeegw.xbee.Processor;
 import org.slf4j.Logger;

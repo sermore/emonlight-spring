@@ -1,8 +1,7 @@
-package net.reliqs.emonlight.xbeegw.send;
+package net.reliqs.emonlight.commons.data;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
 
 import java.io.Serializable;
 import java.util.Objects;

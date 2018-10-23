@@ -3,6 +3,7 @@ package net.reliqs.emonlight.web.data;
 import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.commons.data.StoreData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

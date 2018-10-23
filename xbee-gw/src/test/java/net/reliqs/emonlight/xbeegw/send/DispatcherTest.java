@@ -2,8 +2,8 @@ package net.reliqs.emonlight.xbeegw.send;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.commons.data.Data;
 import net.reliqs.emonlight.xbeegw.TestApp;
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import net.reliqs.emonlight.xbeegw.publish.Publisher;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.junit.AfterClass;

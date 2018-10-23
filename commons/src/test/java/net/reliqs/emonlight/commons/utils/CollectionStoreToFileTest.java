@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.state;
+package net.reliqs.emonlight.commons.utils;
 
 import org.junit.After;
 import org.junit.Before;

@@ -1,6 +1,10 @@
 package net.reliqs.emonlight.web.utils.math;
 
-class SumWithCompensation {
+import java.io.Serializable;
+
+class SumWithCompensation implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private double sum;
     private double sumCompensation; // Low order bits of sum

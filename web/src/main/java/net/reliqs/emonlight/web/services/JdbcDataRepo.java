@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.BiConsumer;
 
 @Service
 @Transactional(readOnly = true)
@@ -58,6 +59,27 @@ public class JdbcDataRepo implements DataRepo {
         });
         log.trace("result size = {}", size);
         return result;
+    }
+
+    @Override
+    public void forEach(Iterable<Integer> probeIds, long timeStart, long timeEnd, BiConsumer<Integer, Number[]> func) {
+        Map<Integer, List<Number[]>> result = new HashMap<>();
+//        final Calendar cal = Calendar.getInstance();
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("tstart", new Timestamp(timeStart));
+        paramMap.put("tend", new Timestamp(timeEnd));
+        paramMap.put("ids", probeIds);
+        paramMap.put("limit", Long.MAX_VALUE);
+        final AtomicInteger size = new AtomicInteger();
+        //        TimeZone.setDefault(TimeZone.getDefault().getTzone("GMT"));
+        //        Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"));
+        jdbcOperations.query(DATA_QUERY, paramMap, rch -> {
+            Integer pid = rch.getInt("probe_id");
+            Number[] val = new Number[]{rch.getTimestamp("time").getTime(), rch.getDouble("value")};
+            func.accept(pid, val);
+            size.incrementAndGet();
+        });
+        log.trace("result size = {}", size);
     }
 
     @Override

@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
+import java.io.Serializable;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -18,10 +19,13 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
-public class StatsData {
+public class StatsData implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private static final Logger log = LoggerFactory.getLogger(StatsData.class);
     private static int[] sizes = new int[]{288, 288, 24, 24, 7, 7, 31, 31};
     private static EnumSet<StatType> overall = EnumSet.of(StatType.O_M5, StatType.O_HOUR, StatType.O_DAY_OF_WEEK, StatType.O_DAY_OF_MONTH);
+
     private Map<Integer, DoubleSummaryStatistics> stats;
     private boolean timeWeighted;
     private ZoneId zoneId;

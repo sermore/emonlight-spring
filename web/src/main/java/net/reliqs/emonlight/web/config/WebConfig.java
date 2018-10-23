@@ -7,6 +7,7 @@ import net.reliqs.emonlight.web.git.FileRepositoryImpl;
 import net.reliqs.emonlight.web.services.DataRepo;
 import net.reliqs.emonlight.web.services.FileRepository;
 import net.reliqs.emonlight.web.services.ProbeMonitor;
+import net.reliqs.emonlight.web.services.ProbeMonitorAsyncDataRetriever;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +15,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.web.context.annotation.SessionScope;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -32,7 +35,6 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
 
     @Autowired
     private SettingsService settingsService;
-    @Autowired
     private ApplicationContext applicationContext;
 
     //    @Bean
@@ -40,10 +42,21 @@ public class WebConfig implements WebMvcConfigurer, ApplicationContextAware {
     //        return new SettingsService();
     //    }
 
-    @Bean
-    public ProbeMonitor monitor(DataRepo dataRepo, @Value("${historyDays:20}") int historyDays) {
+    @Bean(initMethod = "init", destroyMethod = "close")
+    public ProbeMonitor monitor() {
         Settings s = settingsService.loadAndInitialize();
-        return new ProbeMonitor(s, dataRepo, historyDays);
+        return new ProbeMonitor(s);
+    }
+
+    @Bean
+    public ProbeMonitorAsyncDataRetriever probeMonitorAsyncDataRetriever(DataRepo repo, ProbeMonitor probeMonitor) {
+        return new ProbeMonitorAsyncDataRetriever(repo, probeMonitor);
+    }
+
+    @EventListener
+    public void onApplicationEvent(ContextRefreshedEvent event) {
+        ProbeMonitorAsyncDataRetriever p = applicationContext.getBean(ProbeMonitorAsyncDataRetriever.class);
+        p.populateProbeMonitorData();
     }
 
     @Bean

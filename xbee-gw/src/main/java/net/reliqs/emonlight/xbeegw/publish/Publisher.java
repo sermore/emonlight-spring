@@ -2,6 +2,7 @@ package net.reliqs.emonlight.xbeegw.publish;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
+import net.reliqs.emonlight.commons.data.Data;
 import net.reliqs.emonlight.xbeegw.send.services.DeliveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

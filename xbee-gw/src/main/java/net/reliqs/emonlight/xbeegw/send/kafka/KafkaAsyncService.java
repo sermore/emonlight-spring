@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
+import net.reliqs.emonlight.commons.data.Data;
 import net.reliqs.emonlight.xbeegw.GwException;
-import net.reliqs.emonlight.xbeegw.publish.Data;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

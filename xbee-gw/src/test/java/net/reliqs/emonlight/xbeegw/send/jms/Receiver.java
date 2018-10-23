@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.send.jms;
 
-import net.reliqs.emonlight.xbeegw.send.StoreData;
+import net.reliqs.emonlight.commons.data.StoreData;
 import org.springframework.jms.annotation.JmsListener;
 
 class Receiver {

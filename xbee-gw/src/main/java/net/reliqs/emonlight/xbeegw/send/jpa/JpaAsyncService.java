@@ -2,8 +2,8 @@ package net.reliqs.emonlight.xbeegw.send.jpa;
 
 import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Settings;
+import net.reliqs.emonlight.commons.data.StoreData;
 import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
-import net.reliqs.emonlight.xbeegw.send.StoreData;
 
 import java.time.Instant;
 

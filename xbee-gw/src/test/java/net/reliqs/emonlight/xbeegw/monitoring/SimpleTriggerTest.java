@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.xbeegw.monitoring;
 
-import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.commons.data.Data;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.is;

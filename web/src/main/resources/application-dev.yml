@@ -3,7 +3,7 @@ logging:
     root: info
     net:
       reliqs:
-        emonlight: trace
+        emonlight: debug
 
 server:
   error.include-stacktrace: always

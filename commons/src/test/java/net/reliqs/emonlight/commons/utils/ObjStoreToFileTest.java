@@ -1,11 +1,11 @@
-package net.reliqs.emonlight.xbeegw.state;
+package net.reliqs.emonlight.commons.utils;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Settings;
 import net.reliqs.emonlight.commons.config.SettingsConfiguration;
 import net.reliqs.emonlight.commons.config.SettingsService;
-import net.reliqs.emonlight.xbeegw.publish.Data;
-import net.reliqs.emonlight.xbeegw.send.StoreData;
+import net.reliqs.emonlight.commons.data.Data;
+import net.reliqs.emonlight.commons.data.StoreData;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

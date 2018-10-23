@@ -4,7 +4,7 @@ import com.digi.xbee.api.utils.ByteUtils;
 import net.reliqs.emonlight.commons.config.Node;
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.commons.data.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

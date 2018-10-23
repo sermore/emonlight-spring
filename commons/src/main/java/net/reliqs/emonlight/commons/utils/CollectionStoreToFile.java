@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.state;
+package net.reliqs.emonlight.commons.utils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

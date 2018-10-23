@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.publish;
+package net.reliqs.emonlight.commons.data;
 
 public class Data {
 

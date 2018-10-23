@@ -2,7 +2,7 @@ package net.reliqs.emonlight.xbeegw.send.rest;
 
 import net.reliqs.emonlight.commons.config.Probe;
 import net.reliqs.emonlight.commons.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.commons.data.Data;
 
 /**
  * Created by sergio on 26/02/17.

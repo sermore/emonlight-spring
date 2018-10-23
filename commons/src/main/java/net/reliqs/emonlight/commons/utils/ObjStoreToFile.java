@@ -1,4 +1,4 @@
-package net.reliqs.emonlight.xbeegw.state;
+package net.reliqs.emonlight.commons.utils;
 
 import java.io.Serializable;
 import java.util.LinkedList;

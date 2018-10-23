@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.kafka;
 
 import net.reliqs.emonlight.commons.config.Probe;
-import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.commons.data.Data;
 
 public class TopicData {
     public String topic;

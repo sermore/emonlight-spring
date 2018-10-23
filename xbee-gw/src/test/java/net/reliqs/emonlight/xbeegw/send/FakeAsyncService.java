@@ -1,5 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send;
 
+import net.reliqs.emonlight.commons.data.StoreData;
+
 class FakeAsyncService extends AbstractAsyncService<StoreData> {
 
     private long sleepTime = 0L;

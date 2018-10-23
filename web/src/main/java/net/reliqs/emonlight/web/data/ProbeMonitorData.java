@@ -1,34 +1,44 @@
 package net.reliqs.emonlight.web.data;
 
 import net.reliqs.emonlight.commons.config.Probe;
+import net.reliqs.emonlight.web.services.DataRepo;
 import net.reliqs.emonlight.web.stats.StatsData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
-public class ProbeMonitorData {
+public class ProbeMonitorData implements Serializable {
+    private static final Logger log = LoggerFactory.getLogger(ProbeMonitorData.class);
+
+    private static final long serialVersionUID = 1L;
 
     private final Integer id;
     private final Probe.Type type;
     private final int timeOutWarning;
     private final int timeOutDisconnected;
     //    private final Deque<Data> deque;
-    private Data lastData;
+    private transient Data lastData = null;
     private Map<StatsData.StatType, StatsData> stats;
-    private int status;
-    private Instant startInstant;
+    //    private int status;
+    private Instant lastT;
+    private transient boolean initialized = false;
 
-    public ProbeMonitorData(Probe p, String tzone, List<Number[]> initData, Instant tstart) {
+    public ProbeMonitorData(Probe p, String tzone) {
         this.id = p.getId();
         this.type = p.getType();
         this.timeOutWarning = p.getTimeout() / 2;
         this.timeOutDisconnected = p.getTimeout();
         //        this.deque = new ArrayDeque<>();
-        this.startInstant = Instant.now();
+        this.lastT = Instant.EPOCH;
+        this.initialized = false;
         //        this.lastData = new Data(Instant.EPOCH, 0.0);
         this.stats = new HashMap<>();
         boolean timeWeighted = p.getType() == Probe.Type.PULSE;
@@ -41,30 +51,44 @@ public class ProbeMonitorData {
         stats.put(StatsData.StatType.O_HOUR, new StatsData(StatsData.StatType.O_HOUR, timeWeighted, zoneId));
         stats.put(StatsData.StatType.O_DAY_OF_WEEK, new StatsData(StatsData.StatType.O_DAY_OF_WEEK, timeWeighted, zoneId));
         stats.put(StatsData.StatType.O_DAY_OF_MONTH, new StatsData(StatsData.StatType.O_DAY_OF_MONTH, timeWeighted, zoneId));
-        Instant now = Instant.now();
-        if (initData != null) {
-            Instant lastT = tstart;
-            for (Number[] v : initData) {
-                Instant t = Instant.ofEpochMilli((Long) v[0]);
-                lastT = lastT.plus(1, ChronoUnit.HOURS);
-                while (lastT.isBefore(t)) {
-                    check(lastT);
-                    lastT = lastT.plus(1, ChronoUnit.HOURS);
-                }
-                add(new Data(t, (Double) v[1]));
-                lastT = t;
+    }
+
+    public long populate(DataRepo repo) {
+        log.debug("populate probeMonitorData {}", getId());
+        AtomicLong lastTLong = new AtomicLong(lastT.toEpochMilli());
+        AtomicLong firstTLong = new AtomicLong(Instant.now().toEpochMilli());
+        AtomicLong cnt = new AtomicLong(0L);
+        repo.forEach(Arrays.asList(getId()), lastTLong.longValue(), Instant.now().toEpochMilli(), (id, v) -> {
+            Instant t = Instant.ofEpochMilli((Long) v[0]);
+            if (lastTLong.longValue() == 0) {
+                lastTLong.set(t.toEpochMilli());
             }
+            Instant lastT = Instant.ofEpochMilli(lastTLong.longValue());
             lastT = lastT.plus(1, ChronoUnit.HOURS);
-            while (lastT.isBefore(now)) {
+            while (lastT.isBefore(t)) {
                 check(lastT);
                 lastT = lastT.plus(1, ChronoUnit.HOURS);
             }
+            addData(new Data(t, (Double) v[1]));
+            lastTLong.set(t.toEpochMilli());
+            cnt.incrementAndGet();
+        });
+        lastT = Instant.ofEpochMilli(lastTLong.longValue());
+        Instant t = this.lastT.plus(1, ChronoUnit.HOURS);
+        Instant now = Instant.now();
+        while (t.isBefore(now)) {
+            this.lastT = t;
+            check(t);
+            t = t.plus(1, ChronoUnit.HOURS);
         }
+        this.initialized = true;
+        log.debug("probeMonitorData {} initialized, processed {} values", getId(), cnt.longValue());
+        return cnt.longValue();
     }
 
     public int getStatus() {
         Instant now = Instant.now();
-        Instant lastTime = lastData != null ? lastData.t : startInstant;
+        Instant lastTime = lastData != null ? lastData.t : lastT;
         if (now.minus(timeOutWarning, ChronoUnit.MILLIS).isBefore(lastTime)) {
             return 0;
         } else if (now.minus(timeOutDisconnected, ChronoUnit.MILLIS).isAfter(lastTime)) {
@@ -105,13 +129,23 @@ public class ProbeMonitorData {
     }
 
     public boolean add(Data d) {
-        // TODO check ranges
+        if (initialized) {
+            // TODO check ranges
+            addData(d);
+        }
+        return true;
+        //        return deque.add(d);
+    }
+
+    private void addData(Data d) {
         lastData = d;
         for (StatsData s : stats.values()) {
             s.add(d.t, d.v);
         }
-        return true;
-        //        return deque.add(d);
+    }
+
+    public Integer getId() {
+        return id;
     }
 
 }

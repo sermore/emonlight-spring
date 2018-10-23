@@ -1,7 +1,7 @@
 package net.reliqs.emonlight.xbeegw.send.restv2;
 
+import net.reliqs.emonlight.commons.data.StoreData;
 import net.reliqs.emonlight.xbeegw.send.AbstractAsyncService;
-import net.reliqs.emonlight.xbeegw.send.StoreData;
 import org.springframework.web.client.RestTemplate;
 
 public class RestV2AsyncService extends AbstractAsyncService<StoreData> {

@@ -2,7 +2,7 @@ package net.reliqs.emonlight.xbeegw.monitoring;
 
 import net.reliqs.emonlight.commons.config.*;
 import net.reliqs.emonlight.commons.config.Probe.Type;
-import net.reliqs.emonlight.xbeegw.publish.Data;
+import net.reliqs.emonlight.commons.data.Data;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

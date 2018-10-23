@@ -61,6 +61,8 @@ import java.util.stream.Collector;
  */
 public class WeightedDoubleSummaryStatistics implements DoubleSummaryStatistics {
 
+    private static final long serialVersionUID = 1L;
+
     private long count;
     private SumWithCompensation sum, weightSum;
     private double simpleSum; // Used to compute right sum for non-finite inputs

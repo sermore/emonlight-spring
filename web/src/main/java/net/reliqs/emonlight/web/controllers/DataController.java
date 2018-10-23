@@ -1,6 +1,6 @@
 package net.reliqs.emonlight.web.controllers;
 
-import net.reliqs.emonlight.web.data.StoreData;
+import net.reliqs.emonlight.commons.data.StoreData;
 import net.reliqs.emonlight.web.services.ProbeMonitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

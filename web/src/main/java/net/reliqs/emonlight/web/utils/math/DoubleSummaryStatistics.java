@@ -1,6 +1,8 @@
 package net.reliqs.emonlight.web.utils.math;
 
-public interface DoubleSummaryStatistics {
+import java.io.Serializable;
+
+public interface DoubleSummaryStatistics extends Serializable {
     void accept(double value, double weight);
 
     void combine(DoubleSummaryStatistics other);
